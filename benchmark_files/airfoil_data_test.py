@@ -7,15 +7,15 @@ import matplotlib.pyplot as plt
 
 np.random.seed(4)
 
-mpt = np.load('mpt_cp_dataset_reynolds_aoa.npy')#[:8000, :]
-cp = np.load('cp_reynolds_aoa.npy')#[:8000, :]
+mpt = np.load('mpt_cp_dataset_reynolds_aoa_int.npy')#[:8000, :]
+cp = np.load('cp_reynolds_aoa_int.npy')[:, ::9]#[:8000, :]
 
-for i in range(len(mpt)):
-    mpt[i][1] = int(mpt[i][1])
+# for i in range(len(mpt)):
+#     mpt[i][1] = int(mpt[i][1])
 
 
-X = mpt
-y = cp
+y = mpt
+X = cp
 
 # y = np.load('mpt_cp_dataset_reynolds.npy')#[:1000, :]
 # X = np.load('cp_reynolds.npy')#[:1000, :]
@@ -46,7 +46,7 @@ params = {
 }
 
 # Train the model
-num_rounds = 200
+num_rounds = 300
 model = xgb.train(
     params,
     dtrain,
@@ -92,26 +92,26 @@ print("Average Test MAPE:", np.mean(test_mape_per_target))
 for i in range(20):
     
     
+    # plt.figure()
+    # plt.plot(np.arange(0, len(y_test_pred[i]), 1), y_test[i], 'r-')
+    # plt.plot(np.arange(0, len(y_test_pred[i]), 1), y_test_pred[i], 'g-')
+    
+    
     plt.figure()
-    plt.plot(np.arange(0, len(y_test_pred[i]), 1), y_test[i], 'r-')
-    plt.plot(np.arange(0, len(y_test_pred[i]), 1), y_test_pred[i], 'g-')
+    plt.title('mpt')
+    plt.plot(np.arange(0, len(y_test_pred[i,2:]), 1), y_test[i, 2:], 'ro')
+    plt.plot(np.arange(0, len(y_test_pred[i,2:]), 1), y_test_pred[i, 2:], 'go')
     
+    plt.figure()
+    plt.title('Re')
+    plt.plot(y_test[i, 0], 'ro')
+    plt.plot(y_test_pred[i, 0], 'go')
+    # plt.ylim(0, 1)
     
-    # plt.figure()
-    # plt.title('mpt')
-    # plt.plot(np.arange(0, len(y_test_pred[i,2:]), 1), y_test[i, 2:], 'ro')
-    # plt.plot(np.arange(0, len(y_test_pred[i,2:]), 1), y_test_pred[i, 2:], 'go')
-    
-    # plt.figure()
-    # plt.title('Re')
-    # plt.plot(y_test[i, 0], 'ro')
-    # plt.plot(y_test_pred[i, 0], 'go')
-    # # plt.ylim(0, 1)
-    
-    # plt.figure()
-    # plt.title('AoA')
-    # plt.plot(y_test[i, 1], 'ro')
-    # plt.plot(y_test_pred[i, 1], 'go')
+    plt.figure()
+    plt.title('AoA')
+    plt.plot(y_test[i, 1], 'ro')
+    plt.plot(y_test_pred[i, 1], 'go')
     
     
     
