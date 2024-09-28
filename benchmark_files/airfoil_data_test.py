@@ -7,12 +7,18 @@ import matplotlib.pyplot as plt
 
 np.random.seed(4)
 
-y = np.load('mpt_cp_dataset_reynolds_aoa.npy')#[:8000, :]
-X = np.load('cp_reynolds_aoa.npy')#[:8000, :]
+mpt = np.load('mpt_cp_dataset_reynolds_aoa.npy')#[:8000, :]
+cp = np.load('cp_reynolds_aoa.npy')#[:8000, :]
+
+for i in range(len(mpt)):
+    mpt[i][1] = int(mpt[i][1])
 
 
-# y = np.load('mpt_cp_dataset.npy')[:1000, :]
-# X = np.load('cp.npy')[:1000, :]
+X = mpt
+y = cp
+
+# y = np.load('mpt_cp_dataset_reynolds.npy')#[:1000, :]
+# X = np.load('cp_reynolds.npy')#[:1000, :]
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, shuffle=True, random_state=23)
 X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, shuffle=True, random_state=23)
@@ -47,7 +53,7 @@ model = xgb.train(
     num_rounds,
     evals=[(dtrain, 'train'), (dval, 'val')],
     early_stopping_rounds=10,
-    verbose_eval=10
+    verbose_eval=1
 )
 
 
@@ -83,30 +89,42 @@ print("Average Test MAPE:", np.mean(test_mape_per_target))
 
 
 
-for i in range(5):
+for i in range(20):
+    
+    
+    plt.figure()
+    plt.plot(np.arange(0, len(y_test_pred[i]), 1), y_test[i], 'r-')
+    plt.plot(np.arange(0, len(y_test_pred[i]), 1), y_test_pred[i], 'g-')
     
     
     # plt.figure()
-    # plt.plot(np.arange(0, len(y_test_pred[i]), 1), y_test[i], 'ro')
-    # plt.plot(np.arange(0, len(y_test_pred[i]), 1), y_test_pred[i], 'go')
+    # plt.title('mpt')
+    # plt.plot(np.arange(0, len(y_test_pred[i,2:]), 1), y_test[i, 2:], 'ro')
+    # plt.plot(np.arange(0, len(y_test_pred[i,2:]), 1), y_test_pred[i, 2:], 'go')
+    
+    # plt.figure()
+    # plt.title('Re')
+    # plt.plot(y_test[i, 0], 'ro')
+    # plt.plot(y_test_pred[i, 0], 'go')
+    # # plt.ylim(0, 1)
+    
+    # plt.figure()
+    # plt.title('AoA')
+    # plt.plot(y_test[i, 1], 'ro')
+    # plt.plot(y_test_pred[i, 1], 'go')
     
     
-    plt.figure()
-    plt.title('mpt')
-    plt.plot(np.arange(0, len(y_test_pred[i,2:]), 1), y_test[i, 2:], 'ro')
-    plt.plot(np.arange(0, len(y_test_pred[i,2:]), 1), y_test_pred[i, 2:], 'go')
     
-    plt.figure()
-    plt.title('Re')
-    plt.plot(y_test[i, 0], 'ro')
-    plt.plot(y_test_pred[i, 0], 'go')
-    # plt.ylim(0, 1)
+    # plt.figure()
+    # plt.title('mpt')
+    # plt.plot(np.arange(0, len(y_test_pred[i,1:]), 1), y_test[i, 1:], 'ro')
+    # plt.plot(np.arange(0, len(y_test_pred[i,1:]), 1), y_test_pred[i, 1:], 'go')
     
-    plt.figure()
-    plt.title('AoA')
-    plt.plot(y_test[i, 1], 'ro')
-    plt.plot(y_test_pred[i, 1], 'go')
-
+    # plt.figure()
+    # plt.title('Re')
+    # plt.plot(y_test[i, 0], 'ro')
+    # plt.plot(y_test_pred[i, 0], 'go')
+  
 
 
 # val_scores = model.eval_set([(dval, 'val')])
