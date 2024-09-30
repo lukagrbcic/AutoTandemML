@@ -22,8 +22,6 @@ class farm:
             print (i)
             run = gbc.gen_bc('/bc_problem', './orig/')
             y = run.generate()
-
-    
             
             r = np.random.randint(0, 100000)
             subprocess.run(["./bc_problem/run.sh"],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
@@ -48,14 +46,14 @@ class farm:
         
         
         # print (inputs)
-        print (outputs)
+        # print (outputs[0])
         
-        np.savetxt('bcs.txt', inputs)
-        np.savetxt('probes.txt', outputs)
+        np.savetxt('initial_data/bcs.txt', inputs)
+        np.savetxt('initial_data/probes.txt', np.array(outputs[0]))
 
         
         
-test = farm(10).save_data()
+test = farm(1000).save_data()
 
 
 
