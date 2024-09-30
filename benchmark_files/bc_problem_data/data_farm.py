@@ -3,7 +3,9 @@ import subprocess
 import sys
 import time
 
-sys.path.insert(0, './src')
+sys.path.insert(0, '/src')
+sys.path.insert(1, '/bc_problem')
+
 
 import generate_bc as gbc
 
@@ -23,12 +25,24 @@ class farm:
             run = gbc.gen_bc('/bc_problem', './orig/')
             y = run.generate()
             
-            r = np.random.randint(0, 100000)
-            subprocess.run(["./bc_problem/run.sh"],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+            # r = np.random.randint(0, 100000)
+            # subprocess.run(["source ./bc_problem/run.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+            # subprocess.run(["source ./bc_problem/run.sh"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+            
+            command = "cd bc_problem;rm -rf postProcess*; laplacianFoam"
+            process = subprocess.Popen(
+            [command],  shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+            )
+            
+            stdout, stderr = process.communicate()
+            # 
             probes = np.loadtxt('bc_problem/postProcessing/probes1/0/T') 
             scalar_values = probes[-1,1:]
+            # print (scalar_values)
             inputs.append(y)
-            outputs.append([scalar_values])
+            outputs.append(scalar_values)
 
 
    
@@ -45,15 +59,15 @@ class farm:
         r = np.random.randint(0, 100000)
         
         
-        # print (inputs)
-        # print (outputs[0])
+        print (inputs)
+        print (outputs)
         
         np.savetxt('initial_data/bcs.txt', inputs)
-        np.savetxt('initial_data/probes.txt', np.array(outputs[0]))
+        np.savetxt('initial_data/probes.txt', np.array(outputs))
 
         
         
-test = farm(1000).save_data()
+test = farm(20000).save_data()
 
 
 
