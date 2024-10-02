@@ -18,7 +18,7 @@ class samplers:
         self.algorithm = algorithm
         self.sampled_points = sampled_points
     
-    def generate_samples(self, sampled_points=[], seed=None):
+    def generate_samples(self, seed=None):
         
         if self.sampler == 'lhs':
             X = lhs.lhsSampler(self.batch_size, self.lb, self.ub).gen_LHS_samples(seed)
@@ -33,7 +33,7 @@ class samplers:
             X = unc_lhs_pso.uncertaintyLHSPSOSampler(self.model, self.batch_size, self.lb, self.ub, self.algorithm[0]).get_unc_samples()
                     
         elif self.sampler == 'unc_hc':
-            X = unc_hc.uncertaintyHCSampler(self.model, self.batch_size, self.lb, self.ub, self.algorithm[0], sampled_points).get_unc_samples()
+            X = unc_hc.uncertaintyHCSampler(self.model, self.batch_size, self.lb, self.ub, self.algorithm[0], self.sampled_points).get_unc_samples()
 
         return X
         

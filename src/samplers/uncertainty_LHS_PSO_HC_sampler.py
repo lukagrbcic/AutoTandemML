@@ -15,7 +15,7 @@ import xgboost as xgb
 
 class uncertaintyHCSampler:
     
-    def __init__(self, model, sample_size, lb, ub, algorithm, X_sampled, var=0.99, c=1):
+    def __init__(self, model, sample_size, lb, ub, algorithm, X_sampled, var=0.5, c=1):
         
         self.model = model
         self.sample_size = sample_size
@@ -25,6 +25,7 @@ class uncertaintyHCSampler:
         self.X_sampled = X_sampled
         self.c = c
         self.var = var
+        
     
     def generate_unique_points(self, initial_points, lower_bound, upper_bound, num_points):
         new_points = []
@@ -45,7 +46,6 @@ class uncertaintyHCSampler:
     def train_calssifier(self):
         
         sampled_points = self.X_sampled
-        
         # new_points = qmc.scale(qmc.LatinHypercube(d=len(self.lb)).random(n=len(sampled_points)), self.lb, self.ub)
         
                 
@@ -55,6 +55,7 @@ class uncertaintyHCSampler:
         
         ones = np.ones(len(sampled_points))
         zeros = np.zeros(len(sampled_points))
+               
 
         data_ones = np.hstack((sampled_points, ones.reshape(-1,1)))
         data_zeros = np.hstack((new_points, zeros.reshape(-1,1)))
