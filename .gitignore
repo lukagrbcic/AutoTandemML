@@ -6,3 +6,4 @@
 /benchmark_files/old_data/mpt_cp_dataset_reynolds_aoa.npy
 /:00.bl
 /benchmark_files/bc_problem_data/__pycache__/generate_bc.cpython-311.pyc
+__pycache__
