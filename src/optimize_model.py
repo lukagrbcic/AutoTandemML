@@ -103,9 +103,9 @@ class optimize:
             parameters = [i for i in top_n_results['params']]
             
             
-            model = []
+            ensemble = []
             for i in range(len(parameters)):
-                model.append(XGBRegressor(n_estimators=parameters[i]['n_estimators'],
+                ensemble.append(XGBRegressor(n_estimators=parameters[i]['n_estimators'],
                                           max_depth=parameters[i]['max_depth'],
                                           learning_rate=parameters[i]['learning_rate'],
                                           subsample=parameters[i]['subsample'],
@@ -116,7 +116,7 @@ class optimize:
                                           reg_alpha=parameters[i]['reg_alpha'],
                                           reg_lambda=parameters[i]['reg_lambda']))
                             
-            # model = EnsembleRegressor(ensemble)
+            model = EnsembleRegressor(ensemble)
         
             
         return model
