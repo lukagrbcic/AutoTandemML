@@ -36,7 +36,7 @@ test_data = (test_input, test_output)
 init_size=10
 batch_size=5
 max_samples=200
-n_repeats=1
+n_repeats=30
 sampler='unc'
 algorithm = ('rf', RandomForestRegressor(n_estimators=20))
 
