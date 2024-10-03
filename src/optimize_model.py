@@ -1,8 +1,9 @@
-from sklearn.datasets import load_iris
+from sklearn.datasets import make_regression
 from sklearn.model_selection import RandomizedSearchCV
 from scipy.stats import randint, uniform
 from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
+from ensemble_regressor import EnsembleRegressor
 import pandas as pd
 
 class optimize:
@@ -18,20 +19,22 @@ class optimize:
         
     def get_param_dist(self):
         
+        
+        
         if 'rf' in self.algorithm[0]:
             
-            param_dist_rf = {
+            param_dist = {
                 'n_estimators': randint(50, 300),            
                 'max_depth': randint(1, 30),                 
                 'min_samples_split': randint(2, 20),         
                 'min_samples_leaf': randint(1, 20),          
-                'max_features': ['auto', 'sqrt', 'log2'],    
+                'max_features': [0.5, 0.8, 1],    
                 'bootstrap': [True, False]                   
             }
             
         if 'xgb' in self.algorithm[0]:
             
-            param_dist_xgb = {
+            param_dist = {
                 'n_estimators': randint(50, 300),           
                 'max_depth': randint(1, 15),                
                 'learning_rate': uniform(0.01, 0.3),        
@@ -44,15 +47,18 @@ class optimize:
                 'reg_lambda': uniform(0, 1)                 
             }
             
-    def get_hyperparameters(self):
-        
+          
+        return param_dist
+            
+    
+    def search(self, model):
         
         random_search = RandomizedSearchCV(
-            self.algorithm[1], 
+            model, 
             param_distributions=self.get_param_dist(), 
-            n_iter=self.iter, 
+            n_iter=self.n_iter, 
             cv=self.cv, 
-            verbose=1, 
+            verbose=0, 
             n_jobs=-1,
             return_train_score=True
         )
@@ -62,9 +68,18 @@ class optimize:
 
         sorted_results = results.sort_values(by='mean_test_score', ascending=False)
         
+        return sorted_results
+        
+    
+    def get_hyperparameters(self):
+        
+        
+        
         if self.algorithm[0] == 'rf':
             
             self.ensemble_size = 1
+            
+            sorted_results = self.search(RandomForestRegressor())
             
             top_n_results = sorted_results.head(self.ensemble_size)
             parameters = [i for i in top_n_results['params']]
@@ -82,6 +97,8 @@ class optimize:
             
             self.ensemble_size = self.ensemble_size
             
+            sorted_results = self.search(XGBRegressor())
+            
             top_n_results = sorted_results.head(self.ensemble_size)
             parameters = [i for i in top_n_results['params']]
             
@@ -93,20 +110,18 @@ class optimize:
                                           learning_rate=parameters[i]['learning_rate'],
                                           subsample=parameters[i]['subsample'],
                                           colsample_bytree=parameters[i]['colsample_bytree'],
-                                          colsample_bylevel=parameters[i]['colsample_bylevel']),
-                                          colsample_bytree=parameters[i]['min_child_weight'],
-                                          colsample_bytree=parameters[i]['gamma'],
-                                          colsample_bytree=parameters[i]['reg_alpha'],
-                                          colsample_bytree=parameters[i]['reg_lambda'])
+                                          colsample_bylevel=parameters[i]['colsample_bylevel'],
+                                          min_child_weight=parameters[i]['min_child_weight'],
+                                          gamma=parameters[i]['gamma'],
+                                          reg_alpha=parameters[i]['reg_alpha'],
+                                          reg_lambda=parameters[i]['reg_lambda']))
+                            
+            # model = EnsembleRegressor(ensemble)
         
-    
+            
         return model
 
-        
-        
-        
-        
-        
+
         
         
         
