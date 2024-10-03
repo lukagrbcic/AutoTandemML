@@ -160,7 +160,7 @@ class activeLearner:
         size_array = []
 
         for i in range(n_repeats):
-            if self.verbose == True:
+            if self.verbose > 0:
                 print ('Run ', i)
             
             r2_, mape_, rmse_, range_nrmse_, std_nrmse_, max_rmse_, max_range_nrmse_, nmax_ae_, size = self.loop()
