@@ -17,7 +17,7 @@ class activeLearner:
     
     def __init__(self, function, lb, ub, init_size, 
                        batch_size, max_samples, sampler, algorithm, test_data, var=None,
-                       hyperparameters=(), init_samples=[], verbose=1):
+                       hyperparameters=-1, init_samples=[], verbose=1):
         
         self.function = function
         self.lb = lb
@@ -31,7 +31,6 @@ class activeLearner:
         self.hyperparameters = hyperparameters
         self.init_samples = init_samples
         self.verbose = verbose
-        self.var = var
         
     def model_update(self, X, y):
         
@@ -42,11 +41,7 @@ class activeLearner:
     def model_optimization(self, X, y):
         
         self.model = opt.optimize(self.algorithm, X, y).get_hyperparameters()
-        # if self.algorithm[0] != 'xgb':
-        #     self.model = EnsembleRegressor(self.model)
-        # else:
-        #     self.model = model
-    
+
     def initialize(self):
 
         X = samplers('lhs', self.init_size, self.lb, self.ub, self.algorithm).generate_samples(11)
@@ -74,13 +69,8 @@ class activeLearner:
         if self.verbose > 0:
             print ('Initial hyperparameter search!')
             self.model_optimization(X, y)
-        
-        print (self.model)
-        
+                
         self.model = self.model_update(X, y)
-        
-        print (self.model)
-        
         rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape = ca.error(self.model, self.test_data).test_set()
         
     
@@ -111,7 +101,7 @@ class activeLearner:
             X = np.vstack((X, X_new))
             y = np.vstack((y, y_new))
                         
-            if len(X)%10 == 0:
+            if len(X)%self.hyperparameters == 0:
                 self.model_optimization(X, y)
                 
             self.model = self.model_update(X, y)
@@ -131,10 +121,6 @@ class activeLearner:
                 
                 print ('Size', len(X))
 
-
-
-                
-                
             size.append(len(X))
             r2_.append(r2)
             mape_.append(mape)
