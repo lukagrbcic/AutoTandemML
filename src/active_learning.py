@@ -8,6 +8,8 @@ sys.path.insert(1, 'models')
 
 import check_accuracy as ca
 from generate_samples import samplers
+import optimize_model as opt
+from ensemble_regressor import EnsembleRegressor
 
 
 class activeLearner:
@@ -30,17 +32,20 @@ class activeLearner:
         self.init_samples = init_samples
         self.verbose = verbose
         self.var = var
-    
+        
     def model_update(self, X, y):
         
-        self.model = self.algorithm[1]
         self.model.fit(X, y)
 
         return self.model
     
     def model_optimization(self, X, y):
         
-        return None
+        self.model = opt.optimize(self.algorithm, X, y).get_hyperparameters()
+        # if self.algorithm[0] != 'xgb':
+        #     self.model = EnsembleRegressor(self.model)
+        # else:
+        #     self.model = model
     
     def initialize(self):
 
@@ -64,8 +69,17 @@ class activeLearner:
     
     def loop(self):
         
-        X, y = self.initialize()               
+        X, y = self.initialize()
+        
+        if self.verbose > 0:
+            print ('Initial hyperparameter search!')
+            self.model_optimization(X, y)
+        
+        print (self.model)
+        
         self.model = self.model_update(X, y)
+        
+        print (self.model)
         
         rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape = ca.error(self.model, self.test_data).test_set()
         
@@ -80,14 +94,14 @@ class activeLearner:
         max_range_nrmse_ = [max_range_nrmse]
         nmax_ae_ = [nmax_ae]
     
-                
-        print ('RMSE:', rmse, 
-                '\nNRMSE:', range_nrmse,
-                '\nMAX RMSE:', max_rmse, 
-                '\nMAX NRMSE:', max_range_nrmse, 
-                '\nR2:', r2,
-                '\nNMAX AE:',  nmax_ae,
-                '\nMAPE:', mape)
+        if self.verbose > 0:        
+            print ('RMSE:', rmse, 
+                    '\nNRMSE:', range_nrmse,
+                    '\nMAX RMSE:', max_rmse, 
+                    '\nMAX NRMSE:', max_range_nrmse, 
+                    '\nR2:', r2,
+                    '\nNMAX AE:',  nmax_ae,
+                    '\nMAPE:', mape)
                 
         while len(X) <= self.max_samples - self.init_size:
             
@@ -96,8 +110,12 @@ class activeLearner:
             
             X = np.vstack((X, X_new))
             y = np.vstack((y, y_new))
-            
+                        
+            if len(X)%10 == 0:
+                self.model_optimization(X, y)
+                
             self.model = self.model_update(X, y)
+
             
             rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape = ca.error(self.model, self.test_data).test_set()
 
@@ -112,6 +130,10 @@ class activeLearner:
                         '\nMAPE:', mape)
                 
                 print ('Size', len(X))
+
+
+
+                
                 
             size.append(len(X))
             r2_.append(r2)
@@ -127,7 +149,6 @@ class activeLearner:
         if self.verbose > 0:
             print ('-----------------------------------')
             print ('Run finished!')
-            # print ('Var factor used:', self.var)
             print ('Sampler used:', self.sampler)
             print ('-----------------------------------')
             print ('RMSE:', rmse, 
