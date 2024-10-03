@@ -12,7 +12,7 @@ from sklearn_extra.cluster import KMedoids
 
 class uncertaintyLHSPSOSampler:
     
-    def __init__(self, model, sample_size, lb, ub, algorithm, penalty_factor=0, c=1):
+    def __init__(self, model, sample_size, lb, ub, algorithm, penalty_factor=1, c=1):
         
         self.model = model
         self.sample_size = sample_size
@@ -43,7 +43,7 @@ class uncertaintyLHSPSOSampler:
                     tree_preds = np.array([tree.predict(x.reshape(1,-1)) for tree in self.model.estimators_])
                     std = np.sum(np.std(tree_preds, axis=0))
         
-                return -std# + self.penalty_factor*np.sum(p)
+                return -std + self.penalty_factor*np.sum(p)
 
             
             x0 = np.random.normal(loc=s, scale=0.2*s, size=(3, np.shape(samples)[1]))
@@ -54,7 +54,7 @@ class uncertaintyLHSPSOSampler:
             optim.params['cognitive_rate'] = 2
             optim.params['social_rate'] = 1
             optim.X0 = x0
-            optim.max_evaluations = 6*len(s)
+            optim.max_evaluations = 100 #6*len(s)
             optim.lb = self.lb
             optim.ub = self.ub
             optim.evaluation_function = uncertainty 
@@ -74,10 +74,10 @@ class uncertaintyLHSPSOSampler:
         f = np.array(f)
         X = np.array(X)
         
-        # X_f = np.hstack((X, f))
-        # cluster = KMeans(n_clusters=self.sample_size, n_init='auto').fit(X_f)
+        X_f = np.hstack((X, f.reshape(-1,1)))
+        cluster = KMeans(n_clusters=self.sample_size, n_init='auto').fit(X_f)
 
-        # X = cluster.cluster_centers_[:, :-1]
+        X = cluster.cluster_centers_[:, :-1]
         
                        
         return X

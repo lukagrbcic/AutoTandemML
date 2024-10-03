@@ -15,7 +15,7 @@ import xgboost as xgb
 
 class uncertaintyHCSampler:
     
-    def __init__(self, model, sample_size, lb, ub, algorithm, X_sampled, var=0.5, c=1):
+    def __init__(self, model, sample_size, lb, ub, algorithm, X_sampled, var=0.99, c=1):
         
         self.model = model
         self.sample_size = sample_size
@@ -135,7 +135,7 @@ class uncertaintyHCSampler:
             # optim.params['cognitive_rate'] = 2
             # optim.params['social_rate'] = 1
             optim.X0 = s
-            optim.max_evaluations = 30#3*len(s)
+            optim.max_evaluations = 350#3*len(s)
             optim.lb = self.lb
             optim.ub = self.ub
             optim.evaluation_function = uncertainty 

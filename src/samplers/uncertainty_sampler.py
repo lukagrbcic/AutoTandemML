@@ -20,9 +20,6 @@ class uncertaintySampler:
         f = []
         for i in range(self.sample_size):
             
-            
-            
-            
             def uncertainty(x):
     
                 if self.algorithm == 'rf':
@@ -46,7 +43,7 @@ class uncertaintySampler:
             optimizer.evaluation_function = uncertainty 
             optimizer.lb = self.lb
             optimizer.ub = self.ub
-            optimizer.max_evaluations = 80
+            optimizer.max_evaluations = 30
             result = optimizer.optimize()
             min_x = result.X 
             min_f = result.f
