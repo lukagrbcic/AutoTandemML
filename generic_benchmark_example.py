@@ -9,6 +9,7 @@ sys.path.insert(2, 'src/samplers')
 
 from benchmarks import *
 import active_learning as al
+import postprocess as pp
 
 bench = 'scalar_diffusion'
 name = 'scalar_diffusion_benchmark'
@@ -35,8 +36,11 @@ test_data = (test_input, test_output)
 init_size=10
 batch_size=5
 max_samples=100
+n_repeats=3
 sampler='unc_hc'
-algorithm = ('rf', RandomForestRegressor(n_estimators=120))
+algorithm = ('rf', RandomForestRegressor(n_estimators=150))
+
+results = []
 
 run = al.activeLearner(f, lb, ub,
                        init_size, batch_size,
@@ -44,4 +48,20 @@ run = al.activeLearner(f, lb, ub,
                        algorithm,
                        test_data, verbose=batch_size)
 
-run.run()
+results_exp = run.run(n_repeats)
+
+results.append(results_exp)
+
+sampler='random'
+
+run = al.activeLearner(f, lb, ub,
+                       init_size, batch_size,
+                       max_samples, sampler,
+                       algorithm,
+                       test_data, verbose=batch_size)
+
+results_rnd = run.run(n_repeats)
+
+results.append(results_rnd)
+
+pp.plot_results(results).compare_metrics()
