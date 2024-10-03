@@ -50,8 +50,8 @@ class activeLearner:
         return X, y
     
     def get_samples(self, sampled_points=[]):
-        
-        X = samplers(self.sampler, self.init_size, 
+                
+        X = samplers(self.sampler, self.batch_size, 
                      self.lb, self.ub, self.algorithm, sampled_points, self.model).generate_samples()
         
         return X
@@ -129,6 +129,16 @@ class activeLearner:
             print ('Run finished!')
             # print ('Var factor used:', self.var)
             print ('Sampler used:', self.sampler)
+            print ('-----------------------------------')
+            print ('RMSE:', rmse, 
+                    '\nNRMSE:', range_nrmse,
+                    '\nMAX RMSE:', max_rmse, 
+                    '\nMAX NRMSE:', max_range_nrmse, 
+                    '\nR2:', r2,
+                    '\nNMAX AE:',  nmax_ae,
+                    '\nMAPE:', mape)
+            
+            print ('Size', len(X))
         
             
     #     r2_ = self.append_value(r2_) #just in case
