@@ -40,7 +40,7 @@ class modelHCSampler:
 
     def train_calssifier(self):
         
-        sampled_points = self.X_sampled
+        sampled_points = self.x_sampled
         # new_points = qmc.scale(qmc.LatinHypercube(d=len(self.lb)).random(n=len(sampled_points)), self.lb, self.ub)
         
                 
@@ -65,46 +65,44 @@ class modelHCSampler:
         return classifier
 
     def get_samples(self):
-        
+
         if np.random.uniform() < self.beta:
             classifier = self.train_calssifier()
         else: classifier = None
-                
+        
+
         X = []
         f = []
         samples = qmc.scale(qmc.LatinHypercube(d=len(self.lb)).random(n=self.sample_size), self.lb, self.ub)
-
+        
+        print (self.function)
+        # print (x)
+        
+        import sys
+        sys.exit()
+        
         for s in samples:
 
             def get_values(x):
-                
-                p = []
-                if len(self.x_sampled) > 0:
-                    for convbest in self.x_sampled:
-                        val = np.linalg.norm(convbest - x)
-                        p.append((1/val)**2)  
-                        
-                preds = np.concatenate(np.array([model.predict([x]) for model in self.model.estimators_]))
-                
-                if self.function == 'uncertainty':
-                    
-                    value = goal_function(method=self.function).calculate(preds)
-                
-                if self.function == 'entropy':
-
-                    value = goal_function(method=self.function).calculate(preds)
-                    
-                if self.function == 'mixed':
-                    
-                    value = goal_function(method=self.function).calculate(preds)
-                
-                
+      
                 if classifier != None:
-                    prediction = classifier.predict_proba(x.reshape(1,-1))
-
+                    prediction = classifier.predict_proba(x)
+                    
                     if prediction[0,0] < 0.5:
                         value = 0
                         p = 0
+                        
+                # p = []
+                # if len(self.x_sampled) > 0:
+                #     for convbest in self.x_sampled:
+                #         val = np.linalg.norm(convbest - x)
+                #         p.append((1/val)**2)  
+                
+                else:        
+                    preds = np.concatenate(np.array([model.predict([x]) for model in self.model.estimators_]))
+
+                    value = goal_function(method=self.acqfunction).calculate(preds)
+   
                 
                 return value + value*np.sum(p)
 

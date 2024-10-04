@@ -25,6 +25,7 @@ class modelSampler:
         for i in range(self.sample_size):
             
             def get_values(x):
+                print (self.function)
                 
                 p = []
                 if len(self.x_sampled) > 0:
@@ -34,20 +35,7 @@ class modelSampler:
                         
                 preds = np.concatenate(np.array([model.predict([x]) for model in self.model.estimators_]))
                 
-                if self.function == 'uncertainty':
-                    
-                    value = goal_function(method=self.function).calculate(preds)
-                
-                if self.function == 'entropy':
-
-                    value = goal_function(method=self.function).calculate(preds)
-                    
-                if self.function == 'mixed':
-                    
-                    value = goal_function(method=self.function).calculate(preds)
-                
-                
-                # print (value, value*np.sum(p))
+                value = goal_function(method=self.function).calculate(preds)
                 
                 return value + value*np.sum(p)
             

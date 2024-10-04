@@ -25,7 +25,7 @@ class modelLHSSampler:
 
         X = []
         f = []
-        samples = qmc.scale(qmc.LatinHypercube(d=len(self.lb)).random(n=3*self.sample_size), self.lb, self.ub)
+        samples = qmc.scale(qmc.LatinHypercube(d=len(self.lb)).random(n=20*self.sample_size), self.lb, self.ub)
         for s in samples:
             def get_values(x):
                 
@@ -36,18 +36,8 @@ class modelLHSSampler:
                         p.append((1/val)**2)  
                         
                 preds = np.concatenate(np.array([model.predict([x]) for model in self.model.estimators_]))
-                
-                if self.function == 'uncertainty':
-                    
-                    value = goal_function(method=self.function).calculate(preds)
-                
-                if self.function == 'entropy':
-
-                    value = goal_function(method=self.function).calculate(preds)
-                    
-                if self.function == 'mixed':
-                    
-                    value = goal_function(method=self.function).calculate(preds)
+                                    
+                value = goal_function(method=self.function).calculate(preds)
                 
                 return value + value*np.sum(p)
 
@@ -73,12 +63,12 @@ class modelLHSSampler:
             
       
         f = np.array(f)
-        X = np.array(X)       
-        X = X[np.argsort(f)[:self.sample_size]]
+        # X = np.array(X)       
+        # X = X[np.argsort(f)[:self.sample_size]]
        
-        # x_f = np.hstack((X, f.reshape(-1,1)))
-        # cluster = KMedoids(n_clusters=self.sample_size).fit(x_f)
-        # X = cluster[:, :-1]
+        x_f = np.hstack((X, f.reshape(-1,1)))
+        cluster = KMedoids(n_clusters=self.sample_size).fit(x_f)
+        X = cluster.cluster_centers_[:, :-1]
        
         
        
