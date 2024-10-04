@@ -24,9 +24,7 @@ class modelSampler:
         f = []
         for i in range(self.sample_size):
             
-            def get_values(x):
-                print (self.function)
-                
+            def get_values(x):               
                 p = []
                 if len(self.x_sampled) > 0:
                     for convbest in self.x_sampled:
