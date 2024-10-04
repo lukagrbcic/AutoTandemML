@@ -1,6 +1,6 @@
 import lhs_sampler as lhs
 import random_sampler as rnd
-import uncertainty_sampler as unc 
+import model_sampler as ms
 import uncertainty_LHS_PSO_sampler as unc_lhs_pso
 import uncertainty_LHS_PSO_HC_sampler as unc_hc
 
@@ -26,8 +26,8 @@ class samplers:
         elif self.sampler == 'random':
             X = rnd.randomSampler(self.batch_size, self.lb, self.ub).gen_random_samples()
         
-        elif self.sampler == 'unc':
-            X = unc.uncertaintySampler(self.model, self.batch_size, self.lb, self.ub, self.algorithm[0]).get_unc_samples()
+        elif 'model' in self.sampler:
+            X = ms.modelSampler(self.model, self.batch_size, self.lb, self.ub, self.algorithm[0], self.sampler.split('_')[-1]).get_samples()
         
         elif self.sampler == 'unc_lhs_pso':
             X = unc_lhs_pso.uncertaintyLHSPSOSampler(self.model, self.batch_size, self.lb, self.ub, self.algorithm[0]).get_unc_samples()
