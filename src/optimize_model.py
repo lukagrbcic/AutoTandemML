@@ -5,10 +5,11 @@ from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
 from ensemble_regressor import EnsembleRegressor
 import pandas as pd
+import numpy as np
 
 class optimize:
     
-    def __init__(self, algorithm, X, y, n_iter=100, cv=3, ensemble_size=10):
+    def __init__(self, algorithm, X, y, n_iter=100, cv=3, ensemble_size=5):
         
         self.algorithm = algorithm
         self.X = X
@@ -26,10 +27,10 @@ class optimize:
             param_dist = {
                 'n_estimators': randint(50, 300),            
                 'max_depth': randint(1, 30),                 
-                'min_samples_split': randint(2, 20),         
-                'min_samples_leaf': randint(1, 20),          
-                'max_features': [0.5, 0.8, 1],    
-                'bootstrap': [True, False]                   
+                # 'min_samples_split': randint(2, 20),         
+                # 'min_samples_leaf': randint(1, 20),          
+                # 'max_features': [0.5, 0.8, 1],    
+                # 'bootstrap': [True, False]                   
             }
             
         if 'xgb' in self.algorithm[0]:
@@ -37,14 +38,14 @@ class optimize:
             param_dist = {
                 'n_estimators': randint(50, 300),           
                 'max_depth': randint(1, 15),                
-                'learning_rate': uniform(0.01, 0.3),        
-                'subsample': uniform(0.5, 0.5),              
-                'colsample_bytree': uniform(0.5, 0.5),       
-                'colsample_bylevel': uniform(0.5, 0.5),      
-                'min_child_weight': randint(1, 10),          
-                'gamma': uniform(0, 0.5),
-                'reg_alpha': uniform(0, 1),                  
-                'reg_lambda': uniform(0, 1)                 
+                # 'learning_rate': uniform(0.01, 0.3),        
+                # 'subsample': uniform(0.5, 0.5),              
+                # 'colsample_bytree': uniform(0.5, 0.5),       
+                # 'colsample_bylevel': uniform(0.5, 0.5),      
+                # 'min_child_weight': randint(1, 10),          
+                # 'gamma': uniform(0, 0.5),
+                # 'reg_alpha': uniform(0, 1),                  
+                # 'reg_lambda': uniform(0, 1)                 
             }
             
           
@@ -87,11 +88,11 @@ class optimize:
             
             for i in range(len(parameters)):
                 model = RandomForestRegressor(n_estimators=parameters[i]['n_estimators'],
-                                          max_depth=parameters[i]['max_depth'],
-                                          min_samples_split=parameters[i]['min_samples_split'],
-                                          min_samples_leaf=parameters[i]['min_samples_leaf'],
-                                          max_features=parameters[i]['max_features'],
-                                          bootstrap=parameters[i]['bootstrap'])
+                                          max_depth=parameters[i]['max_depth'])
+                                          # min_samples_split=parameters[i]['min_samples_split'],
+                                          # min_samples_leaf=parameters[i]['min_samples_leaf'],
+                                          # max_features=parameters[i]['max_features'],
+                                          # bootstrap=parameters[i]['bootstrap'])
         
         elif self.algorithm[0] =='xgb':
             
@@ -99,22 +100,21 @@ class optimize:
             
             sorted_results = self.search(XGBRegressor())
             
-            top_n_results = sorted_results.head(self.ensemble_size)
-            parameters = [i for i in top_n_results['params']]
-            
-            
+            top_n_results = sorted_results.head(2*self.ensemble_size)
+            parameters_list = [i for i in top_n_results['params']]
+            parameters = np.random.choice(parameters_list, size=self.ensemble_size, replace=False)
             ensemble = []
             for i in range(len(parameters)):
                 ensemble.append(XGBRegressor(n_estimators=parameters[i]['n_estimators'],
-                                          max_depth=parameters[i]['max_depth'],
-                                          learning_rate=parameters[i]['learning_rate'],
-                                          subsample=parameters[i]['subsample'],
-                                          colsample_bytree=parameters[i]['colsample_bytree'],
-                                          colsample_bylevel=parameters[i]['colsample_bylevel'],
-                                          min_child_weight=parameters[i]['min_child_weight'],
-                                          gamma=parameters[i]['gamma'],
-                                          reg_alpha=parameters[i]['reg_alpha'],
-                                          reg_lambda=parameters[i]['reg_lambda']))
+                                          max_depth=parameters[i]['max_depth']))
+                                          # learning_rate=parameters[i]['learning_rate'],
+                                          # subsample=parameters[i]['subsample'],
+                                          # colsample_bytree=parameters[i]['colsample_bytree'],
+                                          # colsample_bylevel=parameters[i]['colsample_bylevel'],
+                                          # min_child_weight=parameters[i]['min_child_weight'],
+                                          # gamma=parameters[i]['gamma'],
+                                          # reg_alpha=parameters[i]['reg_alpha'],
+                                          # reg_lambda=parameters[i]['reg_lambda']))
                             
             model = EnsembleRegressor(ensemble)
         
