@@ -21,12 +21,11 @@ class modelLHSSampler:
         self.function = function
         self.x_sampled = x_sampled
         
-    def get_unc_samples(self):
+    def get_samples(self):
 
         X = []
         f = []
         samples = qmc.scale(qmc.LatinHypercube(d=len(self.lb)).random(n=3*self.sample_size), self.lb, self.ub)
-
         for s in samples:
             def get_values(x):
                 
@@ -72,17 +71,12 @@ class modelLHSSampler:
             X.append(min_x)
             f.append(min_f)
             
-        # f = np.concatenate(f)
-        # X = np.array(X)
-                    
+      
         f = np.array(f)
         X = np.array(X)
         
-        X_f = np.hstack((X, f.reshape(-1,1)))
-        cluster = KMeans(n_clusters=self.sample_size, n_init='auto').fit(X_f)
-        X = cluster.cluster_centers_[:, :-1]
-        
-                       
+        X = X[np.argsort(f)[:self.sample_size]]
+       
         return X
             
             
