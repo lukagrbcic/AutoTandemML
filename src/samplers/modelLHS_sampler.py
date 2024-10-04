@@ -27,7 +27,7 @@ class modelLHSSampler:
 
         X = []
         f = []
-        samples = qmc.scale(qmc.LatinHypercube(d=len(self.lb)).random(n=20*self.sample_size), self.lb, self.ub)
+        samples = qmc.scale(qmc.LatinHypercube(d=len(self.lb)).random(n=3*self.sample_size), self.lb, self.ub)
         for s in samples:
             def get_values(x):
                 
