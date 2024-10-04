@@ -75,8 +75,9 @@ class activeLearner:
             
         self.model = self.model_update(X, y)
         
+       # rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape, paper_rmse, paper_rmse_max = ca.error(self.model, self.test_data).test_set()
         rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape = ca.error(self.model, self.test_data).test_set()
-        
+
     
         size = [len(X)]
         r2_ = [r2]
@@ -87,6 +88,8 @@ class activeLearner:
         max_rmse_ = [max_rmse]
         max_range_nrmse_ = [max_range_nrmse]
         nmax_ae_ = [nmax_ae]
+        # paper_rmse_ = [paper_rmse]
+        # paper_rmse_max_ = [paper_rmse_max]
     
         if self.verbose > 0:        
             print ('RMSE:', rmse, 
@@ -96,6 +99,8 @@ class activeLearner:
                     '\nR2:', r2,
                     '\nNMAX AE:',  nmax_ae,
                     '\nMAPE:', mape)
+                    # '\nPAPER RMSE:', paper_rmse,
+                    # '\nPAPER RMSE MAX', paper_rmse_max)
                 
         while len(X) <= self.max_samples - self.init_size:
             
@@ -112,6 +117,7 @@ class activeLearner:
             self.model = self.model_update(X, y)
 
             
+            # rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape, paper_rmse, paper_rmse_max = ca.error(self.model, self.test_data).test_set()
             rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape = ca.error(self.model, self.test_data).test_set()
 
             if self.verbose > 0 and len(X)%self.verbose == 0:
@@ -123,6 +129,8 @@ class activeLearner:
                         '\nR2:', r2,
                         '\nNMAX AE:',  nmax_ae,
                         '\nMAPE:', mape)
+                        # '\nPAPER RMSE:', paper_rmse,
+                        # '\mPAPER RMSE MAX', paper_rmse_max)
                 
                 print ('Size', len(X))
 
@@ -135,6 +143,8 @@ class activeLearner:
             max_rmse_.append(max_rmse)
             max_range_nrmse_.append(max_range_nrmse)
             nmax_ae_.append(nmax_ae)
+            # paper_rmse_.append(paper_rmse)
+            # paper_rmse_max_.append(paper_rmse_max)
             
             
         if self.verbose > 0:
@@ -149,6 +159,8 @@ class activeLearner:
                     '\nR2:', r2,
                     '\nNMAX AE:',  nmax_ae,
                     '\nMAPE:', mape)
+                    # '\nPAPER RMSE:', paper_rmse,
+                    # '\mPAPER RMSE MAX', paper_rmse_max)
             
             print ('Size', len(X))
         
@@ -166,6 +178,7 @@ class activeLearner:
         max_range_nrmse_array = []
         nmax_ae_array = []
         size_array = []
+        
 
         for i in range(n_repeats):
             if self.verbose > 0:
