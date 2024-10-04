@@ -13,7 +13,18 @@ class goal_function:
         
         return total_uncertainty
     
-       
+    def uncertainty_quantile(self, preds):
+        
+        q02 = np.percentile(preds, 0.02, axis=0)
+        q98 = np.percentile(preds, 0.98, axis=0)
+        
+        diff = np.abs(q98 - q02)
+    
+        total_uncertainty = -np.sum(diff)
+        
+        return total_uncertainty 
+
+      
     def entropy(self, preds):
         
         mu = np.mean(preds, axis=0)  
@@ -37,6 +48,12 @@ class goal_function:
         if self.method == 'uncertainty':
             
             value = self.uncertainty(preds)
+
+        
+        if self.method == 'quantile':
+            
+            value = self.uncertainty_quantile(preds)
+        
         
         if self.method == 'entropy':
 
