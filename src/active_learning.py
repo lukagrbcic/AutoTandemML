@@ -16,8 +16,12 @@ class activeLearner:
     
     
     def __init__(self, function, lb, ub, init_size, 
-                       batch_size, max_samples, sampler, algorithm, test_data, var=None,
-                       hyperparameters=-1, init_samples=[], verbose=1):
+                       batch_size, max_samples, sampler, algorithm, test_data, 
+                       var=None,
+                       hyperparameters=-1, 
+                       initial_hyperparameter_search=False,
+                       init_samples=[], 
+                       verbose=1):
         
         self.function = function
         self.lb = lb
@@ -29,15 +33,12 @@ class activeLearner:
         self.test_data = test_data
         self.algorithm = algorithm
         self.hyperparameters = hyperparameters
+        self.initial_hyperparameter_search = initial_hyperparameter_search
         self.init_samples = init_samples
         self.verbose = verbose
         
     def model_update(self, X, y):
-        
-        
-        
-        # self.model = self.algorithm[1].fit(X, y)
-        
+                
         self.model.fit(X,y)
 
         return self.model
@@ -59,21 +60,17 @@ class activeLearner:
                      self.lb, self.ub, self.algorithm, sampled_points, self.model).generate_samples()
         
         return X
-    
-    # def append_value(self, array):
         
-    #     while len(array) < self.max_samples:
-    #         array.append(array[-1])
-    #     return array
-    
     def loop(self):
         
         X, y = self.initialize()
         
-        if self.verbose > 0:
-            print ('Initial hyperparameter search!')
-        self.model_optimization(X, y)
-                
+        if self.initial_hyperparameter_search == True:
+            if self.verbose > 0:
+                print ('Initial hyperparameter search!')
+            self.model_optimization(X, y)
+            
+            
         self.model = self.model_update(X, y)
         
         rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape = ca.error(self.model, self.test_data).test_set()
@@ -152,10 +149,6 @@ class activeLearner:
             
             print ('Size', len(X))
         
-            
-    #     r2_ = self.append_value(r2_) #just in case
-
-                    
           
         return r2_, mape_, rmse_, range_nrmse_, std_nrmse_, max_rmse_, max_range_nrmse_, nmax_ae_, size
     
@@ -173,7 +166,9 @@ class activeLearner:
 
         for i in range(n_repeats):
             if self.verbose > 0:
-                print ('Run ', i)
+                print ('====================')
+                print ('Starting run ', i)
+                print ('====================')
             
             r2_, mape_, rmse_, range_nrmse_, std_nrmse_, max_rmse_, max_range_nrmse_, nmax_ae_, size = self.loop()
             
