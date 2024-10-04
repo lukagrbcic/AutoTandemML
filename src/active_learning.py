@@ -18,7 +18,7 @@ class activeLearner:
     def __init__(self, function, lb, ub, init_size, 
                        batch_size, max_samples, sampler, algorithm, test_data, 
                        var=None,
-                       hyperparameters=-1, 
+                       hyperparameters=np.inf, 
                        initial_hyperparameter_search=False,
                        init_samples=[], 
                        verbose=1):
@@ -69,6 +69,8 @@ class activeLearner:
             if self.verbose > 0:
                 print ('Initial hyperparameter search!')
             self.model_optimization(X, y)
+        else:
+            self.model = self.algorithm[1]
             
             
         self.model = self.model_update(X, y)
@@ -104,6 +106,7 @@ class activeLearner:
             y = np.vstack((y, y_new))
                         
             if len(X)%self.hyperparameters == 0:
+                print ('Optimizing model!')
                 self.model_optimization(X, y)
                 
             self.model = self.model_update(X, y)
