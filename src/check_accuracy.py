@@ -77,9 +77,6 @@ class error:
         
         return np.mean(nmaxae)
     
-    
-        
-
     def test_set(self):
         
         test_inputs, test_outputs = self.test_data        
@@ -93,7 +90,12 @@ class error:
         r2_ = self.r2(test_outputs, test_predictions)
         nmax_ae_ = self.nmax_ae(test_outputs, test_predictions)
         mape_ = self.mape(test_outputs, test_predictions)
+        
+        
+        # """for rmse used in TNN paper"""
+        # paper_rmse = np.mean([np.sqrt(mean_squared_error(test_outputs[i], test_predictions[i])) for i in range(len(test_predictions))])
+        # paper_rmse_max = np.max([np.sqrt(mean_squared_error(test_outputs[i], test_predictions[i])) for i in range(len(test_predictions))])
 
         
-        return rmse_, range_nrmse_*100, std_nrmse_, max_rmse_, max_range_nrmse_*100, r2_, nmax_ae_, mape_
+        return rmse_, range_nrmse_*100, std_nrmse_, max_rmse_, max_range_nrmse_*100, r2_, nmax_ae_, mape_#, paper_rmse, paper_rmse_max
         
