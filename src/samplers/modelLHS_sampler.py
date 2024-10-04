@@ -10,7 +10,8 @@ from goal_functions import goal_function
 
 
 class modelLHSSampler:
-    def __init__(self, model, sample_size, lb, ub, algorithm, function='uncertainty', x_sampled=[]):
+    def __init__(self, model, sample_size, lb, ub, algorithm, 
+                 function='uncertainty', x_sampled=[], clustering=False):
 
         
         self.model = model
@@ -20,6 +21,7 @@ class modelLHSSampler:
         self.algorithm = algorithm
         self.function = function
         self.x_sampled = x_sampled
+        self.clustering = False
         
     def get_samples(self):
 
@@ -63,14 +65,14 @@ class modelLHSSampler:
             
       
         f = np.array(f)
-        # X = np.array(X)       
-        # X = X[np.argsort(f)[:self.sample_size]]
-       
-        x_f = np.hstack((X, f.reshape(-1,1)))
-        cluster = KMedoids(n_clusters=self.sample_size).fit(x_f)
-        X = cluster.cluster_centers_[:, :-1]
-       
+        if self.clustering == False:
+            X = np.array(X)       
+            X = X[np.argsort(f)[:self.sample_size]]
         
+        else:
+            x_f = np.hstack((X, f.reshape(-1,1)))
+            cluster = KMedoids(n_clusters=self.sample_size).fit(x_f)
+            X = cluster.cluster_centers_[:, :-1]
        
         return X
             

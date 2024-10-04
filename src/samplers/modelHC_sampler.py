@@ -13,7 +13,8 @@ from goal_functions import goal_function
 
 class modelHCSampler:
     
-    def __init__(self, model, sample_size, lb, ub, algorithm, function='uncertainty', x_sampled=[], beta=1):
+    def __init__(self, model, sample_size, 
+                 lb, ub, algorithm, function='uncertainty', x_sampled=[], beta=1):
         
         self.model = model
         self.sample_size = sample_size
@@ -24,34 +25,14 @@ class modelHCSampler:
         self.x_sampled = x_sampled
         self.beta = beta
         
-    def generate_unique_points(self, initial_points, lower_bound, upper_bound, num_points):
-        new_points = []
-        initial_points_set = set(map(tuple, initial_points))
-    
-        while len(new_points) < num_points:
-            point = np.random.uniform(lower_bound, upper_bound)
-            point_tuple = tuple(point)
-            
-            if point_tuple not in initial_points_set:
-                new_points.append(point)
-                initial_points_set.add(point_tuple)
-    
-        return np.array(new_points)
-
     def train_calssifier(self):
         
         sampled_points = self.x_sampled
         # new_points = qmc.scale(qmc.LatinHypercube(d=len(self.lb)).random(n=len(sampled_points)), self.lb, self.ub)
-        
-                
         new_points = np.random.uniform(self.lb, self.ub, size=(len(sampled_points), len(self.lb)))
-        
-        # new_points = self.generate_unique_points(sampled_points, self.lb, self.ub, len(sampled_points))
-        
+    
         ones = np.ones(len(sampled_points))
         zeros = np.zeros(len(sampled_points))
-               
-
         data_ones = np.hstack((sampled_points, ones.reshape(-1,1)))
         data_zeros = np.hstack((new_points, zeros.reshape(-1,1)))
         
@@ -60,7 +41,6 @@ class modelHCSampler:
         
         # classifier = RandomForestClassifier().fit(data[:, :-1], data[:,-1])
         classifier = xgb.XGBClassifier().fit(data[:, :-1], data[:,-1])
-
         
         return classifier
 
@@ -70,76 +50,66 @@ class modelHCSampler:
             classifier = self.train_calssifier()
         else: classifier = None
         
-
         X = []
         f = []
         samples = qmc.scale(qmc.LatinHypercube(d=len(self.lb)).random(n=self.sample_size), self.lb, self.ub)
-        
-        print (self.function)
-        # print (x)
-        
-        import sys
-        sys.exit()
-        
+    
         for s in samples:
-
+    
             def get_values(x):
-      
+                
                 if classifier != None:
-                    prediction = classifier.predict_proba(x)
-                    
+                    prediction = classifier.predict_proba([x])
                     if prediction[0,0] < 0.5:
                         value = 0
                         p = 0
+                    else:
+                        p = []
+                        if len(self.x_sampled) > 0:
+                            for convbest in self.x_sampled:
+                                val = np.linalg.norm(convbest - x)
+                                p.append((1/val)**2)  
                         
-                # p = []
-                # if len(self.x_sampled) > 0:
-                #     for convbest in self.x_sampled:
-                #         val = np.linalg.norm(convbest - x)
-                #         p.append((1/val)**2)  
-                
-                else:        
-                    preds = np.concatenate(np.array([model.predict([x]) for model in self.model.estimators_]))
-
-                    value = goal_function(method=self.acqfunction).calculate(preds)
-   
-                
+                        preds = np.concatenate(np.array([model.predict([x]) for model in self.model.estimators_]))
+    
+                        value = goal_function(method=self.function).calculate(preds)
+           
                 return value + value*np.sum(p)
 
-                 # xs = []
-                 # fs = []
-                 
-                 # for i in range(80):
-                 #     dim = len(self.lb)
-                 #     min_f = np.inf
-                 #     min_x = None
-                     
-                     
-                 #     x0 = np.random.uniform(self.lb, self.ub, (1, dim))[0]
-                 #     bounds = np.array([[self.lb[i], self.ub[i]] for i in range(len(self.lb))])
-                 #     res = minimize(get_values, x0=x0, bounds=bounds, method='L-BFGS-B')
-                 #     if res.fun < min_f:
-                 #         min_f = res.fun
-                 #         min_x = res.x
-                     
-                 #     xs.append(min_x)
-                 #     fs.append(min_f)
-                     
-                 # min_f_index = np.argmin(fs)
-                 # min_f = fs[min_f_index]
-                 # min_x = xs[min_f_index]
+            # xs = []
+            # fs = []
+            
+            # for i in range(80):
+            #     dim = len(self.lb)
+            #     min_f = np.inf
+            #     min_x = None
+                
+                
+            #     x0 = np.random.uniform(self.lb, self.ub, (1, dim))[0]
+            #     bounds = np.array([[self.lb[i], self.ub[i]] for i in range(len(self.lb))])
+            #     res = minimize(get_values, x0=x0, bounds=bounds, method='L-BFGS-B')
+            #     if res.fun < min_f:
+            #         min_f = res.fun
+            #         min_x = res.x
+                
+            #     xs.append(min_x)
+            #     fs.append(min_f)
+                
+            # min_f_index = np.argmin(fs)
+            # min_f = fs[min_f_index]
+            # min_x = xs[min_f_index]
                                 
-                optimizer = PSO()
-                optimizer.evaluation_function = get_values 
-                optimizer.lb = self.lb
-                optimizer.ub = self.ub
-                optimizer.max_evaluations = 30
-                result = optimizer.optimize()
-                min_x = result.X 
-                min_f = result.f
-                         
-                X.append(min_x)
-                f.append(min_f)
+            optimizer = PSO()
+            optimizer.evaluation_function = get_values 
+            optimizer.lb = self.lb
+            optimizer.ub = self.ub
+            optimizer.max_evaluations = 60
+            result = optimizer.optimize()
+            min_x = result.X 
+            min_f = result.f
+                     
+            X.append(min_x)
+            f.append(min_f)
                 
                 
         # print (f)
@@ -159,7 +129,6 @@ class modelHCSampler:
         X = np.array(X)
         f = np.array(f)
         
-                       
         return X
             
             
