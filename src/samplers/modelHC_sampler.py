@@ -62,19 +62,19 @@ class modelHCSampler:
                     prediction = classifier.predict_proba([x])
                     if prediction[0,0] < 0.5:
                         value = 0
-                        p = 0
+                        #p = 0
                     else:
-                        p = []
-                        if len(self.x_sampled) > 0:
-                            for convbest in self.x_sampled:
-                                val = np.linalg.norm(convbest - x)
-                                p.append((1/val)**2)  
+                        # p = []
+                        # if len(self.x_sampled) > 0:
+                        #     for convbest in self.x_sampled:
+                        #         val = np.linalg.norm(convbest - x)
+                        #         p.append((1/val)**2)  
                         
                         preds = np.concatenate(np.array([model.predict([x]) for model in self.model.estimators_]))
     
                         value = goal_function(method=self.function).calculate(preds)
            
-                return value + value*np.sum(p)
+                return value #+ value*np.sum(p)
 
             # xs = []
             # fs = []

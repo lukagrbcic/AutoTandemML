@@ -31,11 +31,11 @@ class modelLHSSampler:
         for s in samples:
             def get_values(x):
                 
-                p = []
-                if len(self.x_sampled) > 0:
-                    for convbest in self.x_sampled:
-                        val = np.linalg.norm(convbest - x)
-                        p.append((1/val)**2)  
+                # p = []
+                # if len(self.x_sampled) > 0:
+                #     for convbest in self.x_sampled:
+                #         val = np.linalg.norm(convbest - x)
+                #         p.append((1/val)**2)  
                         
                 preds = np.concatenate(np.array([model.predict([x]) for model in self.model.estimators_]))
                                     

@@ -25,17 +25,17 @@ class modelSampler:
         for i in range(self.sample_size):
             
             def get_values(x):               
-                p = []
-                if len(self.x_sampled) > 0:
-                    for convbest in self.x_sampled:
-                        val = np.linalg.norm(convbest - x)
-                        p.append((1/val)**2)  
+                # p = []
+                # if len(self.x_sampled) > 0:
+                #     for convbest in self.x_sampled:
+                #         val = np.linalg.norm(convbest - x)
+                #         p.append((1/val)**2)  
                         
                 preds = np.concatenate(np.array([model.predict([x]) for model in self.model.estimators_]))
                 
                 value = goal_function(method=self.function).calculate(preds)
                 
-                return value + value*np.sum(p)
+                return value #+ value*np.sum(p)
             
  
             # xs = []
