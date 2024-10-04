@@ -33,12 +33,13 @@ class goal_function:
         
     def calculate(self, preds):
         
+        
         if self.method == 'uncertainty':
             
             value = self.uncertainty(preds)
         
         if self.method == 'entropy':
-            
+
             value = self.entropy(preds)
         
         if self.method == 'mixed':
