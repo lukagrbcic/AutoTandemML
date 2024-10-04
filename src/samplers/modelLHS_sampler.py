@@ -1,29 +1,33 @@
 import numpy as np
 from scipy.optimize import minimize
+from scipy.stats import qmc
 from indago import PSO
+import random
+from sklearn.cluster import KMeans
+from sklearn_extra.cluster import KMedoids
+
 from goal_functions import goal_function
 
 
-
-class modelSampler:
-    
+class modelLHSSampler:
     def __init__(self, model, sample_size, lb, ub, algorithm, function='uncertainty', x_sampled=[]):
+
         
         self.model = model
         self.sample_size = sample_size
         self.lb = lb
         self.ub = ub
         self.algorithm = algorithm
-        self.function = function     
+        self.function = function
         self.x_sampled = x_sampled
-        # self.lambda_ = lambda_
-
-    def get_samples(self):
+        
+    def get_unc_samples(self):
 
         X = []
         f = []
-        for i in range(self.sample_size):
-            
+        samples = qmc.scale(qmc.LatinHypercube(d=len(self.lb)).random(n=3*self.sample_size), self.lb, self.ub)
+
+        for s in samples:
             def get_values(x):
                 
                 p = []
@@ -46,50 +50,39 @@ class modelSampler:
                     
                     value = goal_function(method=self.function).calculate(preds)
                 
-                
-                # print (value, value*np.sum(p))
-                
                 return value + value*np.sum(p)
+
             
- 
-            # xs = []
-            # fs = []
-            
-            # for i in range(80):
-            #     dim = len(self.lb)
-            #     min_f = np.inf
-            #     min_x = None
-                
-                
-            #     x0 = np.random.uniform(self.lb, self.ub, (1, dim))[0]
-            #     bounds = np.array([[self.lb[i], self.ub[i]] for i in range(len(self.lb))])
-            #     res = minimize(get_values, x0=x0, bounds=bounds, method='L-BFGS-B')
-            #     if res.fun < min_f:
-            #         min_f = res.fun
-            #         min_x = res.x
-                
-            #     xs.append(min_x)
-            #     fs.append(min_f)
-                
-            # min_f_index = np.argmin(fs)
-            # min_f = fs[min_f_index]
-            # min_x = xs[min_f_index]
+            # x0 = np.random.normal(loc=s, scale=0.2*s, size=(3, np.shape(samples)[1]))
+            # x0 = np.clip(x0, self.lb, self.ub)
                            
-            optimizer = PSO()
-            optimizer.evaluation_function = get_values 
-            optimizer.lb = self.lb
-            optimizer.ub = self.ub
-            optimizer.max_evaluations = 30
-            result = optimizer.optimize()
-            min_x = result.X 
-            min_f = result.f
-                            
+            optim = PSO()
+            # optim.params['swarm_size'] = 3
+            # optim.params['cognitive_rate'] = 2
+            # optim.params['social_rate'] = 1
+            optim.X0 = s
+            optim.max_evaluations = 30 #6*len(s)
+            optim.lb = self.lb
+            optim.ub = self.ub
+            optim.evaluation_function = get_values 
+            run = optim.optimize()
+            min_x = run.X
+            min_f = run.f    
+                
             X.append(min_x)
             f.append(min_f)
-                                
-        X = np.array(X)
+            
+        # f = np.concatenate(f)
+        # X = np.array(X)
+                    
         f = np.array(f)
-    
+        X = np.array(X)
+        
+        X_f = np.hstack((X, f.reshape(-1,1)))
+        cluster = KMeans(n_clusters=self.sample_size, n_init='auto').fit(X_f)
+        X = cluster.cluster_centers_[:, :-1]
+        
+                       
         return X
             
             
