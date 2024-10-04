@@ -41,7 +41,7 @@ class modelLHSSampler:
                                     
                 value = goal_function(method=self.function).calculate(preds)
                 
-                return value + value*np.sum(p)
+                return value #+ value*np.sum(p)
 
             
             # x0 = np.random.normal(loc=s, scale=0.2*s, size=(3, np.shape(samples)[1]))
