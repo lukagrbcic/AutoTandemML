@@ -1,8 +1,8 @@
 import lhs_sampler as lhs
 import random_sampler as rnd
 import model_sampler as ms
-import uncertainty_LHS_PSO_sampler as unc_lhs_pso
-import uncertainty_LHS_PSO_HC_sampler as unc_hc
+import modelHC_sampler as mhcs
+import modelLHS_sampler as mlhs
 
 
 
@@ -26,14 +26,22 @@ class samplers:
         elif self.sampler == 'random':
             X = rnd.randomSampler(self.batch_size, self.lb, self.ub).gen_random_samples()
         
-        elif 'model' in self.sampler:
-            X = ms.modelSampler(self.model, self.batch_size, self.lb, self.ub, self.algorithm[0], self.sampler.split('_')[-1]).get_samples()
+        elif self.sampler.split('_')[0] == 'model':
+            X = ms.modelSampler(self.model, self.batch_size, 
+                                self.lb, self.ub, self.algorithm[0],
+                                self.sampler.split('_')[-1], self.sampled_points).get_samples()
         
-        elif self.sampler == 'unc_lhs_pso':
-            X = unc_lhs_pso.uncertaintyLHSPSOSampler(self.model, self.batch_size, self.lb, self.ub, self.algorithm[0]).get_unc_samples()
+        elif self.sampler.split('_')[0] == 'modelHC':
+            X = mhcs.modelHCSampler(self.model, self.batch_size, 
+                                                     self.lb, self.ub, self.algorithm[0], 
+                                                     function=self.sampler.split('_')[-1], 
+                                                     x_sampled=self.sampled_points).get_samples()
+            
                     
-        elif self.sampler == 'unc_hc':
-            X = unc_hc.uncertaintyHCSampler(self.model, self.batch_size, self.lb, self.ub, self.algorithm[0], self.sampled_points).get_unc_samples()
+        elif self.sampler.split('_')[0] == 'modelLHS':
+            X = mlhs.modelLHSSampler(self.model, self.batch_size, self.lb, self.ub, self.algorithm[0], 
+                                     self.sampler.split('_')[-1],
+                                     self.sampled_points).get_samples()
 
         return X
         
