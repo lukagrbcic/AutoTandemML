@@ -73,9 +73,14 @@ class modelLHSSampler:
             
       
         f = np.array(f)
-        X = np.array(X)
-        
+        X = np.array(X)       
         X = X[np.argsort(f)[:self.sample_size]]
+       
+        # x_f = np.hstack((X, f.reshape(-1,1)))
+        # cluster = KMedoids(n_clusters=self.sample_size).fit(x_f)
+        # X = cluster[:, :-1]
+       
+        
        
         return X
             
