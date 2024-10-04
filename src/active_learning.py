@@ -34,7 +34,11 @@ class activeLearner:
         
     def model_update(self, X, y):
         
-        self.model.fit(X, y)
+        
+        
+        # self.model = self.algorithm[1].fit(X, y)
+        
+        self.model.fit(X,y)
 
         return self.model
     
@@ -56,11 +60,11 @@ class activeLearner:
         
         return X
     
-    def append_value(self, array):
+    # def append_value(self, array):
         
-        while len(array) < self.max_samples:
-            array.append(array[-1])
-        return array
+    #     while len(array) < self.max_samples:
+    #         array.append(array[-1])
+    #     return array
     
     def loop(self):
         
@@ -68,9 +72,10 @@ class activeLearner:
         
         if self.verbose > 0:
             print ('Initial hyperparameter search!')
-            self.model_optimization(X, y)
+        self.model_optimization(X, y)
                 
         self.model = self.model_update(X, y)
+        
         rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape = ca.error(self.model, self.test_data).test_set()
         
     
