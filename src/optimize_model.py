@@ -9,7 +9,7 @@ import numpy as np
 
 class optimize:
     
-    def __init__(self, algorithm, X, y, n_iter=100, cv=3, ensemble_size=5):
+    def __init__(self, algorithm, X, y, n_iter=100, cv=3, ensemble_size=3):
         
         self.algorithm = algorithm
         self.X = X
