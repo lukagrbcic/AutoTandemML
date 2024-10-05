@@ -34,10 +34,10 @@ test_data = (test_input, test_output)
 init_size=10
 batch_size=10
 max_samples=200
-n_repeats=1
-sampler='model_entropy'
+n_repeats=3
+# sampler='model_entropy'
 # sampler='modelLHS_quantile'
-# sampler='modelHC_entropy'
+sampler='modelHC_entropy'
 
 algorithm = ('rf', RandomForestRegressor())
 
@@ -57,15 +57,15 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 ensemble = []
 
-# for i in range(50):
-#     ensemble.append(make_pipeline(StandardScaler(), MLPRegressor(hidden_layer_sizes=(100, 200, 100), 
-#                                                                  random_state=random.randint(10, 250))))
+for i in range(50):
+    ensemble.append(make_pipeline(StandardScaler(), MLPRegressor(hidden_layer_sizes=(100, 200, 100), 
+                                                                  random_state=random.randint(10, 250))))
 
 # for i in range(50):
 #     ensemble.append(make_pipeline(MinMaxScaler(), MLPRegressor(hidden_layer_sizes=(50, 100, 50, 20), 
-#                                                                  random_state=random.randint(10, 250))))
+#                                                                   random_state=random.randint(10, 250))))
 
-# algorithm = ('mlp_ensemble_50', EnsembleRegressor(ensemble))           
+algorithm = ('mlp_ensemble_50', EnsembleRegressor(ensemble))           
 
 
 # ensemble = []
