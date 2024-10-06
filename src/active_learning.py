@@ -22,7 +22,7 @@ class activeLearner:
                        initial_hyperparameter_search=False,
                        init_samples=[], 
                        verbose=1,
-                       return_model=False):
+                       return_model=False, return_hf_samples=False):
         
         self.function = function
         self.lb = lb
@@ -38,6 +38,7 @@ class activeLearner:
         self.init_samples = init_samples
         self.verbose = verbose
         self.return_model = return_model
+        self.return_hf_samples = return_hf_samples
         
     def model_update(self, X, y):
                 
@@ -167,7 +168,7 @@ class activeLearner:
             print ('Size', len(X))
         
 
-        return r2_, mape_, rmse_, range_nrmse_, std_nrmse_, max_rmse_, max_range_nrmse_, nmax_ae_, size, self.model
+        return r2_, mape_, rmse_, range_nrmse_, std_nrmse_, max_rmse_, max_range_nrmse_, nmax_ae_, size, self.model, X, y
     
     def run(self, n_repeats=1):
         
@@ -188,7 +189,7 @@ class activeLearner:
                 print ('Starting run ', i)
                 print ('====================')
             
-            r2_, mape_, rmse_, range_nrmse_, std_nrmse_, max_rmse_, max_range_nrmse_, nmax_ae_, size, self.model = self.loop()
+            r2_, mape_, rmse_, range_nrmse_, std_nrmse_, max_rmse_, max_range_nrmse_, nmax_ae_, size, self.model, X, y = self.loop()
             
             r2_array.append(r2_)
             mape_array.append(mape_)
@@ -224,8 +225,8 @@ class activeLearner:
                     'n_runs': n_repeats,
                     'batch_size': self.batch_size}
         
-        if self.return_model == True:
-            return results, self.model 
+        if self.return_model == True and self.return_hf_samples == True:
+            return results, self.model, X, y 
         else:
             return results
             
