@@ -4,6 +4,8 @@ import model_sampler as ms
 import modelHC_sampler as mhcs
 import modelLHS_sampler as mlhs
 
+import numpy as np
+
 
 
 class samplers:
@@ -21,28 +23,60 @@ class samplers:
     def generate_samples(self, seed=None):
         
         if self.sampler == 'lhs':
+            
             X = lhs.lhsSampler(self.batch_size, self.lb, self.ub).gen_LHS_samples(seed)
             
         elif self.sampler == 'random':
+            
             X = rnd.randomSampler(self.batch_size, self.lb, self.ub).gen_random_samples()
         
         elif self.sampler.split('_')[0] == 'model':
+            
             X = ms.modelSampler(self.model, self.batch_size, 
                                 self.lb, self.ub, self.algorithm[0],
                                 self.sampler.split('_')[-1], self.sampled_points).get_samples()
         
         elif self.sampler.split('_')[0] == 'modelHC':
-            X = mhcs.modelHCSampler(self.model, self.batch_size, 
-                                                     self.lb, self.ub, self.algorithm[0], 
-                                                     function=self.sampler.split('_')[-1], 
-                                                     x_sampled=self.sampled_points).get_samples()
             
-                    
+            X = mhcs.modelHCSampler(self.model, self.batch_size, 
+                                    self.lb, self.ub, self.algorithm[0], 
+                                    function=self.sampler.split('_')[-1], 
+                                    x_sampled=self.sampled_points).get_samples()
+            
         elif self.sampler.split('_')[0] == 'modelLHS':
+            
             X = mlhs.modelLHSSampler(self.model, self.batch_size, self.lb, self.ub, self.algorithm[0], 
                                      self.sampler.split('_')[-1],
                                      self.sampled_points).get_samples()
-
+            
+        elif self.sampler.split('_')[0] == 'ensemble':
+            
+            X_1 = ms.modelSampler(self.model, self.batch_size, 
+                                  self.lb, self.ub, self.algorithm[0],
+                                  'quantile', self.sampled_points).get_samples()
+            
+            X_2 = mhcs.modelHCSampler(self.model, self.batch_size, 
+                                    self.lb, self.ub, self.algorithm[0], 
+                                    function='quantile', 
+                                    x_sampled=self.sampled_points).get_samples()
+            
+            X_3 = mlhs.modelLHSSampler(self.model, self.batch_size, 
+                                       self.lb, self.ub, self.algorithm[0], 
+                                     'quantile',
+                                     self.sampled_points).get_samples()
+            
+            # X_2 = ms.modelSampler(self.model, self.batch_size, 
+            #                       self.lb, self.ub, self.algorithm[0],
+            #                       'entropy', self.sampled_points).get_samples()
+            
+            # X_3 = ms.modelSampler(self.model, self.batch_size, 
+            #                       self.lb, self.ub, self.algorithm[0],
+            #                       'quantile', self.sampled_points).get_samples()
+            
+            size = int(self.batch_size/3)
+            
+            X = np.vstack((X_1[:size, :], X_2[:size, :], X_3[:size, :]))
+        
         return X
         
     
