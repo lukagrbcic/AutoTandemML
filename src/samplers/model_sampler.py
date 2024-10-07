@@ -35,7 +35,7 @@ class modelSampler:
                 
                 value = goal_function(method=self.function).calculate(preds)
                 
-                return value + 100*value*np.sum(p)
+                return value #+ 100*value*np.sum(p)
             
  
             # xs = []
@@ -75,6 +75,8 @@ class modelSampler:
                                 
         X = np.array(X)
         f = np.array(f)
+        
+        X = X[np.argsort(f)]
     
         return X
             
