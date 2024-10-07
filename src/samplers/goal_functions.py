@@ -19,12 +19,10 @@ class goal_function:
         q98 = np.percentile(preds, 0.98, axis=0)
         
         diff = np.abs(q98 - q02)
-    
         total_uncertainty = -np.sum(diff)
         
         return total_uncertainty 
 
-      
     def entropy(self, preds):
         
         mu = np.mean(preds, axis=0)  
@@ -33,7 +31,6 @@ class goal_function:
         total_entropy = -np.sum(entropy)
         
         return total_entropy
-    
     
     def mixed(self, preds):
         
@@ -44,25 +41,22 @@ class goal_function:
         
     def calculate(self, preds):
         
-        
         if self.method == 'uncertainty':
             
             value = self.uncertainty(preds)
 
-        
         if self.method == 'quantile':
             
             value = self.uncertainty_quantile(preds)
         
-        
         if self.method == 'entropy':
-
+            
             value = self.entropy(preds)
         
         if self.method == 'mixed':
             
             value = self.mixed(preds)
-        
+            
         return value
         
         
