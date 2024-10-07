@@ -51,27 +51,27 @@ class samplers:
             
         elif self.sampler.split('_')[0] == 'ensemble':
             
-            X_1 = ms.modelSampler(self.model, self.batch_size, 
+            X_1 = mhcs.modelHCSampler(self.model, self.batch_size, 
                                   self.lb, self.ub, self.algorithm[0],
-                                  'quantile', self.sampled_points).get_samples()
+                                  'uncertainty', self.sampled_points).get_samples()
+            
+            # X_2 = mhcs.modelHCSampler(self.model, self.batch_size, 
+            #                         self.lb, self.ub, self.algorithm[0], 
+            #                         function='quantile', 
+            #                         x_sampled=self.sampled_points).get_samples()
+            
+            # X_3 = mlhs.modelLHSSampler(self.model, self.batch_size, 
+            #                            self.lb, self.ub, self.algorithm[0], 
+            #                          'quantile',
+            #                          self.sampled_points).get_samples()
             
             X_2 = mhcs.modelHCSampler(self.model, self.batch_size, 
-                                    self.lb, self.ub, self.algorithm[0], 
-                                    function='quantile', 
-                                    x_sampled=self.sampled_points).get_samples()
+                                  self.lb, self.ub, self.algorithm[0],
+                                  'entropy', self.sampled_points).get_samples()
             
-            X_3 = mlhs.modelLHSSampler(self.model, self.batch_size, 
-                                       self.lb, self.ub, self.algorithm[0], 
-                                     'quantile',
-                                     self.sampled_points).get_samples()
-            
-            # X_2 = ms.modelSampler(self.model, self.batch_size, 
-            #                       self.lb, self.ub, self.algorithm[0],
-            #                       'entropy', self.sampled_points).get_samples()
-            
-            # X_3 = ms.modelSampler(self.model, self.batch_size, 
-            #                       self.lb, self.ub, self.algorithm[0],
-            #                       'quantile', self.sampled_points).get_samples()
+            X_3 = mhcs.modelHCSampler(self.model, self.batch_size, 
+                                  self.lb, self.ub, self.algorithm[0],
+                                  'quantile', self.sampled_points).get_samples()
             
             size = int(self.batch_size/3)
             
