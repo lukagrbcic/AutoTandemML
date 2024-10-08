@@ -3,13 +3,19 @@ from sklearn.model_selection import RandomizedSearchCV
 from scipy.stats import randint, uniform
 from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
+
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
+from sklearn.pipeline import make_pipeline, Pipeline
+from sklearn.neural_network import MLPRegressor
 from ensemble_regressor import EnsembleRegressor
+
+
 import pandas as pd
 import numpy as np
 
 class optimize:
     
-    def __init__(self, algorithm, X, y, n_iter=100, cv=3, ensemble_size=3):
+    def __init__(self, algorithm, X, y, n_iter=500, cv=3, ensemble_size=50):
         
         self.algorithm = algorithm
         self.X = X
@@ -48,6 +54,17 @@ class optimize:
                 # 'reg_lambda': uniform(0, 1)                 
             }
             
+        if 'mlp_ensemble' in self.algorithm[0]:
+            
+            param_dist = {
+                'scaler': [StandardScaler(), MinMaxScaler(), RobustScaler(), None],
+                'mlp__hidden_layer_sizes': [(50,), (100,), (100, 50), (50, 25), (100, 50, 25)],
+                'mlp__activation': ['tanh', 'relu'],
+                'mlp__solver': ['sgd', 'adam'],
+                'mlp__alpha': [0.0001, 0.001, 0.01],
+                'mlp__learning_rate': ['constant', 'adaptive'],
+            }
+
           
         return param_dist
             
@@ -96,12 +113,17 @@ class optimize:
         
         elif self.algorithm[0] =='xgb':
             
-            self.ensemble_size = self.ensemble_size
+            # self.ensemble_size = self.ensemble_size
             
             sorted_results = self.search(XGBRegressor())
             
             top_n_results = sorted_results.head(2*self.ensemble_size)
+
+            
             parameters_list = [i for i in top_n_results['params']]
+      
+            
+            
             parameters = np.random.choice(parameters_list, size=self.ensemble_size, replace=False)
             ensemble = []
             for i in range(len(parameters)):
@@ -117,7 +139,35 @@ class optimize:
                                           # reg_lambda=parameters[i]['reg_lambda']))
                             
             model = EnsembleRegressor(ensemble)
-        
+            
+        elif self.algorithm[0] == 'mlp_ensemble':
+            
+   
+            initial_model = pipeline = Pipeline([
+                    ('scaler', StandardScaler()),  # Placeholder, will be overridden by param_dist
+                    ('mlp', MLPRegressor())
+                ])
+            
+            sorted_results = self.search(initial_model)
+            
+            top_n_results = sorted_results.head(2*self.ensemble_size)
+                        
+            parameters_list = [i for i in top_n_results['params']]
+            
+            parameters = np.random.choice(parameters_list, size=self.ensemble_size, replace=False)
+            ensemble = []
+            for i in range(len(parameters)):
+                ensemble.append(make_pipeline(parameters[i]['scaler'], 
+                                              MLPRegressor(hidden_layer_sizes=parameters[i]['mlp__hidden_layer_sizes'],
+                                                           activation=parameters[i]['mlp__activation'],
+                                                           solver=parameters[i]['mlp__solver'],
+                                                           alpha=parameters[i]['mlp__alpha'],
+                                                           learning_rate=parameters[i]['mlp__learning_rate'])))
+            
+            
+         
+            
+            model = EnsembleRegressor(ensemble)
             
         return model
 
