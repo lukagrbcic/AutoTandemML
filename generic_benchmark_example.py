@@ -31,39 +31,39 @@ test_input = np.load(f'../InverseBench/test_data/{bench}_data/input_test_data.np
 test_output = np.load(f'../InverseBench/test_data/{bench}_data/output_test_data.npy')
 test_data = (test_input, test_output)
 
-init_size=10
+init_size=20
 batch_size=10
 max_samples=200
-n_repeats=5
-# sampler='model_quantile'
-sampler='ensemble'
+n_repeats=10
+sampler='model_entropy'
+# sampler='ensemble'
 # sampler='modelLHS_quantile'
 # sampler='modelHC_entropy'
 
 # algorithm = ('rf2', RandomForestRegressor())
 
 # ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in [[0.1, 10], [0.5,50], [0.8, 75], [1,100], [10, 125]]]             
-ensemble = []
-for i in range(3):
-    ensemble.append(XGBRegressor(n_estimators=np.random.randint(10, 250), reg_lambda=np.random.uniform(0.01, 10)))
+# ensemble = []
+# for i in range(3):
+#     ensemble.append(XGBRegressor(n_estimators=np.random.randint(10, 250), reg_lambda=np.random.uniform(0.01, 10)))
 
 
-algorithm = ('xgb_ensemble_3_2_HC_unc', EnsembleRegressor(ensemble))           
+# algorithm = ('xgb', EnsembleRegressor(ensemble))           
 
 from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
-# ensemble = []
-# for i in range(20):
-#     ensemble.append(make_pipeline(StandardScaler(), MLPRegressor(hidden_layer_sizes=(100, 200, 100), 
+ensemble = []
+for i in range(20):
+    ensemble.append(make_pipeline(StandardScaler(), MLPRegressor(hidden_layer_sizes=(100, 200, 100), 
+                                                                  random_state=random.randint(10, 250))))
+
+# for i in range(50):
+#     ensemble.append(make_pipeline(StandardScaler(), MLPRegressor(hidden_layer_sizes=(50, 100, 50, 20), 
 #                                                                   random_state=random.randint(10, 250))))
 
-# # for i in range(50):
-# #     ensemble.append(make_pipeline(StandardScaler(), MLPRegressor(hidden_layer_sizes=(50, 100, 50, 20), 
-# #                                                                   random_state=random.randint(10, 250))))
-
-# algorithm = ('mlp_ensemble_20_XGB', EnsembleRegressor(ensemble))           
+algorithm = ('mlp_ensemble', EnsembleRegressor(ensemble))           
 # 
 # ensemble = []
 # for i in range(20):
@@ -80,7 +80,7 @@ run = al.activeLearner(f, lb, ub,
                         init_size, batch_size,
                         max_samples, sampler,
                         algorithm,
-                        test_data, verbose=1)
+                        test_data, verbose=1,initial_hyperparameter_search=True)
 
 
 file_path = f'./{bench}_results/{sampler}_{max_samples}_{batch_size}_{n_repeats}_{algorithm[0]}.npy'
@@ -103,7 +103,7 @@ run = al.activeLearner(f, lb, ub,
                         init_size, batch_size,
                         max_samples, sampler,
                         algorithm,
-                        test_data, verbose=batch_size)
+                        test_data, verbose=batch_size, initial_hyperparameter_search=True)
 
 file_path = f'./{bench}_results/{sampler}_{max_samples}_{batch_size}_{n_repeats}_{algorithm[0]}.npy'
 
