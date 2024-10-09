@@ -12,6 +12,8 @@ from ensemble_regressor import EnsembleRegressor
 
 import pandas as pd
 import numpy as np
+import warnings
+warnings.filterwarnings("ignore")
 
 class optimize:
     
@@ -150,11 +152,11 @@ class optimize:
             
             sorted_results = self.search(initial_model)
             
-            top_n_results = sorted_results.head(2*self.ensemble_size)
+            top_n_results = sorted_results.head(self.ensemble_size)
                         
             parameters_list = [i for i in top_n_results['params']]
-            
-            parameters = np.random.choice(parameters_list, size=self.ensemble_size, replace=False)
+            parameters = parameters_list
+            # parameters = np.random.choice(parameters_list, size=self.ensemble_size, replace=False)
             ensemble = []
             for i in range(len(parameters)):
                 ensemble.append(make_pipeline(parameters[i]['scaler'], 

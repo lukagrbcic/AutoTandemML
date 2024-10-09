@@ -10,6 +10,8 @@ import check_accuracy as ca
 from generate_samples import samplers
 import optimize_model as opt
 from ensemble_regressor import EnsembleRegressor
+import warnings
+warnings.filterwarnings("ignore")
 
 
 class activeLearner:
