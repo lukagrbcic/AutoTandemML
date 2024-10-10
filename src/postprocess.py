@@ -43,7 +43,7 @@ class plot_results:
         self.results = results
     
         
-    def compare_metrics(self, std_show=True):
+    def compare_metrics(self, std_show=True, fname=None):
             
         colors = ['red', 'blue', 'orange', 'green', 'cyan', 'black', 'purple', 'gold', 'pink',
                   'magenta', 'lime', 'gray', 'maroon', 'navy', 'olive', 'teal', 'aqua', 'silver', 'chocolate' ]
@@ -99,7 +99,7 @@ class plot_results:
                     plt.tight_layout()
                     plt.title(f"batch size: {batch_size}, batches: {len(size)}")
                 
-                # plt.savefig(f'results/mean_rmse_{n_runs}_convergence_rate_std_{std_show}.pdf', dpi=400)   
+                    plt.savefig(f'{fname}_results/mean_rmse_{n_runs}_convergence_rate_{m}.pdf', dpi=400)   
 
         
 

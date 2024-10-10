@@ -33,9 +33,9 @@ test_data = (test_input, test_output)
 
 init_size=20
 batch_size=10
-max_samples=100
-n_repeats=5
-sampler='model_quantile'
+max_samples=200
+n_repeats=30
+sampler='model_entropy'
 # sampler='ensemble'
 # sampler='modelLHS_entropy'
 # sampler='modelHC_quantile'
@@ -119,4 +119,4 @@ else:
 
 results.append(results_rnd)
 
-pp.plot_results(results).compare_metrics()
+pp.plot_results(results).compare_metrics(fname=bench)
