@@ -19,11 +19,11 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-bench = 'scalar_diffusion'
-name = 'scalar_diffusion_benchmark'
-model = load_model(name).load()
-f = benchmark_functions(name, model)
-# f = benchmark_functions(name)
+bench = 'friedman'
+name = 'friedman_multioutput_benchmark'
+# model = load_model(name).load()
+# f = benchmark_functions(name, model)
+f = benchmark_functions(name)
 
 lb, ub = f.get_bounds()
 
@@ -33,12 +33,12 @@ test_data = (test_input, test_output)
 
 init_size=20
 batch_size=10
-max_samples=200
-n_repeats=10
-sampler='model_entropy'
+max_samples=100
+n_repeats=5
+sampler='model_quantile'
 # sampler='ensemble'
-# sampler='modelLHS_quantile'
-# sampler='modelHC_entropy'
+# sampler='modelLHS_entropy'
+# sampler='modelHC_quantile'
 
 # algorithm = ('rf2', RandomForestRegressor())
 
