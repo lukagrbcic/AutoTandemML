@@ -19,11 +19,11 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-bench = 'friedman'
-name = 'friedman_multioutput_benchmark'
-# model = load_model(name).load()
-# f = benchmark_functions(name, model)
-f = benchmark_functions(name)
+bench = 'airfoils'
+name = 'airfoil_benchmark'
+model = load_model(name).load()
+f = benchmark_functions(name, model)
+# f = benchmark_functions(name)
 
 lb, ub = f.get_bounds()
 
