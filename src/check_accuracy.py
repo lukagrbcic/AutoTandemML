@@ -93,9 +93,9 @@ class error:
         
         
         # """for rmse used in TNN paper"""
-        # paper_rmse = np.mean([np.sqrt(mean_squared_error(test_outputs[i], test_predictions[i])) for i in range(len(test_predictions))])
-        # paper_rmse_max = np.max([np.sqrt(mean_squared_error(test_outputs[i], test_predictions[i])) for i in range(len(test_predictions))])
+        paper_rmse = np.mean([np.sqrt(mean_squared_error(test_outputs[i], test_predictions[i])) for i in range(len(test_predictions))])
+        paper_rmse_max = np.max([np.sqrt(mean_squared_error(test_outputs[i], test_predictions[i])) for i in range(len(test_predictions))])
 
         
-        return rmse_, range_nrmse_*100, std_nrmse_, max_rmse_, max_range_nrmse_*100, r2_, nmax_ae_, mape_#, paper_rmse, paper_rmse_max
+        return rmse_, range_nrmse_*100, std_nrmse_, max_rmse_, max_range_nrmse_*100, r2_, nmax_ae_, mape_, paper_rmse, paper_rmse_max
         

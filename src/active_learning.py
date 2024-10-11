@@ -80,8 +80,8 @@ class activeLearner:
             
         self.model = self.model_update(X, y)
         
-       # rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape, paper_rmse, paper_rmse_max = ca.error(self.model, self.test_data).test_set()
-        rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape = ca.error(self.model, self.test_data).test_set()
+        rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape, paper_rmse, paper_rmse_max = ca.error(self.model, self.test_data).test_set()
+        # rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape = ca.error(self.model, self.test_data).test_set()
 
     
         size = [len(X)]
@@ -103,9 +103,9 @@ class activeLearner:
                     '\nMAX NRMSE:', max_range_nrmse, 
                     '\nR2:', r2,
                     '\nNMAX AE:',  nmax_ae,
-                    '\nMAPE:', mape)
-                    # '\nPAPER RMSE:', paper_rmse,
-                    # '\nPAPER RMSE MAX', paper_rmse_max)
+                    '\nMAPE:', mape,
+                    '\nPAPER RMSE:', paper_rmse,
+                    '\nPAPER RMSE MAX', paper_rmse_max)
                 
         while len(X) <= self.max_samples - self.init_size:
             
@@ -122,8 +122,8 @@ class activeLearner:
             self.model = self.model_update(X, y)
 
             
-            # rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape, paper_rmse, paper_rmse_max = ca.error(self.model, self.test_data).test_set()
-            rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape = ca.error(self.model, self.test_data).test_set()
+            rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape, paper_rmse, paper_rmse_max = ca.error(self.model, self.test_data).test_set()
+            # rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape = ca.error(self.model, self.test_data).test_set()
 
             if self.verbose > 0 and len(X)%self.verbose == 0:
                 print ('-----------------------------------')
@@ -133,9 +133,9 @@ class activeLearner:
                         '\nMAX NRMSE:', max_range_nrmse, 
                         '\nR2:', r2,
                         '\nNMAX AE:',  nmax_ae,
-                        '\nMAPE:', mape)
-                        # '\nPAPER RMSE:', paper_rmse,
-                        # '\mPAPER RMSE MAX', paper_rmse_max)
+                        '\nMAPE:', mape,
+                        '\nPAPER RMSE:', paper_rmse,
+                        '\mPAPER RMSE MAX', paper_rmse_max)
                 
                 print ('Size', len(X))
 
@@ -163,9 +163,9 @@ class activeLearner:
                     '\nMAX NRMSE:', max_range_nrmse, 
                     '\nR2:', r2,
                     '\nNMAX AE:',  nmax_ae,
-                    '\nMAPE:', mape)
-                    # '\nPAPER RMSE:', paper_rmse,
-                    # '\mPAPER RMSE MAX', paper_rmse_max)
+                    '\nMAPE:', mape,
+                    '\nPAPER RMSE:', paper_rmse,
+                    '\mPAPER RMSE MAX', paper_rmse_max)
             
             print ('Size', len(X))
         
