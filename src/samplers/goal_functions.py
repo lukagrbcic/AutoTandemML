@@ -36,8 +36,9 @@ class goal_function:
         
         total_uncertainty = self.uncertainty(preds) 
         total_entropy = self.entropy(preds)
+        total_quantile = self.uncertainty_quantile(preds)
         
-        return self.alfa*total_entropy + (1-self.alfa)*total_uncertainty        
+        return 0.33*total_entropy + 0.33*total_uncertainty + 0.33*total_quantile
         
     def calculate(self, preds):
         
