@@ -19,11 +19,11 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-bench = 'friedman'
-name = 'friedman_multioutput_benchmark'
-# model = load_model(name).load()
-# f = benchmark_functions(name, model)
-f = benchmark_functions(name)
+bench = 'airfoils'
+name = 'airfoil_benchmark'
+model = load_model(name).load()
+f = benchmark_functions(name, model)
+# f = benchmark_functions(name)
 
 lb, ub = f.get_bounds()
 
@@ -34,10 +34,12 @@ test_data = (test_input, test_output)
 init_size=20
 batch_size=10
 max_samples=200
-n_repeats=30
-sampler='model_entropy'
+n_repeats=10
+sampler='model_quantile'
+sampler='model_mixed'
+
 # sampler='ensemble'
-# sampler='modelLHS_entropy'
+# sampler='modelLHS_quantile'
 # sampler='modelHC_entropy'
 
 # algorithm = ('rf', RandomForestRegressor())
