@@ -59,14 +59,13 @@ class optimize:
         if 'mlp_ensemble' in self.algorithm[0]:
             
             param_dist = {
-                'scaler': [StandardScaler(), MinMaxScaler(), RobustScaler(), None],
+                'scaler': [StandardScaler(), MinMaxScaler(), None],
                 'mlp__hidden_layer_sizes': [(50,), (100,), (100, 50), (50, 25), (100, 50, 25)],
-                'mlp__activation': ['tanh', 'relu'],
+                'mlp__activation': ['relu', 'leaky_relu'],
                 'mlp__solver': ['sgd', 'adam'],
                 'mlp__alpha': [0.0001, 0.001, 0.01],
                 'mlp__learning_rate': ['constant', 'adaptive'],
             }
-
           
         return param_dist
             
@@ -146,7 +145,7 @@ class optimize:
         elif self.algorithm[0] == 'mlp_ensemble':
             
    
-            initial_model = pipeline = Pipeline([
+            initial_model = Pipeline([
                     ('scaler', StandardScaler()),  # Placeholder, will be overridden by param_dist
                     ('mlp', MLPRegressor())
                 ])
