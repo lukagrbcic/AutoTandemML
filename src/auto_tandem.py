@@ -21,7 +21,7 @@ class AutoTNN:
                  test_data,
                  lf_samples=0,
                  sampler='model_uncertainty',
-                 verbose=0):
+                 verbose=0, forward_model=None):
         
         self.f = f
         self.lb = lb
@@ -34,6 +34,7 @@ class AutoTNN:
         self.lf_samples = lf_samples
         self.sampler = sampler
         self.verbose = verbose
+        self.forward_model = forward_model
     
     
     def get_foward_model(self):
@@ -56,8 +57,8 @@ class AutoTNN:
     
     def get_inverse_model(self):
         
-        forward_model, X_hf, y_hf = self.get_foward_model()
-        X, y = self.get_lf_samples(forward_model)
+        self.forward_model, X_hf, y_hf = self.get_foward_model()
+        X, y = self.get_lf_samples(self.forward_model)
         
         
         
