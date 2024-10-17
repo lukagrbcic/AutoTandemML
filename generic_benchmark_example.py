@@ -19,8 +19,8 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-bench = 'airfoils'
-name = 'airfoil_benchmark'
+bench = 'inconel'
+name = 'inconel_benchmark'
 model = load_model(name).load()
 f = benchmark_functions(name, model)
 # f = benchmark_functions(name)
@@ -36,7 +36,7 @@ batch_size=10
 max_samples=200
 n_repeats=10
 sampler='model_quantile'
-sampler='model_mixed'
+# sampler='model_mixed'
 
 # sampler='ensemble'
 # sampler='modelLHS_quantile'
