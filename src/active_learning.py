@@ -107,7 +107,7 @@ class activeLearner:
                     '\nPAPER RMSE:', paper_rmse,
                     '\nPAPER RMSE MAX', paper_rmse_max)
                 
-        while len(X) <= self.max_samples - self.init_size:
+        while len(X) <= self.max_samples - self.batch_size:
             
             X_new = self.get_samples(sampled_points=X)
             y_new = self.function.evaluate(X_new)
