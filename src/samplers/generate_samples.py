@@ -53,7 +53,7 @@ class samplers:
             
         elif self.sampler.split('_')[0] == 'ensemble':
             
-            X_1 = mhcs.modelHCSampler(self.model, self.batch_size, 
+            X_1 = mhcs.modelSampler(self.model, self.batch_size, 
                                   self.lb, self.ub, self.algorithm[0],
                                   'uncertainty', self.sampled_points).get_samples()
             
@@ -67,11 +67,11 @@ class samplers:
             #                          'quantile',
             #                          self.sampled_points).get_samples()
             
-            X_2 = mhcs.modelHCSampler(self.model, self.batch_size, 
+            X_2 = mhcs.modelSampler(self.model, self.batch_size, 
                                   self.lb, self.ub, self.algorithm[0],
                                   'entropy', self.sampled_points).get_samples()
             
-            X_3 = mhcs.modelHCSampler(self.model, self.batch_size, 
+            X_3 = mhcs.modelSampler(self.model, self.batch_size, 
                                   self.lb, self.ub, self.algorithm[0],
                                   'quantile', self.sampled_points).get_samples()
             
@@ -81,15 +81,15 @@ class samplers:
 
         elif self.sampler.split('_')[0] == 'ensemble_cluster':
             
-            X_1 = mhcs.modelHCSampler(self.model, self.batch_size, 
+            X_1 = mhcs.modelSampler(self.model, self.batch_size, 
                                   self.lb, self.ub, self.algorithm[0],
                                   'uncertainty', self.sampled_points).get_samples()
             
-            X_2 = mhcs.modelHCSampler(self.model, self.batch_size, 
+            X_2 = mhcs.modelSampler(self.model, self.batch_size, 
                                   self.lb, self.ub, self.algorithm[0],
                                   'entropy', self.sampled_points).get_samples()
             
-            X_3 = mhcs.modelHCSampler(self.model, self.batch_size, 
+            X_3 = mhcs.modelSampler(self.model, self.batch_size, 
                                   self.lb, self.ub, self.algorithm[0],
                                   'quantile', self.sampled_points).get_samples()
             
