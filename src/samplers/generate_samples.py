@@ -5,6 +5,8 @@ import modelHC_sampler as mhcs
 import modelLHS_sampler as mlhs
 
 import numpy as np
+from sklearn.cluster import KMeans
+from sklearn_extra.cluster import KMedoids
 
 
 
@@ -76,7 +78,27 @@ class samplers:
             size = int(self.batch_size/3)
             
             X = np.vstack((X_1[:size, :], X_2[:size, :], X_3[:size, :]))
-        
+
+        elif self.sampler.split('_')[0] == 'ensemble_cluster':
+            
+            X_1 = mhcs.modelHCSampler(self.model, self.batch_size, 
+                                  self.lb, self.ub, self.algorithm[0],
+                                  'uncertainty', self.sampled_points).get_samples()
+            
+            X_2 = mhcs.modelHCSampler(self.model, self.batch_size, 
+                                  self.lb, self.ub, self.algorithm[0],
+                                  'entropy', self.sampled_points).get_samples()
+            
+            X_3 = mhcs.modelHCSampler(self.model, self.batch_size, 
+                                  self.lb, self.ub, self.algorithm[0],
+                                  'quantile', self.sampled_points).get_samples()
+            
+            
+            X_stacked = np.vstack((X_1, X_2, X_3))
+            
+            cluster = KMedoids(n_clusters=self.batch_size).fit(X_stacked)
+            X = cluster.cluster_centers_
+                
         return X
         
     
