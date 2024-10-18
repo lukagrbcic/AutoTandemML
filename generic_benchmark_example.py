@@ -19,8 +19,8 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-bench = 'inconel'
-name = 'inconel_benchmark'
+bench = 'airfoils'
+name = 'airfoil_benchmark'
 model = load_model(name).load()
 f = benchmark_functions(name, model)
 # f = benchmark_functions(name)
@@ -31,13 +31,12 @@ test_input = np.load(f'../InverseBench/test_data/{bench}_data/input_test_data.np
 test_output = np.load(f'../InverseBench/test_data/{bench}_data/output_test_data.npy')
 test_data = (test_input, test_output)
 
-init_size=20
-batch_size=10
-max_samples=200
+init_size=50
+batch_size=50
+max_samples=400
 n_repeats=10
-sampler='model_quantile'
+sampler='model_entropy'
 # sampler='model_mixed'
-
 # sampler='ensemble'
 # sampler='modelLHS_quantile'
 # sampler='modelHC_entropy'
@@ -58,8 +57,6 @@ ensemble = []
 for i in range(20):
     ensemble.append(make_pipeline(StandardScaler(), MLPRegressor(hidden_layer_sizes=(100, 200, 100), 
                                                                   random_state=random.randint(10, 250))))
-
-
 
 algorithm = ('mlp_ensemble', EnsembleRegressor(ensemble))           
 
@@ -110,6 +107,28 @@ else:
 
 results.append(results_exp)
 
+
+sampler='ensemble_cluster'
+run = al.activeLearner(f, lb, ub,
+                        init_size, batch_size,
+                        max_samples, sampler,
+                        algorithm,
+                        test_data, initial_hyperparameter_search=True)
+
+file_path = f'./{bench}_results/{sampler}_{max_samples}_{batch_size}_{n_repeats}_{algorithm[0]}.npy'
+
+if os.path.exists(file_path):
+    with open(file_path, 'r') as file:
+        results_exp = np.load(file_path, allow_pickle=True).item()
+
+else:
+    print("File does not exist, continuing.")
+
+    results_exp = run.run(n_repeats)
+    np.save(file_path, results_exp)
+
+
+results.append(results_exp)
 
 
 
