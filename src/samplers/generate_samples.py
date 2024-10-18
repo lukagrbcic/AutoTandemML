@@ -7,6 +7,7 @@ import modelLHS_sampler as mlhs
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn_extra.cluster import KMedoids
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 
 
@@ -53,7 +54,7 @@ class samplers:
             
         elif self.sampler.split('_')[0] == 'ensemble':
             
-            X_1 = mhcs.modelSampler(self.model, self.batch_size, 
+            X_1 = ms.modelSampler(self.model, self.batch_size, 
                                   self.lb, self.ub, self.algorithm[0],
                                   'uncertainty', self.sampled_points).get_samples()
             
@@ -67,11 +68,11 @@ class samplers:
             #                          'quantile',
             #                          self.sampled_points).get_samples()
             
-            X_2 = mhcs.modelSampler(self.model, self.batch_size, 
+            X_2 = ms.modelSampler(self.model, self.batch_size, 
                                   self.lb, self.ub, self.algorithm[0],
                                   'entropy', self.sampled_points).get_samples()
             
-            X_3 = mhcs.modelSampler(self.model, self.batch_size, 
+            X_3 = ms.modelSampler(self.model, self.batch_size, 
                                   self.lb, self.ub, self.algorithm[0],
                                   'quantile', self.sampled_points).get_samples()
             
@@ -81,23 +82,28 @@ class samplers:
 
         elif self.sampler.split('_')[0] == 'ensemble_cluster':
             
-            X_1 = mhcs.modelSampler(self.model, self.batch_size, 
+            X_1 = ms.modelSampler(self.model, self.batch_size, 
                                   self.lb, self.ub, self.algorithm[0],
                                   'uncertainty', self.sampled_points).get_samples()
             
-            X_2 = mhcs.modelSampler(self.model, self.batch_size, 
+            X_2 = ms.modelSampler(self.model, self.batch_size, 
                                   self.lb, self.ub, self.algorithm[0],
                                   'entropy', self.sampled_points).get_samples()
             
-            X_3 = mhcs.modelSampler(self.model, self.batch_size, 
+            X_3 = ms.modelSampler(self.model, self.batch_size, 
                                   self.lb, self.ub, self.algorithm[0],
                                   'quantile', self.sampled_points).get_samples()
             
+            scaler = StandardScaler()
             
             X_stacked = np.vstack((X_1, X_2, X_3))
             
-            cluster = KMedoids(n_clusters=self.batch_size).fit(X_stacked)
+            X_stacked = scaler.fit_transform(X_stacked)
+            
+            cluster = KMeans(n_clusters=self.batch_size, n_init='auto').fit(X_stacked)
             X = cluster.cluster_centers_
+            
+            X = scaler.inverse_transform(X)
                 
         return X
         
