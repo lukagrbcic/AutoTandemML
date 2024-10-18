@@ -53,7 +53,7 @@ class plot_results:
         size = len(self.results[0]['size'])
         batch_size = self.results[0]['batch_size']
         
-        metrics = ['r2', 'mape', 'rmse', 'range_nrmse', 'std_nrmse', 'max_rmse', 'max_range_nrmse', 'nmax_ae']
+        metrics = ['r2', 'mape', 'rmse', 'range_nrmse', 'std_nrmse', 'max_rmse', 'nmax_ae']
         
         
         for m in metrics:
