@@ -17,7 +17,7 @@ warnings.filterwarnings("ignore")
 
 class optimize:
     
-    def __init__(self, algorithm, X, y, n_iter=500, cv=3, ensemble_size=50):
+    def __init__(self, algorithm, X, y, n_iter=500, cv=3, ensemble_size=10):
         
         self.algorithm = algorithm
         self.X = X
@@ -60,7 +60,10 @@ class optimize:
             
             param_dist = {
                 'scaler': [StandardScaler(), MinMaxScaler(), None],
-                'mlp__hidden_layer_sizes': [(50,), (100,), (100, 50), (50, 25), (100, 50, 25)],
+                # 'mlp__hidden_layer_sizes': [(50,), (100,), (100, 50), (50, 25), (100, 50, 25)],
+                'mlp__hidden_layer_sizes': [(32,), (32, 64), (32, 64, 32), (64,), (64, 128,),
+                                            (64, 128, 64), (128,), (128, 256, 128)],
+
                 'mlp__activation': ['relu', 'leaky_relu'],
                 'mlp__solver': ['sgd', 'adam'],
                 'mlp__alpha': [0.0001, 0.001, 0.01],
@@ -80,6 +83,7 @@ class optimize:
             verbose=0, 
             n_jobs=-1,
             scoring='neg_mean_squared_error',
+            random_state=33,
             return_train_score=True
         )
 
