@@ -33,7 +33,7 @@ test_data = (test_input, test_output)
 
 init_size=20
 batch_size=10
-max_samples=200
+max_samples=300
 n_repeats=1
 sampler='model_entropy'
 
