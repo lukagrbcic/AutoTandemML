@@ -83,7 +83,7 @@ class optimize:
             verbose=0, 
             n_jobs=-1,
             scoring='neg_mean_squared_error',
-            random_state=33,
+            # random_state=33,
             return_train_score=True
         )
 
