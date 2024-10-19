@@ -28,7 +28,8 @@ y_train = np.load(f'../data/{material}_data/output_train_data.npy')#[:3000]
 
 class get_hyperparameters:
     def __init__(self, X, y, param_dist, n_iter=100, cv=3, 
-                 scoring='neg_root_mean_squared_error', n_jobs=1, verbose=2, criterion='mse', seed=11):
+                 scoring='neg_root_mean_squared_error', n_jobs=1,
+                 verbose=2, criterion='mse', seed=11, forward_model=None):
         
         self.X = X
         self.y = y
@@ -40,12 +41,15 @@ class get_hyperparameters:
         self.verbose = verbose
         self.criterion = criterion
         self.seed = seed
+        self.forward_model = forward_model
         
         
     def run(self):
         
         model = TorchDNNRegressor(input_size=np.shape(X_train)[1],
-                                  output_size=np.shape(y_train)[1], verbose=False, criterion=self.criterion)
+                                  output_size=np.shape(y_train)[1], 
+                                  verbose=False, criterion=self.criterion, 
+                                  forward_model=self.forward_model)
         
         random_search = RandomizedSearchCV(model, param_distributions=self.param_dist, 
                                             n_iter=self.n_iter, cv=self.cv, verbose=self.verbose, random_state=self.seed, 
