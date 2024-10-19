@@ -17,7 +17,7 @@ class TorchDNNRegressor(BaseEstimator, RegressorMixin):
                  epochs=10, batch_size=32, learning_rate=0.01, 
                  criterion='mse', optimizer='adam', validation_split=0.1,
                  early_stopping_patience=10, verbose=False, output_activation=None, 
-                 input_scaler=None, output_scaler=None):
+                 input_scaler=None, output_scaler=None, forward_model=None):
         
         self.model_type = model_type
         self.input_size = input_size
@@ -39,6 +39,7 @@ class TorchDNNRegressor(BaseEstimator, RegressorMixin):
         self.output_activation = output_activation
         self.input_scaler = input_scaler
         self.output_scaler = output_scaler
+        self.forward_model = forward_model
     
     
     def fit(self, X, y):
