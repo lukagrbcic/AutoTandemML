@@ -331,3 +331,7 @@ _results
 /inconel_results/model_entropy_400_50_3_rf.npy
 /inconel_results/model_entropy_980_196_1_rf.npy
 /inconel_results/random_400_50_3_rf.npy
+/friedman_results/ensemble_300_50_1_mlp_ensemble.npy
+/friedman_results/ensemble_cluster_300_50_1_mlp_ensemble.npy
+/friedman_results/model_entropy_300_50_1_mlp_ensemble.npy
+/friedman_results/random_300_50_1_mlp_ensemble.npy
