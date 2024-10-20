@@ -31,8 +31,8 @@ test_input = np.load(f'../InverseBench/test_data/{bench}_data/input_test_data.np
 test_output = np.load(f'../InverseBench/test_data/{bench}_data/output_test_data.npy')
 test_data = (test_input, test_output)
 
-init_size=20
-batch_size=10
+init_size=50
+batch_size=50
 max_samples=300
 n_repeats=1
 sampler='model_entropy'
