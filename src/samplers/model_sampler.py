@@ -38,7 +38,7 @@ class modelSampler:
                 
                 value = goal_function(method=self.function).calculate(preds)
                 
-                return value + value*np.sum(p)
+                return value #+ value*np.sum(p)
             
  
             # xs = []
