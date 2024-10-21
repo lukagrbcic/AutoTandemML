@@ -2,8 +2,11 @@ import sys
 import numpy as np
 
 
-sys.path.append(0, 'src')
+sys.path.insert(0, 'src')
+sys.path.insert(1, '../InverseBench/src/')
 
+
+from optimize_inverse import get_hyperparameters
 
 
 param_dist = {
@@ -22,6 +25,8 @@ param_dist = {
     'output_activation': [None]
 }
 
-material = 'airfoil_Re_3_6'
-X_train = np.load(f'../data/{material}_data/input_train_data.npy')#[:3000]
-y_train = np.load(f'../data/{material}_data/output_train_data.npy')#[:3000]
+bench = 'airfoils'
+test_input = np.load(f'../InverseBench/test_data/{bench}_data/input_test_data.npy')
+test_output = np.load(f'../InverseBench/test_data/{bench}_data/output_test_data.npy')
+
+optimize = get_hyperparameters(test_input, test_output, param_dist, n_iter=2).run()
