@@ -7,6 +7,7 @@ https://www.cirm-math.fr/ProgWeebly/Renc1762/Welch.pdf
 source for nmax_ae
 
 https://wires.onlinelibrary.wiley.com/doi/pdfdirect/10.1002/widm.1157
+https://arxiv.org/pdf/1907.01181
 
 """
 
