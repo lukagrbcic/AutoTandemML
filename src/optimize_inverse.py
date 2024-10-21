@@ -29,7 +29,7 @@ class get_hyperparameters:
         
         model = TorchDNNRegressor(input_size=np.shape(self.X)[1],
                                   output_size=np.shape(self.y)[1], 
-                                  verbose=False, criterion=self.criterion, 
+                                  verbose=True, criterion=self.criterion, 
                                   forward_model=self.forward_model)
         
         random_search = RandomizedSearchCV(model, param_distributions=self.param_dist, 
