@@ -58,16 +58,6 @@ class samplers:
                                   self.lb, self.ub, self.algorithm[0],
                                   'uncertainty', self.sampled_points).get_samples()
             
-            # X_2 = mhcs.modelHCSampler(self.model, self.batch_size, 
-            #                         self.lb, self.ub, self.algorithm[0], 
-            #                         function='quantile', 
-            #                         x_sampled=self.sampled_points).get_samples()
-            
-            # X_3 = mlhs.modelLHSSampler(self.model, self.batch_size, 
-            #                            self.lb, self.ub, self.algorithm[0], 
-            #                          'quantile',
-            #                          self.sampled_points).get_samples()
-            
             X_2 = ms.modelSampler(self.model, self.batch_size, 
                                   self.lb, self.ub, self.algorithm[0],
                                   'entropy', self.sampled_points).get_samples()
