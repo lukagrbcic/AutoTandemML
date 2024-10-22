@@ -19,11 +19,11 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-bench = 'friedman'
-name = 'friedman_multioutput_benchmark'
-# model = load_model(name).load()
-# f = benchmark_functions(name, model)
-f = benchmark_functions(name)
+bench = 'airfoils'
+name = 'airfoil_benchmark'
+model = load_model(name).load()
+f = benchmark_functions(name, model)
+# f = benchmark_functions(name)
 
 lb, ub = f.get_bounds()
 
@@ -31,10 +31,10 @@ test_input = np.load(f'../InverseBench/test_data/{bench}_data/input_test_data.np
 test_output = np.load(f'../InverseBench/test_data/{bench}_data/output_test_data.npy')
 test_data = (test_input, test_output)
 
-init_size=10
-batch_size=10
-max_samples=300
-n_repeats=1
+init_size=50
+batch_size=50
+max_samples=200
+n_repeats=5
 sampler='model_entropy'
 
 # algorithm = ('rf', RandomForestRegressor())
@@ -101,49 +101,49 @@ else:
 results.append(results_exp)
 
 
-sampler='ensemble_cluster'
-run = al.activeLearner(f, lb, ub,
-                        init_size, batch_size,
-                        max_samples, sampler,
-                        algorithm,
-                        test_data)#, initial_hyperparameter_search=True)
+# sampler='ensemble_cluster'
+# run = al.activeLearner(f, lb, ub,
+#                         init_size, batch_size,
+#                         max_samples, sampler,
+#                         algorithm,
+#                         test_data)#, initial_hyperparameter_search=True)
 
-file_path = f'./{bench}_results/{sampler}_{max_samples}_{batch_size}_{n_repeats}_{algorithm[0]}.npy'
+# file_path = f'./{bench}_results/{sampler}_{max_samples}_{batch_size}_{n_repeats}_{algorithm[0]}.npy'
 
-if os.path.exists(file_path):
-    with open(file_path, 'r') as file:
-        results_exp = np.load(file_path, allow_pickle=True).item()
+# if os.path.exists(file_path):
+#     with open(file_path, 'r') as file:
+#         results_exp = np.load(file_path, allow_pickle=True).item()A
 
-else:
-    print("File does not exist, continuing.")
+# else:
+#     print("File does not exist, continuing.")
 
-    results_exp = run.run(n_repeats)
-    np.save(file_path, results_exp)
-
-
-results.append(results_exp)
+#     results_exp = run.run(n_repeats)
+#     np.save(file_path, results_exp)
 
 
+# results.append(results_exp)
 
-sampler='random'
-run = al.activeLearner(f, lb, ub,
-                        init_size, batch_size,
-                        max_samples, sampler,
-                        algorithm,
-                        test_data)#, initial_hyperparameter_search=True)
 
-file_path = f'./{bench}_results/{sampler}_{max_samples}_{batch_size}_{n_repeats}_{algorithm[0]}.npy'
 
-if os.path.exists(file_path):
-    with open(file_path, 'r') as file:
-        results_rnd = np.load(file_path, allow_pickle=True).item()
+# sampler='random'
+# run = al.activeLearner(f, lb, ub,
+#                         init_size, batch_size,
+#                         max_samples, sampler,
+#                         algorithm,
+#                         test_data)#, initial_hyperparameter_search=True)
 
-else:
-    print("File does not exist, continuing.")
+# file_path = f'./{bench}_results/{sampler}_{max_samples}_{batch_size}_{n_repeats}_{algorithm[0]}.npy'
 
-    results_rnd = run.run(n_repeats)
-    np.save(file_path, results_rnd)
+# if os.path.exists(file_path):
+#     with open(file_path, 'r') as file:
+#         results_rnd = np.load(file_path, allow_pickle=True).item()
 
-results.append(results_rnd)
+# else:
+#     print("File does not exist, continuing.")
+
+#     results_rnd = run.run(n_repeats)
+#     np.save(file_path, results_rnd)
+
+# results.append(results_rnd)
 
 pp.plot_results(results).compare_metrics(fname=bench)
