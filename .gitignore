@@ -354,3 +354,12 @@ _results
 /friedman_results/model_quantile_350_50_1_mlp_ensemble.npy
 /friedman_results/random_300_10_3_mlp_ensemble.npy
 /friedman_results/random_350_50_1_mlp_ensemble.npy
+/airfoils_results/ensemble_200_50_5_mlp_ensemble.npy
+/airfoils_results/mean_rmse_5_convergence_rate_mape.pdf
+/airfoils_results/mean_rmse_5_convergence_rate_max_rmse.pdf
+/airfoils_results/mean_rmse_5_convergence_rate_nmax_ae.pdf
+/airfoils_results/mean_rmse_5_convergence_rate_r2.pdf
+/airfoils_results/mean_rmse_5_convergence_rate_range_nrmse.pdf
+/airfoils_results/mean_rmse_5_convergence_rate_rmse.pdf
+/airfoils_results/mean_rmse_5_convergence_rate_std_nrmse.pdf
+/airfoils_results/model_entropy_200_50_5_mlp_ensemble.npy
