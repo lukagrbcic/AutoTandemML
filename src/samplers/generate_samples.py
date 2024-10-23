@@ -69,6 +69,7 @@ class samplers:
             size = int(self.batch_size/3)
             
             X = np.vstack((X_1[:size, :], X_2[:size, :], X_3[:size, :]))
+        
 
         elif self.sampler.split('_')[0] == 'ensemble_cluster':
             
