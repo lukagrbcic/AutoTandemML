@@ -363,3 +363,9 @@ _results
 /airfoils_results/mean_rmse_5_convergence_rate_rmse.pdf
 /airfoils_results/mean_rmse_5_convergence_rate_std_nrmse.pdf
 /airfoils_results/model_entropy_200_50_5_mlp_ensemble.npy
+/airfoils_results/modelHC_entropy_1000_100_1_mlp_ensemble.npy
+/airfoils_results/modelHC_entropy_1000_100_1_rf.npy
+/airfoils_results/model_entropy_1000_100_1_mlp_ensemble.npy
+/airfoils_results/model_entropy_1000_100_1_rf.npy
+/airfoils_results/model_entropy_200_10_1_rf.npy
+/airfoils_results/model_mixed_200_50_5_mlp_ensemble.npy
