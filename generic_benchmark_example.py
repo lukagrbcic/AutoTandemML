@@ -31,10 +31,10 @@ test_input = np.load(f'../InverseBench/test_data/{bench}_data/input_test_data.np
 test_output = np.load(f'../InverseBench/test_data/{bench}_data/output_test_data.npy')
 test_data = (test_input, test_output)
 
-init_size=10
-batch_size=10
-max_samples=200
-n_repeats=1
+init_size=50
+batch_size=50
+max_samples=450
+n_repeats=3
 sampler='model_entropy'
 
 algorithm = ('rf', RandomForestRegressor())
@@ -78,7 +78,7 @@ else:
 results.append(results_exp2)
 
 
-sampler='modelHC_entropy'
+sampler='ensemble'
 run = al.activeLearner(f, lb, ub,
                         init_size, batch_size,
                         max_samples, sampler,
