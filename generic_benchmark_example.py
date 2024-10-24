@@ -34,15 +34,15 @@ test_data = (test_input, test_output)
 init_size=50
 batch_size=50
 max_samples=450
-n_repeats=3
+n_repeats=10
 sampler='model_entropy'
 
 algorithm = ('rf', RandomForestRegressor())
 # ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in [[0.1, 10], [0.5,50], [0.8, 75], [1,100], [10, 125]]]             
-# ensemble = []
-# for i in range(3):
-#     ensemble.append(XGBRegressor(n_estimators=np.random.randint(10, 250), reg_lambda=np.random.uniform(0.01, 10)))
-# algorithm = ('xgb', EnsembleRegressor(ensemble))           
+ensemble = []
+for i in range(3):
+    ensemble.append(XGBRegressor(n_estimators=np.random.randint(10, 250), reg_lambda=np.random.uniform(0.01, 10)))
+algorithm = ('xgb', EnsembleRegressor(ensemble))           
 
 from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import make_pipeline
