@@ -381,3 +381,9 @@ _results
 /airfoils_results/modelHC_entropy_200_10_1_rf.npy
 /airfoils_results/modelHC_quantile_200_10_1_rf.npy
 /airfoils_results/model_entropy_450_50_3_rf.npy
+/airfoils_results/ensemble_450_50_3_mlp_ensemble.npy
+/airfoils_results/ensemble_450_50_3_xgb.npy
+/airfoils_results/ensemble_cluster_450_50_3_rf.npy
+/airfoils_results/ensemble_cluster_450_50_3_xgb.npy
+/airfoils_results/model_entropy_450_50_3_mlp_ensemble.npy
+/airfoils_results/model_entropy_450_50_3_xgb.npy
