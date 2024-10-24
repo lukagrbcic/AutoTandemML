@@ -78,7 +78,7 @@ else:
 results.append(results_exp2)
 
 
-sampler='ensemble'
+sampler='ensemble_cluster'
 run = al.activeLearner(f, lb, ub,
                         init_size, batch_size,
                         max_samples, sampler,
