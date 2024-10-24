@@ -369,3 +369,15 @@ _results
 /airfoils_results/model_entropy_1000_100_1_rf.npy
 /airfoils_results/model_entropy_200_10_1_rf.npy
 /airfoils_results/model_mixed_200_50_5_mlp_ensemble.npy
+/airfoils_results/ensemble_200_10_1_rf.npy
+/airfoils_results/ensemble_450_50_3_rf.npy
+/airfoils_results/mean_rmse_3_convergence_rate_mape.pdf
+/airfoils_results/mean_rmse_3_convergence_rate_max_rmse.pdf
+/airfoils_results/mean_rmse_3_convergence_rate_nmax_ae.pdf
+/airfoils_results/mean_rmse_3_convergence_rate_r2.pdf
+/airfoils_results/mean_rmse_3_convergence_rate_range_nrmse.pdf
+/airfoils_results/mean_rmse_3_convergence_rate_rmse.pdf
+/airfoils_results/mean_rmse_3_convergence_rate_std_nrmse.pdf
+/airfoils_results/modelHC_entropy_200_10_1_rf.npy
+/airfoils_results/modelHC_quantile_200_10_1_rf.npy
+/airfoils_results/model_entropy_450_50_3_rf.npy
