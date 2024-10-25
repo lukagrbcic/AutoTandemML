@@ -49,14 +49,23 @@ class error:
         
         return normalized_rmse
     
+    # @staticmethod
+    # def std_nrmse(y_true, y_pred):
+        
+    #     rmse = np.sqrt(np.mean((y_true - y_pred) ** 2, axis=0))
+    #     std = np.std(y_true, axis=0)
+    #     normalized_rmse = np.mean(rmse/std)
+        
+    #     return normalized_rmse
+    
     @staticmethod
     def std_nrmse(y_true, y_pred):
         
-        rmse = np.sqrt(np.mean((y_true - y_pred) ** 2, axis=0))
-        std = np.std(y_true, axis=0)
-        normalized_rmse = np.mean(rmse/std)
+        # rmse = np.sqrt(np.mean((y_true - y_pred) ** 2, axis=0))
+        # std = np.std(y_true, axis=0)
+        # normalized_rmse = np.mean(rmse/std)
         
-        return normalized_rmse
+        return np.sqrt(mean_squared_error(y_true, y_pred))/np.std(y_true)
     
     @staticmethod        
     def r2(y_true, y_pred):
