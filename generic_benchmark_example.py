@@ -40,7 +40,7 @@ test_data = (test_input, test_output)
 
 init_size=20
 batch_size=10
-max_samples=100
+max_samples=200
 n_repeats=5
 sampler='model_uncertainty'
 # np.random.seed(43)
