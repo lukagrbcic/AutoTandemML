@@ -470,3 +470,15 @@ _results
 /inconel_results/random_100_10_3_mlp_ensemble.npy
 /inconel_results/random_980_196_1_mlp_ensemble.npy
 /inconel_results/random_980_196_1_rf.npy
+/airfoils_results/modelLHS_uncertainty_200_10_5_xgb.npy
+/airfoils_results/model_uncertainty_200_10_5_xgb.npy
+/airfoils_results/random_200_10_5_xgb.npy
+/friedman_results/modelLHS_uncertainty_200_10_5_mlp_ensemble.npy
+/friedman_results/model_uncertainty_200_10_5_xgb.npy
+/inconel_results/mean_rmse_5_convergence_rate_nmax_ae.pdf
+/inconel_results/mean_rmse_5_convergence_rate_r2.pdf
+/inconel_results/mean_rmse_5_convergence_rate_rmse.pdf
+/inconel_results/mean_rmse_5_convergence_rate_std_nrmse.pdf
+/inconel_results/modelLHS_uncertainty_200_10_5_rf.npy
+/inconel_results/model_uncertainty_200_10_5_rf.npy
+/inconel_results/random_200_10_5_rf.npy
