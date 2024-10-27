@@ -89,7 +89,7 @@ else:
 results.append(results_exp2)
 
 
-sampler='modelLHS_uncertainty'
+sampler='ensemble_cluster'
 run = al.activeLearner(f, lb, ub,
                         init_size, batch_size,
                         max_samples, sampler,
