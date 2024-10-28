@@ -41,7 +41,7 @@ test_data = (test_input, test_output)
 init_size=20
 batch_size=10
 max_samples=200
-n_repeats=5
+n_repeats=3
 sampler='model_uncertainty'
 # np.random.seed(43)
 
@@ -87,29 +87,6 @@ else:
 
 
 results.append(results_exp2)
-
-
-sampler='ensemble_cluster'
-run = al.activeLearner(f, lb, ub,
-                        init_size, batch_size,
-                        max_samples, sampler,
-                        algorithm,
-                        test_data)#, initial_hyperparameter_search=True)
-
-file_path = f'./{bench}_results/{sampler}_{max_samples}_{batch_size}_{n_repeats}_{algorithm[0]}.npy'
-
-if os.path.exists(file_path):
-    with open(file_path, 'r') as file:
-        results_exp = np.load(file_path, allow_pickle=True).item()
-
-else:
-    print("File does not exist, continuing.")
-
-    results_exp = run.run(n_repeats)
-    np.save(file_path, results_exp)
-
-
-results.append(results_exp)
 
 
 sampler='random'
