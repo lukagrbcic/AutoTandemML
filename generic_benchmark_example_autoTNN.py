@@ -3,6 +3,9 @@ import sys
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.tree import DecisionTreeRegressor, ExtraTreeRegressor
 from xgboost import XGBRegressor
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import *
+from sklearn.neural_network import MLPRegressor
 
 sys.path.insert(0, '../InverseBench/src/')
 sys.path.insert(1, 'src')
@@ -34,13 +37,23 @@ test_data = (test_input, test_output)
 init_size=5
 batch_size=5
 max_samples=20
-sampler='model_entropy'
+sampler='model_uncertainty'
 
 # ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in [[0.1, 10], [0.5,50], [0.8, 75], [1,100], [10, 125]]]             
 # algorithm = ('xgb_ensemble', EnsembleRegressor(ensemble))
+
+
 algorithm = ('rf', RandomForestRegressor())
 
+
+ensemble = []
+for i in range(20):
+    ensemble.append(make_pipeline(StandardScaler(), MLPRegressor(hidden_layer_sizes=(100, 200, 100), 
+                                                                  random_state=i)))
+   
+
+algorithm = ('mlp_ensemble', EnsembleRegressor(ensemble))           
              
 run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, lf_samples=1000)
-# forward_model, X_hf, y_hf = run.get_foward_model()
-# X_lf, y_lf = run.get_lf_samples(forward_model)
+forward_model, X_hf, y_hf = run.get_foward_model()
+X_lf, y_lf = run.get_lf_samples(forward_model)
