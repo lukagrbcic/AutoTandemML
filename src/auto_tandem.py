@@ -21,7 +21,7 @@ class AutoTNN:
                  test_data,
                  lf_samples=0,
                  sampler='model_uncertainty',
-                 verbose=0, forward_model=None):
+                 verbose=1, forward_model=None):
         
         self.f = f
         self.lb = lb
@@ -44,6 +44,7 @@ class AutoTNN:
                                 self.max_samples, self.sampler,
                                 self.algorithm, self.test_data,
                                 verbose=self.verbose, return_model=True, return_hf_samples=True)
+        
         _, model, X_hf, y_hf = run.run()
         
         return model, X_hf, y_hf
