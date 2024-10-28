@@ -483,3 +483,6 @@ _results
 /inconel_results/model_uncertainty_200_10_5_rf.npy
 /inconel_results/random_200_10_5_rf.npy
 /inconel_results/ensemble_cluster_200_10_5_rf.npy
+/inconel_results/random_200_10_3_rf.npy
+/
+/inconel_results/model_uncertainty_200_10_3_rf.npy
