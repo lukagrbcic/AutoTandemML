@@ -10,8 +10,8 @@ from DNNRegressor import TorchDNNRegressor
 
 class get_hyperparameters:
     def __init__(self, X, y, param_dist, n_iter=100, cv=3, 
-                 scoring='neg_root_mean_squared_error', n_jobs=1,
-                 verbose=2, criterion='rmse', seed=11, forward_model=None):
+                 scoring='neg_root_mean_squared_error', n_jobs=2,
+                 verbose=1, criterion='rmse', seed=11, forward_model_hyperparameters=None):
         
         self.X = X
         self.y = y
@@ -23,15 +23,15 @@ class get_hyperparameters:
         self.verbose = verbose
         self.criterion = criterion
         self.seed = seed
-        self.forward_model = forward_model
+        self.forward_model_hyperparameters = forward_model_hyperparameters
         
         
     def run(self):
         
         model = TorchDNNRegressor(input_size=np.shape(self.X)[1],
                                   output_size=np.shape(self.y)[1], 
-                                  verbose=True, criterion=self.criterion, 
-                                  forward_model=self.forward_model)
+                                  verbose=False, criterion=self.criterion, 
+                                  forward_model_hyperparameters=self.forward_model_hyperparameters)
         
         random_search = RandomizedSearchCV(model, param_distributions=self.param_dist, 
                                             n_iter=self.n_iter, cv=self.cv, verbose=self.verbose, random_state=self.seed, 
@@ -40,7 +40,5 @@ class get_hyperparameters:
         random_search.fit(self.X, self.y)
         best_params = random_search.best_params_
         
-        #print("Best parameters found: ", best_params)
-
         return best_params
 
