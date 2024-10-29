@@ -47,7 +47,7 @@ y_sampled = np.load('y_hf.npy')
 #                                 param_dist, n_iter=5).run()
 
 hyperparemeters = get_hyperparameters(y_sampled, x_sampled, 
-                                param_dist, n_iter=2, 
+                                param_dist, n_iter=20, 
                                 forward_model=forward_model).run()
 
 
@@ -72,7 +72,7 @@ model = TorchDNNRegressor(input_size=np.shape(y_sampled)[1],
 model.fit(y_sampled, x_sampled)
 
 
-preds = model.predict(test_input)
+preds = model.predict(test_output)
 
 name = 'airfoil_benchmark'
 model = load_model(name).load()
@@ -95,8 +95,9 @@ print ('MAX', np.max(rmse_list))
 import matplotlib.pyplot as plt
 
 for i in range(20):
+    plt.figure()
     plt.plot(np.arange(0, len(predictions[i]), 1), predictions[i], 'g-')
-    plt.plot(np.arange(0, len(test_input[i]), 1), test_input[i], 'g-')
+    plt.plot(np.arange(0, len(test_output[i]), 1), test_output[i], 'r-')
 
 
 
