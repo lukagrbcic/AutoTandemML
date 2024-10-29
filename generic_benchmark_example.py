@@ -23,15 +23,15 @@ warnings.filterwarnings("ignore")
 # name = 'friedman_multioutput_benchmark'
 # f = benchmark_functions(name)
 
-bench = 'inconel' #(random forests)
-name = 'inconel_benchmark'
-model = load_model(name).load()
-f = benchmark_functions(name, model)
-
-# bench = 'airfoils' #(xgb ensembles)
-# name = 'airfoil_benchmark'
+# bench = 'inconel' #(random forests)
+# name = 'inconel_benchmark'
 # model = load_model(name).load()
 # f = benchmark_functions(name, model)
+
+bench = 'airfoils' #(xgb ensembles)
+name = 'airfoil_benchmark'
+model = load_model(name).load()
+f = benchmark_functions(name, model)
 
 lb, ub = f.get_bounds()
 test_input = np.load(f'../InverseBench/test_data/{bench}_data/input_test_data.npy')
@@ -41,7 +41,7 @@ test_data = (test_input, test_output)
 init_size=20
 batch_size=10
 max_samples=200
-n_repeats=3
+n_repeats=1
 sampler='model_uncertainty'
 # np.random.seed(43)
 

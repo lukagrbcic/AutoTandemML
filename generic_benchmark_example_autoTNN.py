@@ -43,25 +43,27 @@ test_output = np.load(f'../InverseBench/test_data/{bench}_data/output_test_data.
 test_data = (test_input, test_output)
 
 
-init_size=20
+init_size=10
 batch_size=10
 max_samples=200
+# sampler='random'
 sampler='model_uncertainty'
 
-ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in [[0.1, 10], [0.5,50], [0.8, 75], [1,100], [10, 125]]]             
-algorithm = ('xgb_ensemble', EnsembleRegressor(ensemble))
+# ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in [[0.1, 10], [0.5,50], [0.8, 75], [1,100], [10, 125]]]             
+# algorithm = ('xgb_ensemble', EnsembleRegressor(ensemble))
 
 
 # algorithm = ('rf', RandomForestRegressor())
 
 
-# ensemble = []
-# for i in range(20):
-#     ensemble.append(make_pipeline(StandardScaler(), MLPRegressor(hidden_layer_sizes=(100, 200, 100), 
-#                                                                   random_state=i)))
+ensemble = []
+for i in range(20):
+    ensemble.append(make_pipeline(StandardScaler(), MLPRegressor(hidden_layer_sizes=(100, 200, 100), 
+                                                                  random_state=i)))
 
-# algorithm = ('mlp_ensemble', EnsembleRegressor(ensemble))           
+algorithm = ('mlp_ensemble', EnsembleRegressor(ensemble))           
              
-run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, lf_samples=1000, sampler=sampler)
-forward_model, X_hf, y_hf = run.get_foward_model()
-# X_lf, y_lf = run.get_lf_samples(forward_model)
+run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, sampler=sampler)
+# forward_model, X_hf, y_hf = run.get_foward_model()
+
+run.get_inverse_model()
