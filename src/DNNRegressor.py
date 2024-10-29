@@ -138,7 +138,6 @@ class TorchDNNRegressor(BaseEstimator, RegressorMixin):
                 outputs = self.model(batch_X)
                                 
                 if self.forward_model_hyperparameters is not None:
-                    print ('Using forward model for loss computation!')
                     forward_outputs = forward_dnn(outputs)
                     loss = self.criterion(batch_X, forward_outputs)
                 else:
@@ -153,7 +152,6 @@ class TorchDNNRegressor(BaseEstimator, RegressorMixin):
                 val_outputs = self.model(X_val_tensor)
                 
                 if self.forward_model_hyperparameters is not None:
-                    print ('Using forward model for loss computation!')
                     forward_val_outputs = forward_dnn(val_outputs)
                     val_loss = self.criterion(X_val_tensor, forward_val_outputs)
                 else:
