@@ -19,7 +19,7 @@ class TorchDNNRegressor(BaseEstimator, RegressorMixin):
                  epochs=10, batch_size=32, learning_rate=0.01, 
                  criterion='rmse', optimizer='adam', validation_split=0.1,
                  early_stopping_patience=10, verbose=True, output_activation=None, 
-                 input_scaler=None, output_scaler=None, forward_model=None):
+                 input_scaler=None, output_scaler=None, forward_model_hyperparameters=None):
         
         self.model_type = model_type
         self.input_size = input_size
@@ -41,10 +41,25 @@ class TorchDNNRegressor(BaseEstimator, RegressorMixin):
         self.output_activation = output_activation
         self.input_scaler = input_scaler
         self.output_scaler = output_scaler
-        self.forward_model = forward_model
+        self.forward_model_hyperparameters = forward_model_hyperparameters
         
-    def load_model(self):
-        return joblib.load(self.forward_model)
+    def get_forward_model(self):
+        
+        hyperparameters = self.forward_model_hyperparameters
+        
+        forward_dnn = ModelFactory().create_model(model_type=hyperparameters['model_type'], 
+                                                  input_size=self.output_size, 
+                                                  output_size=self.input_size,
+                                                  hidden_layers=hyperparameters['hidden_layers'],
+                                                  dropout=hyperparameters['dropout'],
+                                                  output_activation=hyperparameters['output_activation'],
+                                                  batch_norm=hyperparameters['batch_norm'],
+                                                  activation=hyperparameters['activation'])
+
+        forward_dnn.load_state_dict(torch.load('forwardDNN.pth'))
+        forward_dnn.eval()
+        
+        return forward_dnn
             
     def fit(self, X, y):
         
@@ -94,8 +109,6 @@ class TorchDNNRegressor(BaseEstimator, RegressorMixin):
             y_train = self.sc_output.fit_transform(y_train)
             y_val = self.sc_output.transform(y_val)
 
-        
-
         X_train_tensor = torch.tensor(X_train, dtype=torch.float32).to(device)
         y_train_tensor = torch.tensor(y_train, dtype=torch.float32).to(device)
         X_val_tensor = torch.tensor(X_val, dtype=torch.float32).to(device)
@@ -114,51 +127,39 @@ class TorchDNNRegressor(BaseEstimator, RegressorMixin):
         
         best_val_loss = float('inf')
         patience = 0
-        if self.forward_model != None:
-            forward_model = self.load_model()
+        
+        if self.forward_model_hyperparameters is not None:
+            forward_dnn = self.get_forward_model()
         
         for epoch in range(self.epochs):
             self.model.train()
             for batch_X, batch_y in train_dataloader:
                 self.optimizer.zero_grad()
                 outputs = self.model(batch_X)
+                                
+                if self.forward_model_hyperparameters is not None:
+                    print ('Using forward model for loss computation!')
+                    forward_outputs = forward_dnn(outputs)
+                    loss = self.criterion(batch_X, forward_outputs)
+                else:
+                    loss = self.criterion(batch_y, outputs)
                 
-                predictions = outputs.detach().cpu().numpy()
-
-
-                if self.output_scaler != None:
-                    predictions = self.sc_output.inverse_transform(predictions)
-                               
-                predictions_fwd = torch.tensor(forward_model.predict(predictions), dtype=torch.float32).to(device)  
-                
-                true_values = batch_X
-                
-                if self.input_scaler != None:
-                    inputs_ = self.sc_input.inverse_transform(batch_X.detach().cpu().numpy())
-                    true_values = torch.tensor(inputs_, dtype=torch.float32).to(device)  
-                
-                penalty = self.criterion(true_values, predictions_fwd)
-                
-                loss = self.criterion(batch_y, outputs) + 1000*self.criterion(batch_y, outputs)*penalty
-                # loss = self.criterion(batch_y, outputs)
-
 
                 loss.backward()
                 self.optimizer.step()
             
             self.model.eval()
-            
             with torch.no_grad():
                 val_outputs = self.model(X_val_tensor)
                 
-                
-                predictions = val_outputs.detach().cpu().numpy()
+                if self.forward_model_hyperparameters is not None:
+                    print ('Using forward model for loss computation!')
+                    forward_val_outputs = forward_dnn(val_outputs)
+                    val_loss = self.criterion(X_val_tensor, forward_val_outputs)
+                else:
+                    val_loss = self.criterion(y_val_tensor, val_outputs)
 
-                if self.output_scaler != None:
-                    predictions = self.sc_output.inverse_transform(predictions)
-                      
-                # predictions = torch.tensor(forward_model.predict(predictions), dtype=torch.float32).to(device)                                                             
-                val_loss = self.criterion(val_outputs, y_val_tensor).item()
+                                                                            
                 
             if self.verbose == True:
                 print(f"Epoch {epoch+1}/{self.epochs}, Training Loss: {loss.item()}, Validation Loss: {val_loss}")
