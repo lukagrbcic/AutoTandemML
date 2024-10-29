@@ -139,7 +139,7 @@ class TorchDNNRegressor(BaseEstimator, RegressorMixin):
                 
                 penalty = self.criterion(true_values, predictions_fwd)
                 
-                loss = self.criterion(batch_y, outputs) + self.criterion(batch_y, outputs)*penalty
+                loss = self.criterion(batch_y, outputs) + 1000*self.criterion(batch_y, outputs)*penalty
                 # loss = self.criterion(batch_y, outputs)
 
 
