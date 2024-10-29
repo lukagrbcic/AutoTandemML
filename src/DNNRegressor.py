@@ -6,6 +6,8 @@ from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from model_factory import ModelFactory
+from ensemble_regressor import EnsembleRegressor
+import joblib
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -15,8 +17,8 @@ class TorchDNNRegressor(BaseEstimator, RegressorMixin):
     def __init__(self, input_size, output_size, hidden_layers=None, model_type='mlp',
                  dropout=0.0, batch_norm=False, activation='relu', 
                  epochs=10, batch_size=32, learning_rate=0.01, 
-                 criterion='mse', optimizer='adam', validation_split=0.1,
-                 early_stopping_patience=10, verbose=False, output_activation=None, 
+                 criterion='rmse', optimizer='adam', validation_split=0.1,
+                 early_stopping_patience=10, verbose=True, output_activation=None, 
                  input_scaler=None, output_scaler=None, forward_model=None):
         
         self.model_type = model_type
@@ -40,8 +42,10 @@ class TorchDNNRegressor(BaseEstimator, RegressorMixin):
         self.input_scaler = input_scaler
         self.output_scaler = output_scaler
         self.forward_model = forward_model
-    
-    
+        
+    def load_model(self):
+        return joblib.load(self.forward_model)
+            
     def fit(self, X, y):
         
         if self.verbose == True:
@@ -103,13 +107,15 @@ class TorchDNNRegressor(BaseEstimator, RegressorMixin):
         if self.criterion == 'mse':
             self.criterion = nn.MSELoss()
         else: 
-                    
             def rmse_loss(outputs, targets):
-                return torch.sqrt(torch.mean((outputs - targets) ** 2))    
+                return torch.sqrt(torch.mean((outputs - targets) ** 2))  
+            
             self.criterion = rmse_loss
         
         best_val_loss = float('inf')
         patience = 0
+        if self.forward_model != None:
+            forward_model = self.load_model()
         
         for epoch in range(self.epochs):
             self.model.train()
@@ -117,16 +123,41 @@ class TorchDNNRegressor(BaseEstimator, RegressorMixin):
                 self.optimizer.zero_grad()
                 outputs = self.model(batch_X)
                 
+                predictions = outputs.detach().cpu().numpy()
+
+
+                if self.output_scaler != None:
+                    predictions = self.sc_output.inverse_transform(predictions)
                                
-                loss = self.criterion(outputs, batch_y)
+                predictions_fwd = torch.tensor(forward_model.predict(predictions), dtype=torch.float32).to(device)  
                 
+                true_values = batch_X
+                
+                if self.input_scaler != None:
+                    inputs_ = self.sc_input.inverse_transform(batch_X.detach().cpu().numpy())
+                    true_values = torch.tensor(inputs_, dtype=torch.float32).to(device)  
+                
+                penalty = self.criterion(true_values, predictions_fwd)
+                
+                loss = self.criterion(batch_y, outputs) + self.criterion(batch_y, outputs)*penalty
+                # loss = self.criterion(batch_y, outputs)
+
+
                 loss.backward()
                 self.optimizer.step()
             
             self.model.eval()
+            
             with torch.no_grad():
                 val_outputs = self.model(X_val_tensor)
-                                
+                
+                
+                predictions = val_outputs.detach().cpu().numpy()
+
+                if self.output_scaler != None:
+                    predictions = self.sc_output.inverse_transform(predictions)
+                      
+                # predictions = torch.tensor(forward_model.predict(predictions), dtype=torch.float32).to(device)                                                             
                 val_loss = self.criterion(val_outputs, y_val_tensor).item()
                 
             if self.verbose == True:
