@@ -49,9 +49,9 @@ class AutoTNN:
         
         _, model, X_hf, y_hf = run.run()
         
-        joblib.dump(model, 'forward_model.pkl')
-        np.save('x_hf.npy', X_hf)
-        np.save('y_hf.npy', y_hf)
+        # joblib.dump(model, f'forward_model_{self.sampler}.pkl')
+        np.save(f'x_hf_{self.sampler}.npy', X_hf)
+        np.save(f'y_hf_{self.sampler}.npy', y_hf)
         
         return model, X_hf, y_hf
     
@@ -66,8 +66,10 @@ class AutoTNN:
         
         self.forward_model, X_hf, y_hf = self.get_foward_model()
 
-        X, y = self.get_lf_samples(self.forward_model)
+        # X, y = self.get_lf_samples(self.forward_model)
         
+        # np.save(f'x_mf_{self.sampler}.npy', np.vstack((X_hf, X)))
+        # np.save(f'y_mf_{self.sampler}.npy', np.vstack((y_hf, y)))        
         
         
         
