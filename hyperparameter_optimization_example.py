@@ -28,8 +28,8 @@ param_dist = {
     'epochs': [100, 200, 300, 1000],
     'batch_size': [32, 64],
     'learning_rate': [0.001, 0.01, 0.1],
-    'input_scaler': [None, 'MinMax', 'Standard'],
-    'output_scaler': [None, 'MinMax', 'Standard'],
+    'input_scaler': ['MinMax', 'Standard'],
+    'output_scaler': ['MinMax', 'Standard'],
     'output_activation': [None]
 }
 
@@ -38,48 +38,19 @@ test_input = np.load(f'../InverseBench/test_data/{bench}_data/input_test_data.np
 test_output = np.load(f'../InverseBench/test_data/{bench}_data/output_test_data.npy')
 
 sampler = 'model_uncertainty'
+# sampler = 'random'
 
-forward_model = joblib.load(f'forward_model_{sampler}.pkl')
-# print (forward_model.estimators_)
-# # print(forward_model)
-# sys.exit()
+# forward_model = joblib.load(f'forward_model_{sampler}.pkl')
+
 x_sampled = np.load(f'x_hf_{sampler}.npy')
 y_sampled = np.load(f'y_hf_{sampler}.npy')
 
-# # print (forward_model.predict(x_sampled))
+# x_sampled = np.load(f'x_mf_{sampler}.npy')
+# y_sampled = np.load(f'y_mf_{sampler}.npy')
+
 
 fwd_hyperparameters = get_hyperparameters(x_sampled, y_sampled, 
-                                param_dist, n_iter=2).run()
-
-
-      
-# print ('Training model')
-# forward_model = TorchDNNRegressor(input_size=np.shape(x_sampled)[1],
-#                           output_size=np.shape(y_sampled)[1], 
-#                           hidden_layers=hyperparameters['hidden_layers'],
-#                           output_activation=hyperparameters['output_activation'],
-#                           output_scaler=hyperparameters['output_scaler'],
-#                           model_type=hyperparameters['model_type'],
-#                           learning_rate=hyperparameters['learning_rate'],
-#                           input_scaler=hyperparameters['input_scaler'],
-#                           epochs=2000,
-#                           dropout=hyperparameters['dropout'],
-#                           batch_size=hyperparameters['batch_size'],
-#                           batch_norm=hyperparameters['batch_norm'],
-#                           activation=hyperparameters['activation'])
-                          
-# forward_model.fit(x_sampled, y_sampled)
-
-
-
-
-
-
-
-print (fwd_hyperparameters)
-
-
-
+                                param_dist, n_iter=200).run()
 
 get_forward_dnn = forwardDNN(x_sampled, y_sampled, fwd_hyperparameters).train_save()
 
@@ -103,7 +74,7 @@ param_dist = {
 
 
 hyperparameters = get_hyperparameters(y_sampled, x_sampled, 
-                                param_dist, n_iter=2, 
+                                param_dist, n_iter=200, 
                                 forward_model_hyperparameters=fwd_hyperparameters).run()
 
 
@@ -112,57 +83,64 @@ hyperparameters = get_hyperparameters(y_sampled, x_sampled,
 
 print (hyperparameters)
 
-# print ('Training model')
-# inverse_model = TorchDNNRegressor(input_size=np.shape(y_sampled)[1],
-#                           output_size=np.shape(x_sampled)[1], 
-#                           hidden_layers=hyperparemeters['hidden_layers'],
-#                           output_activation=hyperparemeters['output_activation'],
-#                           output_scaler=hyperparemeters['output_scaler'],
-#                           model_type=hyperparemeters['model_type'],
-#                           learning_rate=hyperparemeters['learning_rate'],
-#                           input_scaler=hyperparemeters['input_scaler'],
-#                           epochs=2000,
-#                           dropout=hyperparemeters['dropout'],
-#                           batch_size=hyperparemeters['batch_size'],
-#                           batch_norm=hyperparemeters['batch_norm'],
-#                           activation=hyperparemeters['activation'])
-                          
-# inverse_model.fit(y_sampled, x_sampled)
-
-# predictions = inverse_model.predict(test_input)
 
 get_inverse_dnn = inverseDNN(y_sampled, x_sampled, hyperparameters, forward_model_hyperparameters=fwd_hyperparameters).train_save()
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+inverse_dnn = ModelFactory().create_model(model_type=hyperparameters['model_type'], 
+                                          input_size=np.shape(y_sampled)[1], 
+                                          output_size=np.shape(x_sampled)[1],
+                                          hidden_layers=hyperparameters['hidden_layers'],
+                                          dropout=hyperparameters['dropout'],
+                                          output_activation=hyperparameters['output_activation'],
+                                          batch_norm=hyperparameters['batch_norm'],
+                                          activation=hyperparameters['activation'])
+
+print (inverse_dnn)
+
+inverse_dnn.load_state_dict(torch.load('inverseDNN.pth'))
+inverse_dnn.eval()
+
+input_scaler = joblib.load('input_scaler_inverse.pkl')
+test_output_scaled = input_scaler.transform(test_output)
+
+test_output_torch = torch.tensor(test_output_scaled, dtype=torch.float32).to(device)
+
+# test_output_torch = torch.tensor(test_output, dtype=torch.float32).to(device)
+
+
+preds = inverse_dnn(test_output_torch)
+preds = preds.detach().cpu().numpy()
+print (preds)
+scaler = joblib.load('output_scaler_inverse.pkl')
+preds = scaler.inverse_transform(preds)
+print (preds)
 
 
 
-
-
-
-# predictions = model.predict(test_input)
-# predictions = forward_model(test_input)
-
-# # name = 'airfoil_benchmark'
-# # model = load_model(name).load()
-# # f = benchmark_functions(name, model)
-# # lb, ub = f.get_bounds()
-# # def evaluation_function(x):
+name = 'airfoil_benchmark'
+model = load_model(name).load()
+f = benchmark_functions(name, model)
+lb, ub = f.get_bounds()
+def evaluation_function(x):
     
-# #     value = f.evaluate(x)
+    value = f.evaluate(x)
     
-# #     return value
+    return value
 
-# # predictions = evaluation_function(preds)
+predictions = evaluation_function(preds)
 
 
-# rmse_list = np.array([np.sqrt(mean_squared_error(test_output[i], predictions[i])) for i in range(len(predictions))])
+rmse_list = np.array([np.sqrt(mean_squared_error(test_output[i], predictions[i])) for i in range(len(predictions))])
                           
-# print ('MEAN', np.mean(rmse_list))         
-# print ('MAX', np.max(rmse_list))         
+print ('MEAN', np.mean(rmse_list))         
+print ('MAX', np.max(rmse_list))         
 
 # import matplotlib.pyplot as plt
 
-# for i in range(20):
+# for i in range(5):
 #     plt.figure()
 #     plt.plot(np.arange(0, len(predictions[i]), 1), predictions[i], 'g-')
 #     plt.plot(np.arange(0, len(test_output[i]), 1), test_output[i], 'r-')
