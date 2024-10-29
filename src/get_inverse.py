@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import joblib
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -12,7 +13,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 class inverseDNN:
     
     def __init__(self, X, y, hyperparameters, validation_split=0.1,
-                 criterion='rmse', optimizer='adam', verbose=True, early_stopping_patience=10, forward_model_hyperparameters=None):
+                 criterion='rmse', optimizer='adam', verbose=False, 
+                 early_stopping_patience=10, forward_model_hyperparameters=None):
         
         self.X = X
         self.y = y
@@ -148,5 +150,11 @@ class inverseDNN:
                     break
 
         torch.save(self.model.state_dict(), 'inverseDNN.pth')
+        if self.sc_output is not None:
+            joblib.dump(self.sc_output, 'output_scaler_inverse.pkl')
+        if self.sc_input is not None:
+            joblib.dump(self.sc_input, 'input_scaler_inverse.pkl')
+            
+        
         
         

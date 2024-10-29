@@ -12,7 +12,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 class forwardDNN:
     
     def __init__(self, X, y, hyperparameters, validation_split=0.1,
-                 criterion='rmse', optimizer='adam', verbose=True, early_stopping_patience=10):
+                 criterion='rmse', optimizer='adam', verbose=False, early_stopping_patience=10):
         
         self.X = X
         self.y = y
