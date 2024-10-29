@@ -5,12 +5,13 @@ from sklearn.model_selection import RandomizedSearchCV
 import sklearn.metrics
 import numpy as np
 from DNNRegressor import TorchDNNRegressor
+# from ensemble_regressor import EnsembleRegressor
 
 
 class get_hyperparameters:
     def __init__(self, X, y, param_dist, n_iter=100, cv=3, 
                  scoring='neg_root_mean_squared_error', n_jobs=1,
-                 verbose=2, criterion='mse', seed=11, forward_model=None):
+                 verbose=2, criterion='rmse', seed=11, forward_model=None):
         
         self.X = X
         self.y = y
@@ -39,7 +40,7 @@ class get_hyperparameters:
         random_search.fit(self.X, self.y)
         best_params = random_search.best_params_
         
-        print("Best parameters found: ", best_params)
+        #print("Best parameters found: ", best_params)
 
         return best_params
 
