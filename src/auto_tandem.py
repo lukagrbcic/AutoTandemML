@@ -1,8 +1,10 @@
 import numpy as np
 import sys
+import joblib
 
 from ensemble_regressor import EnsembleRegressor
 import active_learning as al
+
 
 sys.path.insert(0, 'samplers')
 sys.path.insert(1, 'models')
@@ -47,6 +49,10 @@ class AutoTNN:
         
         _, model, X_hf, y_hf = run.run()
         
+        joblib.dump(model, 'forward_model.pkl')
+        np.save('x_hf.npy', X_hf)
+        np.save('y_hf.npy', y_hf)
+        
         return model, X_hf, y_hf
     
     def get_lf_samples(self, model):
@@ -59,6 +65,7 @@ class AutoTNN:
     def get_inverse_model(self):
         
         self.forward_model, X_hf, y_hf = self.get_foward_model()
+
         X, y = self.get_lf_samples(self.forward_model)
         
         
