@@ -9,7 +9,7 @@ import torch.optim as optim
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-class forward_DNN:
+class forwardDNN:
     
     def __init__(self, X, y, hyperparameters, validation_split=0.1,
                  criterion='rmse', optimizer='adam', verbose=True, early_stopping_patience=10):
@@ -102,7 +102,7 @@ class forward_DNN:
             with torch.no_grad():
                 val_outputs = self.model(X_val_tensor)
        
-                val_loss = self.criterion(val_outputs, y_val_tensor).item()
+                val_loss = self.criterion(val_outputs, y_val_tensor)
                 
             if self.verbose == True:
                 print(f"Epoch {epoch+1}/{epochs}, Training Loss: {loss.item()}, Validation Loss: {val_loss}")
