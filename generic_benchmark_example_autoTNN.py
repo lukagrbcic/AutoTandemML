@@ -20,20 +20,20 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-# bench = 'airfoils'
-# name = 'airfoil_benchmark'
-# model = load_model(name).load()
-# f = benchmark_functions(name, model)
+bench = 'airfoils'
+name = 'airfoil_benchmark'
+model = load_model(name).load()
+f = benchmark_functions(name, model)
 
 
 # bench = 'friedman' #(deep ensembles)
 # name = 'friedman_multioutput_benchmark'
 # f = benchmark_functions(name)
 
-bench = 'inconel' #(random forests)
-name = 'inconel_benchmark'
-model = load_model(name).load()
-f = benchmark_functions(name, model)
+# bench = 'inconel' #(random forests)
+# name = 'inconel_benchmark'
+# model = load_model(name).load()
+# f = benchmark_functions(name, model)
 
 lb, ub = f.get_bounds()
 
@@ -46,13 +46,13 @@ test_data = (test_input, test_output)
 init_size=20
 batch_size=10
 max_samples=200
-sampler='random'
+sampler='model_uncertainty'
 
-# ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in [[0.1, 10], [0.5,50], [0.8, 75], [1,100], [10, 125]]]             
-# algorithm = ('xgb_ensemble', EnsembleRegressor(ensemble))
+ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in [[0.1, 10], [0.5,50], [0.8, 75], [1,100], [10, 125]]]             
+algorithm = ('xgb_ensemble', EnsembleRegressor(ensemble))
 
 
-algorithm = ('rf', RandomForestRegressor())
+# algorithm = ('rf', RandomForestRegressor())
 
 
 # ensemble = []
@@ -64,4 +64,4 @@ algorithm = ('rf', RandomForestRegressor())
              
 run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, lf_samples=1000, sampler=sampler)
 forward_model, X_hf, y_hf = run.get_foward_model()
-X_lf, y_lf = run.get_lf_samples(forward_model)
+# X_lf, y_lf = run.get_lf_samples(forward_model)
