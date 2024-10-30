@@ -68,3 +68,4 @@ algorithm = ('mlp_ensemble', EnsembleRegressor(ensemble))
              
 run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, sampler=sampler)
 run.get_inverse_DNN()
+inverse_model_config = np.load('inverseDNN/model_config.npy', allow_pickle=True).item()
