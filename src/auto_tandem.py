@@ -145,6 +145,8 @@ class AutoTNN:
                                         param_dist, n_iter=self.combinations, 
                                         forward_model_hyperparameters=fwd_hyperparameters).run()
         
+        np.save('inverseDNN/model_config.npy', self.inverse_hyperparameters)
+        
         if self.verbose == True:
             print ('Training inverse DNN')
             
