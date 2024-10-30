@@ -504,3 +504,13 @@ _results
 /y_hf_random.npy
 /y_mf_model_uncertainty.npy
 /y_mf_random.npy
+/x_hf_modelHC_uncertainty_friedman.npy
+/x_hf_model_uncertainty_airfoils.npy
+/x_hf_model_uncertainty_friedman.npy
+/x_hf_model_uncertainty_friedman_100.npy
+/x_hf_model_uncertainty_inconel.npy
+/y_hf_modelHC_uncertainty_friedman.npy
+/y_hf_model_uncertainty_airfoils.npy
+/y_hf_model_uncertainty_friedman.npy
+/y_hf_model_uncertainty_friedman_100.npy
+/y_hf_model_uncertainty_inconel.npy
