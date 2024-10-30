@@ -56,7 +56,7 @@ class TorchDNNRegressor(BaseEstimator, RegressorMixin):
                                                   batch_norm=hyperparameters['batch_norm'],
                                                   activation=hyperparameters['activation'])
 
-        forward_dnn.load_state_dict(torch.load('forwardDNN.pth'))
+        forward_dnn.load_state_dict(torch.load('../forwardDNN/forwardDNN.pth'))
         forward_dnn.eval()
         
         return forward_dnn

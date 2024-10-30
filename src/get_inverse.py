@@ -39,7 +39,7 @@ class inverseDNN:
                                                   batch_norm=hyperparameters['batch_norm'],
                                                   activation=hyperparameters['activation'])
 
-        forward_dnn.load_state_dict(torch.load('forwardDNN.pth'))
+        forward_dnn.load_state_dict(torch.load('forwardDNN/forwardDNN.pth'))
         forward_dnn.eval()
         
         return forward_dnn
@@ -149,11 +149,11 @@ class inverseDNN:
                         print("Early stopping triggered")
                     break
 
-        torch.save(self.model.state_dict(), 'inverseDNN.pth')
+        torch.save(self.model.state_dict(), 'inverseDNN/inverseDNN.pth')
         if self.sc_output is not None:
-            joblib.dump(self.sc_output, 'output_scaler_inverse.pkl')
+            joblib.dump(self.sc_output, 'inverseDNN/output_scaler_inverse.pkl')
         if self.sc_input is not None:
-            joblib.dump(self.sc_input, 'input_scaler_inverse.pkl')
+            joblib.dump(self.sc_input, 'inverseDNN/input_scaler_inverse.pkl')
             
         
         
