@@ -10,8 +10,15 @@ sys.path.insert(0, 'samplers')
 sys.path.insert(1, 'models')
 
 from generate_samples import samplers
+from sklearn.metrics import *
+from optimize_inverse import get_hyperparameters
+from DNNRegressor import TorchDNNRegressor
+from model_factory import ModelFactory
+from get_forward import forwardDNN
+from get_inverse import inverseDNN
+import torch
 
-
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class AutoTNN:
     
@@ -23,7 +30,10 @@ class AutoTNN:
                  test_data,
                  lf_samples=0,
                  sampler='model_uncertainty',
-                 verbose=1, forward_model=None):
+                 verbose=1, combinations=50, 
+                 forward_param_dist=None, 
+                 inverse_param_dist=None,
+                 forward_model=None):
         
         self.f = f
         self.lb = lb
@@ -36,6 +46,9 @@ class AutoTNN:
         self.lf_samples = lf_samples
         self.sampler = sampler
         self.verbose = verbose
+        self.combinations = combinations
+        self.forward_param_dist = forward_param_dist
+        self.inverse_param_dist = inverse_param_dist
         self.forward_model = forward_model
     
     
@@ -50,8 +63,8 @@ class AutoTNN:
         _, model, X_hf, y_hf = run.run()
         
         # joblib.dump(model, f'forward_model_{self.sampler}.pkl')
-        np.save(f'x_hf_{self.sampler}.npy', X_hf)
-        np.save(f'y_hf_{self.sampler}.npy', y_hf)
+        # np.save(f'x_hf_{self.sampler}.npy', X_hf)
+        # np.save(f'y_hf_{self.sampler}.npy', y_hf)
         
         return model, X_hf, y_hf
     
@@ -62,16 +75,86 @@ class AutoTNN:
         
         return X, y
     
-    def get_inverse_model(self):
+    def get_forward_DNN(self, X, y):
         
+        
+        if self.forward_param_dist is None:
+        
+            forward_param_dist = {
+                'model_type': ['mlp'],
+                'hidden_layers': [[64], [128], [256], [128, 128],
+                                  [256, 256], [512, 512], [64, 128, 64],
+                                  [128, 256, 128], [256, 512, 256],
+                                  [64, 128, 256, 128, 64]],
+                'dropout': [0.0, 0.2],
+                'batch_norm': [False, True],
+                'activation': ['relu', 'leaky_relu'],
+                'epochs': [100, 200, 300, 1000],
+                'batch_size': [32, 64],
+                'learning_rate': [0.001, 0.01, 0.1],
+                'input_scaler': ['MinMax', 'Standard'],
+                'output_scaler': ['MinMax', 'Standard'],
+                'output_activation': [None]
+            }
+        
+        else: forward_param_dist = self.forward_param_dist
+    
+        fwd_hyperparameters = get_hyperparameters(X, y, forward_param_dist, n_iter=self.combinations).run()
+        forwardDNN(X, y, fwd_hyperparameters).train_save()
+        
+        return fwd_hyperparameters
+        
+    
+    def get_inverse_DNN(self):
+        
+        if self.verbose == True:
+            print ('Generating dataset')
+            
         self.forward_model, X_hf, y_hf = self.get_foward_model()
+        
+        if self.verbose == True:
+            print ('Optimizing and training forward DNN')
+            
+        fwd_hyperparameters = self.get_forward_DNN(X_hf, y_hf)
+        
+        
+        if self.verbose == True:
+            print ('Optimizing inverse DNN')
+            
+        if self.inverse_param_dist is None:
+            param_dist = {
+                'model_type': ['mlp'],
+                'hidden_layers': [[64], [128], [256], [128, 128],
+                                  [256, 256], [512, 512], [64, 128, 64],
+                                  [128, 256, 128], [256, 512, 256], [64, 128, 256, 128, 64]],
+                'dropout': [0.0, 0.2],
+                'batch_norm': [False, True],
+                'activation': ['relu', 'leaky_relu'],
+                'epochs': [100, 200, 300, 1000],
+                'batch_size': [32, 64],
+                'learning_rate': [0.001, 0.01, 0.1],
+                'input_scaler': [fwd_hyperparameters['output_scaler']],
+                'output_scaler': [fwd_hyperparameters['input_scaler']],
+                'output_activation': [None]
+            }
+        else:
+            param_dist = self.inverse_param_dist
+        
+        
+        self.inverse_hyperparameters = get_hyperparameters(y_hf, X_hf, 
+                                        param_dist, n_iter=self.combinations, 
+                                        forward_model_hyperparameters=fwd_hyperparameters).run()
+        
+        if self.verbose == True:
+            print ('Training inverse DNN')
+            
+        inverseDNN(y_hf, X_hf, self.inverse_hyperparameters, 
+                   forward_model_hyperparameters=fwd_hyperparameters, verbose=True).train_save()
+            
+        
+        
 
-        # X, y = self.get_lf_samples(self.forward_model)
-        
-        # np.save(f'x_mf_{self.sampler}.npy', np.vstack((X_hf, X)))
-        # np.save(f'y_mf_{self.sampler}.npy', np.vstack((y_hf, y)))        
-        
-        
+
         
         
         

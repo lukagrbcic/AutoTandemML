@@ -50,8 +50,8 @@ test_data = (test_input, test_output)
 
 init_size=20
 batch_size=10
-max_samples=200
-sampler='modelHC_uncertainty'
+max_samples=50
+sampler='model_uncertainty'
 # sampler='random'
 
 # ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in [[0.1, 10], [0.5,50], [0.8, 75], [1,100], [10, 125]]]             
@@ -67,6 +67,4 @@ for i in range(20):
 algorithm = ('mlp_ensemble', EnsembleRegressor(ensemble))           
              
 run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, sampler=sampler)
-# forward_model, X_hf, y_hf = run.get_foward_model()
-
-run.get_inverse_model()
+run.get_inverse_DNN()
