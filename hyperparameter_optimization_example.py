@@ -33,12 +33,12 @@ name = 'airfoil_benchmark'
 model = load_model(name).load()
 f = benchmark_functions(name, model)
 
-name = 'inconel_benchmark'
-model = load_model(name).load()
-f = benchmark_functions(name, model)
+# name = 'inconel_benchmark'
+# model = load_model(name).load()
+# f = benchmark_functions(name, model)
 
-name = 'friedman_multioutput_benchmark'
-f = benchmark_functions(name)
+# name = 'friedman_multioutput_benchmark'
+# f = benchmark_functions(name)
 
 
 lb, ub = f.get_bounds()
@@ -50,13 +50,13 @@ def evaluation_function(x):
 x_sampled_rand = np.random.uniform(lb, ub, size=(200, len(lb)))
 y_sampled_rand = evaluation_function(x_sampled_rand)
     
-bench = 'friedman'
+bench = 'airfoils'
 test_input = np.load(f'../InverseBench/test_data/{bench}_data/input_test_data.npy')
 test_output = np.load(f'../InverseBench/test_data/{bench}_data/output_test_data.npy')
     
 
 
-for i in range(30):
+for i in range(15):
     print ('Run', i)
 
     param_dist = {
