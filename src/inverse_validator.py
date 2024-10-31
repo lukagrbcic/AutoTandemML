@@ -80,7 +80,7 @@ class inverse_model_analysis:
         r2 = r2_score(self.test_output, prediction_output)
         rmse = np.sqrt(mean_squared_error(self.test_output, prediction_output))
         mape = mean_absolute_percentage_error(self.test_output, prediction_output)
-        nmax_ae = np.max(np.abs(self.test_output - prediction_output), axis=0)/np.max(np.abs(self.test_output - np.mean(self.test_output, axis=0)))
+        nmax_ae = np.mean(np.max(np.abs(self.test_output - prediction_output), axis=0)/np.max(np.abs(self.test_output - np.mean(self.test_output, axis=0))))
         
         return r2, rmse, mape, nmax_ae
 
