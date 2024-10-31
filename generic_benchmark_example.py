@@ -19,9 +19,10 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-# bench = 'friedman' #(deep ensembles)
-# name = 'friedman_multioutput_benchmark'
-# f = benchmark_functions(name)
+bench = 'friedman' #(deep ensembles)
+name = 'friedman_multioutput_benchmark'
+model = load_model(name).load()
+f = benchmark_functions(name, model)
 
 # bench = 'inconel' #(random forests)
 # name = 'inconel_benchmark'
