@@ -54,36 +54,35 @@ init_size=20
 batch_size=10
 max_samples=200
 sampler='model_uncertainty'
-# sampler='random'
 
 r2_ = []
 rmse_ = []
 mape_ = []
 nmax_ae_ = []
-runs = 1
+runs = 10
+n = 50
 
-for i in range(runs):
-    print ('Run', i+1)
-    run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, 
-                  sampler=sampler, combinations=50)
-    run.get_inverse_DNN()
-    r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics()
+# for i in range(runs):
+#     print ('Run', i+1)
+#     run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, 
+#                   sampler=sampler, combinations=n)
+#     run.get_inverse_DNN()
+#     r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics()
     
-    r2_.append(r2)
-    rmse_.append(rmse)
-    mape_.append(mape)
-    nmax_ae_.append(nmax_ae)
+#     r2_.append(r2)
+#     rmse_.append(rmse)
+#     mape_.append(mape)
+#     nmax_ae_.append(nmax_ae)
 
-print ('unc')
-print ('R2:', np.mean(r2_), np.std(r2_))
-print ('RMSE:', np.mean(rmse_), np.std(rmse_))
-print ('MAPE:', np.mean(mape_), np.std(mape_))
-print ('NMAX_AE:', np.mean(nmax_ae_), np.std(nmax_ae_))
+# print (sampler)
+# print ('R2:', np.mean(r2_), np.std(r2_))
+# print ('RMSE:', np.mean(rmse_), np.std(rmse_))
+# print ('MAPE:', np.mean(mape_), np.std(mape_))
+# print ('NMAX_AE:', np.mean(nmax_ae_), np.std(nmax_ae_))
 
 
 sampler='random'
 
-
 r2_ = []
 rmse_ = []
 mape_ = []
@@ -91,8 +90,12 @@ nmax_ae_ = []
 
 for i in range(runs):
     print ('Run', i+1)
+    
+    x_sampled_rand = np.random.uniform(lb, ub, size=(max_samples, len(lb)))
+    y_sampled_rand = f.evaluate(x_sampled_rand)
+    
     run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, 
-                  sampler=sampler, combinations=50)
+                  sampler=sampler, combinations=n, x_init=x_sampled_rand, y_init=y_sampled_rand)
     run.get_inverse_DNN()
     r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics()
     
@@ -101,7 +104,7 @@ for i in range(runs):
     mape_.append(mape)
     nmax_ae_.append(nmax_ae)
 
-print ('random')
+print (sampler)
 print ('R2:', np.mean(r2_), np.std(r2_))
 print ('RMSE:', np.mean(rmse_), np.std(rmse_))
 print ('MAPE:', np.mean(mape_), np.std(mape_))
