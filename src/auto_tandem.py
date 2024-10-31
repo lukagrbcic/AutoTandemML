@@ -54,8 +54,6 @@ class AutoTNN:
     
     def get_foward_model(self):
         
-        
-    
         run = al.activeLearner(self.f, self.lb, self.ub,
                                 self.init_size, self.batch_size,
                                 self.max_samples, self.sampler,

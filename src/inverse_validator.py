@@ -77,16 +77,12 @@ class inverse_model_analysis:
         
         prediction_output = self.get_predictions()
         
-        print ('r2', r2_score(self.test_output, prediction_output))
-        print ('rmse', np.sqrt(mean_squared_error(self.test_output, prediction_output)))
-        print ('mape', mean_absolute_percentage_error(self.test_output, prediction_output))
-
-
-        # for i in range(10):
-        #     plt.figure()
-        #     plt.plot(np.arange(0, len(prediction_output[i]), 1), prediction_output[i], 'r-')
-        #     plt.plot(np.arange(0, len(self.test_output[i]), 1), self.test_output[i], 'g-')
-
+        r2 = r2_score(self.test_output, prediction_output)
+        rmse = np.sqrt(mean_squared_error(self.test_output, prediction_output))
+        mape = mean_absolute_percentage_error(self.test_output, prediction_output)
+        nmax_ae = np.max(np.abs(self.test_output - prediction_output), axis=0)/np.max(np.abs(self.test_output - np.mean(self.test_output, axis=0)))
+        
+        return r2, rmse, mape, nmax_ae
 
 
         
