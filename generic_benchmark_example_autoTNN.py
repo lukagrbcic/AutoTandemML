@@ -42,12 +42,6 @@ test_input = np.load(f'../InverseBench/test_data/{bench}_data/input_test_data.np
 test_output = np.load(f'../InverseBench/test_data/{bench}_data/output_test_data.npy')
 test_data = (test_input, test_output)
 
-
-# init_size=50
-# batch_size=50
-# max_samples=200
-# sampler='random'
-
 init_size=20
 batch_size=10
 max_samples=50
@@ -69,3 +63,19 @@ algorithm = ('mlp_ensemble', EnsembleRegressor(ensemble))
 run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, sampler=sampler)
 run.get_inverse_DNN()
 inverse_model_config = np.load('inverseDNN/model_config.npy', allow_pickle=True).item()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
