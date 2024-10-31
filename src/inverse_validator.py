@@ -14,54 +14,30 @@ from model_factory import ModelFactory
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-name = 'airfoil_benchmark'
-model = load_model(name).load()
-f = benchmark_functions(name, model)
-
-# name = 'inconel_benchmark'
-# model = load_model(name).load()
-# f = benchmark_functions(name, model)
-
-# name = 'friedman_multioutput_benchmark'
-# f = benchmark_functions(name)
-
-def evaluation_function(x):
-    value = f.evaluate(x)
-    return value
-
-
-
-
-
 class inverse_model_analysis:
     
     def __init__(self, test_input, test_output, benchmark,
-                       model_config_path='inverseDNN/', 
-                       inverse_path='inverseDNN/', 
-                       scaler_path='inverseDNN/'):
+                       model_config_path='inverseDNN', 
+                       inverse_model_path='inverseDNN', 
+                       scalers_path='inverseDNN'):
         
         self.test_input = test_input
         self.test_output = test_output
         self.benchmark = benchmark
         self.model_config_path = model_config_path
-        self.inverse_path = inverse_path
+        self.inverse_model_path = inverse_model_path
         self.scalers_path = scalers_path
         
-        if self.benchmark is not 'friedman_multioutput_benchmark':
-            self.model = load_model(self.benchmark).load()
+        self.model = load_model(self.benchmark).load()
     
-    def model_eval(self, x):
+    def evaluate(self, x):
         
-        f = benchmark_functions(self.benchmark)
+        return benchmark_functions(self.benchmark, self.model).evaluate(x)
         
-        return f.evaluate(x)
-    
-    def func_eval(self, x)
 
+    def get_inverse_dnn(self):
         
-        
-        
-        
+        hyperparameters = np.load(f'{self.model_config_path}model_config.npy', allow_pickle=True).item()
         
         inverse_dnn = ModelFactory().create_model(model_type=hyperparameters['model_type'], 
                                                   input_size=np.shape(y_sampled)[1], 
@@ -72,20 +48,31 @@ class inverse_model_analysis:
                                                   batch_norm=hyperparameters['batch_norm'],
                                                   activation=hyperparameters['activation'])
         
-        inverse_dnn.load_state_dict(torch.load('inverseDNN.pth'))
+        inverse_dnn.load_state_dict(torch.load(f'{self.inverse_model_path}/inverseDNN.pth'))
         inverse_dnn.eval()
         
-        input_scaler = joblib.load('input_scaler_inverse.pkl')
-        test_output_scaled = input_scaler.transform(test_output)
+        return inverse_dnn
+    
+    def get_scalers(self):
+
+        input_scaler = joblib.load(f'{self.scalers_path}/input_scaler_inverse.pkl')
+        output_scaler = joblib.load(f'{self.scalers_path}/output_scaler_inverse.pkl')
+
+        return input_scaler, output_scaler
+    
+    
+
+
+
+        # test_output_scaled = input_scaler.transform(test_output)
         
-        test_output_torch = torch.tensor(test_output_scaled, dtype=torch.float32).to(device)
+        # test_output_torch = torch.tensor(test_output_scaled, dtype=torch.float32).to(device)
         
         
-        preds = inverse_dnn(test_output_torch)
-        preds = preds.detach().cpu().numpy()
-        scaler = joblib.load('output_scaler_inverse.pkl')
-        preds = scaler.inverse_transform(preds)
+        # preds = inverse_dnn(test_output_torch)
+        # preds = preds.detach().cpu().numpy()
+        # preds = scaler.inverse_transform(preds)
         
         
-        predictions = evaluation_function(preds)
+        # predictions = evaluation_function(preds)
         
