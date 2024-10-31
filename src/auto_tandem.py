@@ -33,7 +33,9 @@ class AutoTNN:
                  verbose=0, combinations=100, 
                  forward_param_dist=None, 
                  inverse_param_dist=None,
-                 forward_model=None):
+                 forward_model=None,
+                 x_init=[],
+                 y_init=[]):
         
         self.f = f
         self.lb = lb
@@ -50,6 +52,8 @@ class AutoTNN:
         self.forward_param_dist = forward_param_dist
         self.inverse_param_dist = inverse_param_dist
         self.forward_model = forward_model
+        self.x_init = x_init
+        self.y_init = y_init
     
     
     def get_foward_model(self):
@@ -106,8 +110,12 @@ class AutoTNN:
         if self.verbose == True:
             
             print ('Generating dataset')
-            
-        self.forward_model, X_hf, y_hf = self.get_foward_model()
+        
+        if len(self.x_init) == 0:    
+            self.forward_model, X_hf, y_hf = self.get_foward_model()
+        else: 
+            X_hf = self.x_init
+            y_hf = self.y_init
         
         if self.lf_samples > 0:
             
