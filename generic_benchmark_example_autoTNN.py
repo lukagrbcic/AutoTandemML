@@ -51,7 +51,6 @@ sampler='model_uncertainty'
 # ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in [[0.1, 10], [0.5,50], [0.8, 75], [1,100], [10, 125]]]             
 # algorithm = ('xgb_ensemble', EnsembleRegressor(ensemble))
 
-
 # algorithm = ('rf', RandomForestRegressor())
 
 ensemble = []
