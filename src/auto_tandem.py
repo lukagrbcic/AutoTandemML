@@ -30,7 +30,7 @@ class AutoTNN:
                  test_data,
                  lf_samples=0,
                  sampler='model_uncertainty',
-                 verbose=1, combinations=50, 
+                 verbose=0, combinations=100, 
                  forward_param_dist=None, 
                  inverse_param_dist=None,
                  forward_model=None):
@@ -61,11 +61,7 @@ class AutoTNN:
                                 verbose=self.verbose, return_model=True, return_hf_samples=True)
         
         _, model, X_hf, y_hf = run.run()
-        
-        # joblib.dump(model, f'forward_model_{self.sampler}.pkl')
-        # np.save(f'x_hf_{self.sampler}.npy', X_hf)
-        # np.save(f'y_hf_{self.sampler}.npy', y_hf)
-        
+                
         return model, X_hf, y_hf
     
     def get_lf_samples(self, model):
@@ -108,20 +104,29 @@ class AutoTNN:
     def get_inverse_DNN(self):
         
         if self.verbose == True:
+            
             print ('Generating dataset')
             
         self.forward_model, X_hf, y_hf = self.get_foward_model()
         
+        if self.lf_samples > 0:
+            
+            X_lf, y_lf = self.get_lf_samples(self.forward_model)
+            X_hf = np.vstack((X_lf, X_hf))
+            y_hf = np.vstack((y_lf, y_hf))
+        
         if self.verbose == True:
+            
             print ('Optimizing and training forward DNN')
             
         fwd_hyperparameters = self.get_forward_DNN(X_hf, y_hf)
         
-        
         if self.verbose == True:
+            
             print ('Optimizing inverse DNN')
             
         if self.inverse_param_dist is None:
+            
             param_dist = {
                 'model_type': ['mlp'],
                 'hidden_layers': [[64], [128], [256], [128, 128],
@@ -137,7 +142,9 @@ class AutoTNN:
                 'output_scaler': [fwd_hyperparameters['input_scaler']],
                 'output_activation': [None]
             }
+            
         else:
+            
             param_dist = self.inverse_param_dist
         
         
@@ -148,10 +155,11 @@ class AutoTNN:
         np.save('inverseDNN/model_config.npy', self.inverse_hyperparameters)
         
         if self.verbose == True:
+            
             print ('Training inverse DNN')
             
         inverseDNN(y_hf, X_hf, self.inverse_hyperparameters, 
-                   forward_model_hyperparameters=fwd_hyperparameters, verbose=True).train_save()
+                   forward_model_hyperparameters=fwd_hyperparameters, verbose=False).train_save()
             
         
         
