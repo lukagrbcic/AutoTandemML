@@ -60,9 +60,9 @@ class AutoTNN:
                                 self.init_size, self.batch_size,
                                 self.max_samples, self.sampler,
                                 self.algorithm, self.test_data,
-                                verbose=self.verbose, return_model=False, return_hf_samples=True)
+                                verbose=self.verbose, return_model=True, return_hf_samples=True)
         
-        _, _, X_hf, y_hf = run.run()
+        _, model, X_hf, y_hf = run.run()
 
         return model, X_hf, y_hf
     
@@ -109,13 +109,13 @@ class AutoTNN:
             
             print ('Generating dataset')
             
-        _, X_hf, y_hf = self.get_foward_model()
+        self.forward_model, X_hf, y_hf = self.get_foward_model()
         
-        # if self.lf_samples > 0:
+        if self.lf_samples > 0:
             
-        #     X_lf, y_lf = self.get_lf_samples(self.forward_model)
-        #     X_hf = np.vstack((X_lf, X_hf))
-        #     y_hf = np.vstack((y_lf, y_hf))
+            X_lf, y_lf = self.get_lf_samples(self.forward_model)
+            X_hf = np.vstack((X_lf, X_hf))
+            y_hf = np.vstack((y_lf, y_hf))
         
         if self.verbose == True:
             
