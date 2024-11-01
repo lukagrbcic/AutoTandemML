@@ -21,6 +21,9 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
+print ('airfoil')
+
+
 bench = 'airfoils' #(xgb ensemble)
 name = 'airfoil_benchmark'
 model = load_model(name).load()
@@ -46,13 +49,117 @@ algorithm = ('xgb_ensemble', EnsembleRegressor(ensemble))
 
 lb, ub = f.get_bounds()
 
+test_input = np.load(f'../InverseBench/test_data/{bench}_data/input_test_data.npy')[:1000]
+test_output = np.load(f'../InverseBench/test_data/{bench}_data/output_test_data.npy')[:1000]
+test_data = (test_input, test_output)
+
+init_size=10
+batch_size=5
+max_samples=100
+
+sampler='model_uncertainty'
+
+r2_ = []
+rmse_ = []
+mape_ = []
+nmax_ae_ = []
+runs = 1
+n = 50
+
+for i in range(runs):
+    print ('Run', i+1)
+
+    run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, 
+                  sampler=sampler, combinations=n)
+    run.get_inverse_DNN()
+    r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics()
+    
+    r2_.append(r2)
+    rmse_.append(rmse)
+    mape_.append(mape)
+    nmax_ae_.append(nmax_ae)
+
+print (sampler)
+print ('R2:', np.mean(r2_), np.std(r2_))
+print ('RMSE:', np.mean(rmse_), np.std(rmse_))
+print ('MAPE:', np.mean(mape_), np.std(mape_))
+print ('NMAX_AE:', np.mean(nmax_ae_), np.std(nmax_ae_))
+
+
+for i in range(runs):
+    print ('Run', i+1)
+
+    run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, lf_samples=200,
+                  sampler=sampler, combinations=n)
+    run.get_inverse_DNN()
+    r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics()
+    
+    r2_.append(r2)
+    rmse_.append(rmse)
+    mape_.append(mape)
+    nmax_ae_.append(nmax_ae)
+
+print (sampler)
+print ('R2:', np.mean(r2_), np.std(r2_))
+print ('RMSE:', np.mean(rmse_), np.std(rmse_))
+print ('MAPE:', np.mean(mape_), np.std(mape_))
+print ('NMAX_AE:', np.mean(nmax_ae_), np.std(nmax_ae_))
+
+
+sampler='random'
+
+r2_ = []
+rmse_ = []
+mape_ = []
+nmax_ae_ = []
+
+for i in range(runs):
+    print ('Run', i+1)
+
+    run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, 
+                  sampler=sampler, combinations=n)
+    run.get_inverse_DNN()
+    r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics()
+    
+    r2_.append(r2)
+    rmse_.append(rmse)
+    mape_.append(mape)
+    nmax_ae_.append(nmax_ae)
+
+print (sampler)
+print ('R2:', np.mean(r2_), np.std(r2_))
+print ('RMSE:', np.mean(rmse_), np.std(rmse_))
+print ('MAPE:', np.mean(mape_), np.std(mape_))
+print ('NMAX_AE:', np.mean(nmax_ae_), np.std(nmax_ae_))
+
+
+"""
+
+print ('friedman')
+
+
+bench = 'friedman' #(deep ensembles)
+name = 'friedman_multioutput_benchmark'
+model = load_model(name).load()
+f = benchmark_functions(name, model)
+ensemble = []
+for i in range(20):
+    ensemble.append(make_pipeline(StandardScaler(), MLPRegressor(hidden_layer_sizes=(100, 200, 100), 
+                                                                  random_state=i)))
+algorithm = ('mlp_ensemble', EnsembleRegressor(ensemble)) 
+
+
+
+lb, ub = f.get_bounds()
+
 test_input = np.load(f'../InverseBench/test_data/{bench}_data/input_test_data.npy')
 test_output = np.load(f'../InverseBench/test_data/{bench}_data/output_test_data.npy')
 test_data = (test_input, test_output)
 
 init_size=20
 batch_size=10
-max_samples=200
+max_samples=300
+
 sampler='model_uncertainty'
 
 r2_ = []
@@ -60,26 +167,24 @@ rmse_ = []
 mape_ = []
 nmax_ae_ = []
 runs = 10
-n = 50
+n = 100
 
-# for i in range(runs):
-#     print ('Run', i+1)
-#     run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, 
-#                   sampler=sampler, combinations=n)
-#     run.get_inverse_DNN()
-#     r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics()
+for i in range(runs):
+    run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, 
+                  sampler=sampler, combinations=n)
+    run.get_inverse_DNN()
+    r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics()
     
-#     r2_.append(r2)
-#     rmse_.append(rmse)
-#     mape_.append(mape)
-#     nmax_ae_.append(nmax_ae)
+    r2_.append(r2)
+    rmse_.append(rmse)
+    mape_.append(mape)
+    nmax_ae_.append(nmax_ae)
 
-# print (sampler)
-# print ('R2:', np.mean(r2_), np.std(r2_))
-# print ('RMSE:', np.mean(rmse_), np.std(rmse_))
-# print ('MAPE:', np.mean(mape_), np.std(mape_))
-# print ('NMAX_AE:', np.mean(nmax_ae_), np.std(nmax_ae_))
-
+print (sampler)
+print ('R2:', np.mean(r2_), np.std(r2_))
+print ('RMSE:', np.mean(rmse_), np.std(rmse_))
+print ('MAPE:', np.mean(mape_), np.std(mape_))
+print ('NMAX_AE:', np.mean(nmax_ae_), np.std(nmax_ae_))
 
 sampler='random'
 
@@ -112,16 +217,81 @@ print ('NMAX_AE:', np.mean(nmax_ae_), np.std(nmax_ae_))
 
 
 
+print ('Inconel')
+
+# bench = 'inconel' #(random forests)
+# name = 'inconel_benchmark'
+# model = load_model(name).load()
+# f = benchmark_functions(name, model)
+# algorithm = ('rf', RandomForestRegressor())
+
+lb, ub = f.get_bounds()
+
+test_input = np.load(f'../InverseBench/test_data/{bench}_data/input_test_data.npy')
+test_output = np.load(f'../InverseBench/test_data/{bench}_data/output_test_data.npy')
+test_data = (test_input, test_output)
+
+init_size=20
+batch_size=10
+max_samples=300
+
+sampler='model_uncertainty'
+
+r2_ = []
+rmse_ = []
+mape_ = []
+nmax_ae_ = []
+runs = 10
+n = 100
+
+for i in range(runs):
+    run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, 
+                  sampler=sampler, combinations=n)
+    run.get_inverse_DNN()
+    r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics()
+    
+    r2_.append(r2)
+    rmse_.append(rmse)
+    mape_.append(mape)
+    nmax_ae_.append(nmax_ae)
+
+print (sampler)
+print ('R2:', np.mean(r2_), np.std(r2_))
+print ('RMSE:', np.mean(rmse_), np.std(rmse_))
+print ('MAPE:', np.mean(mape_), np.std(mape_))
+print ('NMAX_AE:', np.mean(nmax_ae_), np.std(nmax_ae_))
+
+sampler='random'
+
+r2_ = []
+rmse_ = []
+mape_ = []
+nmax_ae_ = []
+
+for i in range(runs):
+    print ('Run', i+1)
+    
+    x_sampled_rand = np.random.uniform(lb, ub, size=(max_samples, len(lb)))
+    y_sampled_rand = f.evaluate(x_sampled_rand)
+    
+    run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, 
+                  sampler=sampler, combinations=n, x_init=x_sampled_rand, y_init=y_sampled_rand)
+    run.get_inverse_DNN()
+    r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics()
+    
+    r2_.append(r2)
+    rmse_.append(rmse)
+    mape_.append(mape)
+    nmax_ae_.append(nmax_ae)
+
+print (sampler)
+print ('R2:', np.mean(r2_), np.std(r2_))
+print ('RMSE:', np.mean(rmse_), np.std(rmse_))
+print ('MAPE:', np.mean(mape_), np.std(mape_))
+print ('NMAX_AE:', np.mean(nmax_ae_), np.std(nmax_ae_))
 
 
 
-
-
-
-
-
-
-
-
+"""
 
 
