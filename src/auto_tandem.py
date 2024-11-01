@@ -120,7 +120,7 @@ class AutoTNN:
         fwd_hyperparameters = get_hyperparameters(X, y, forward_param_dist, n_iter=self.combinations).run()
         forwardDNN(X, y, fwd_hyperparameters).train_save()
         
-        print ('Forward hyperparameters:', fwd_hyperparameters)
+        # print ('Forward hyperparameters:', fwd_hyperparameters)
 
         
         return fwd_hyperparameters
@@ -190,7 +190,7 @@ class AutoTNN:
                                         param_dist, seed=np.random.randint(1,10000), n_iter=self.combinations, 
                                         forward_model_hyperparameters=fwd_hyperparameters).run()
         
-        print ('Inverse hyperparameters:', self.inverse_hyperparameters)
+        # print ('Inverse hyperparameters:', self.inverse_hyperparameters)
         
         np.save('inverseDNN/model_config.npy', self.inverse_hyperparameters)
         
