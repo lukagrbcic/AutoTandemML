@@ -78,6 +78,15 @@ class AutoTNN:
         
         return X, y
     
+    # def generate_hidden_layer_sizes(self, min_layers=1, max_layers=5, min_units=16, max_units=256, size=100):
+    #     hidden_layer_sizes = []
+    #     for _ in range(size):
+    #         n_layers = np.random.randint(min_layers, max_layers + 1)
+    #         units_options = [16, 32, 64, 128, 256, 512, 1024]
+    #         layer_sizes = np.random.choice(units_options, size=n_layers).tolist()
+    #         hidden_layer_sizes.append(tuple(layer_sizes))
+    #     return hidden_layer_sizes
+        
     def get_forward_DNN(self, X, y):
         
         
@@ -85,12 +94,18 @@ class AutoTNN:
         
             forward_param_dist = {
                 'model_type': ['mlp'],
-                'hidden_layers': [[64], [128], [256], [128, 128],
-                                  [256, 256], [512, 512], [64, 128, 64],
+                # 'hidden_layers': [[64], [128], [256], [128, 128],
+                #                   [256, 256], [512, 512], [64, 128, 64],
+                #                   [128, 256, 128], [256, 512, 256],
+                #                   [64, 128, 256, 128, 64]],
+                'hidden_layers': [[64, 128, 64],
                                   [128, 256, 128], [256, 512, 256],
                                   [64, 128, 256, 128, 64]],
-                'dropout': [0.0, 0.2],
-                'batch_norm': [False, True],
+                
+               # 'dropout': [0.0, 0.2],
+               # 'batch_norm': [False, True],
+               'dropout': [0.0],
+               'batch_norm': [False],
                 'activation': ['relu', 'leaky_relu'],
                 'epochs': [100, 200, 300, 1000],
                 'batch_size': [32, 64],
@@ -104,6 +119,9 @@ class AutoTNN:
     
         fwd_hyperparameters = get_hyperparameters(X, y, forward_param_dist, n_iter=self.combinations).run()
         forwardDNN(X, y, fwd_hyperparameters).train_save()
+        
+        print ('Forward hyperparameters:', fwd_hyperparameters)
+
         
         return fwd_hyperparameters
         
@@ -144,11 +162,16 @@ class AutoTNN:
             
             param_dist = {
                 'model_type': ['mlp'],
-                'hidden_layers': [[64], [128], [256], [128, 128],
-                                  [256, 256], [512, 512], [64, 128, 64],
-                                  [128, 256, 128], [256, 512, 256], [64, 128, 256, 128, 64]],
-                'dropout': [0.0, 0.2],
-                'batch_norm': [False, True],
+                # 'hidden_layers': [[64], [128], [256], [128, 128],
+                #                   [256, 256], [512, 512], [64, 128, 64],
+                #                   [128, 256, 128], [256, 512, 256], [64, 128, 256, 128, 64]],
+                'hidden_layers': [[64, 128, 64],
+                                  [128, 256, 128], [256, 512, 256],
+                                  [64, 128, 256, 128, 64]],
+               # 'dropout': [0.0, 0.2],
+               # 'batch_norm': [False, True],
+               'dropout': [0.0],
+               'batch_norm': [False],
                 'activation': ['relu', 'leaky_relu'],
                 'epochs': [100, 200, 300, 1000],
                 'batch_size': [32, 64],
@@ -166,6 +189,8 @@ class AutoTNN:
         self.inverse_hyperparameters = get_hyperparameters(y_hf, X_hf, 
                                         param_dist, seed=np.random.randint(1,10000), n_iter=self.combinations, 
                                         forward_model_hyperparameters=fwd_hyperparameters).run()
+        
+        print ('Inverse hyperparameters:', self.inverse_hyperparameters)
         
         np.save('inverseDNN/model_config.npy', self.inverse_hyperparameters)
         
