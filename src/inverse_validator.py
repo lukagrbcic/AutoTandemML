@@ -55,7 +55,6 @@ class inverse_model_analysis:
     def load_forward_dnn(self):
         
         hyperparameters = np.load(f'model_config.npy', allow_pickle=True).item()
-        print (hyperparameters)       
         
         forward_dnn = ModelFactory().create_model(model_type=hyperparameters['model_type'], 
                                                   input_size=np.shape(self.test_input)[1], 

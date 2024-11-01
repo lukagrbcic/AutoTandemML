@@ -65,7 +65,7 @@ class AutoTNN:
                                 self.init_size, self.batch_size,
                                 self.max_samples, self.sampler,
                                 self.algorithm, self.test_data,
-                                verbose=0, return_model=True, return_hf_samples=True)
+                                verbose=1, return_model=True, return_hf_samples=True)
         
         _, model, X_hf, y_hf = run.run()
 
@@ -92,28 +92,50 @@ class AutoTNN:
         
         if self.forward_param_dist is None:
         
+            # forward_param_dist = {
+            #     'model_type': ['mlp'],
+            #     # 'hidden_layers': [[64], [128], [256], [128, 128],
+            #     #                   [256, 256], [512, 512], [64, 128, 64],
+            #     #                   [128, 256, 128], [256, 512, 256],
+            #     #                   [64, 128, 256, 128, 64]],
+            #     'hidden_layers': [[64, 128, 64],
+            #                       [128, 256, 128], [256, 512, 256],
+            #                       [64, 128, 256, 128, 64]],
+                
+            #    # 'dropout': [0.0, 0.2],
+            #    # 'batch_norm': [False, True],
+            #    'dropout': [0.0],
+            #    'batch_norm': [False],
+            #     'activation': ['relu', 'leaky_relu'],
+            #     'epochs': [100, 200, 300, 1000],
+            #     'batch_size': [32, 64],
+            #     'learning_rate': [0.001, 0.01, 0.1],
+            #     'input_scaler': ['MinMax', 'Standard'],
+            #     'output_scaler': ['MinMax', 'Standard'],
+            #     'output_activation': [None]
+            # }
+            
             forward_param_dist = {
                 'model_type': ['mlp'],
                 # 'hidden_layers': [[64], [128], [256], [128, 128],
                 #                   [256, 256], [512, 512], [64, 128, 64],
                 #                   [128, 256, 128], [256, 512, 256],
                 #                   [64, 128, 256, 128, 64]],
-                'hidden_layers': [[64, 128, 64],
-                                  [128, 256, 128], [256, 512, 256],
-                                  [64, 128, 256, 128, 64]],
+                'hidden_layers': [[64, 128, 256, 128, 64]],
                 
                # 'dropout': [0.0, 0.2],
                # 'batch_norm': [False, True],
                'dropout': [0.0],
                'batch_norm': [False],
-                'activation': ['relu', 'leaky_relu'],
-                'epochs': [100, 200, 300, 1000],
-                'batch_size': [32, 64],
-                'learning_rate': [0.001, 0.01, 0.1],
-                'input_scaler': ['MinMax', 'Standard'],
-                'output_scaler': ['MinMax', 'Standard'],
+                'activation': ['relu'],
+                'epochs': [1000],
+                'batch_size': [32],
+                'learning_rate': [0.001],
+                'input_scaler': ['MinMax'],
+                'output_scaler': ['MinMax'],
                 'output_activation': [None]
             }
+            
         
         else: forward_param_dist = self.forward_param_dist
     
@@ -162,26 +184,49 @@ class AutoTNN:
             
         if self.inverse_param_dist is None:
             
+            # param_dist = {
+            #     'model_type': ['mlp'],
+            #     # 'hidden_layers': [[64], [128], [256], [128, 128],
+            #     #                   [256, 256], [512, 512], [64, 128, 64],
+            #     #                   [128, 256, 128], [256, 512, 256], [64, 128, 256, 128, 64]],
+            #     'hidden_layers': [[64, 128, 64],
+            #                       [128, 256, 128], [256, 512, 256],
+            #                       [64, 128, 256, 128, 64]],
+            #    # 'dropout': [0.0, 0.2],
+            #    # 'batch_norm': [False, True],
+            #    'dropout': [0.0],
+            #    'batch_norm': [False],
+            #     'activation': ['relu', 'leaky_relu'],
+            #     'epochs': [100, 200, 300, 1000],
+            #     'batch_size': [32, 64],
+            #     'learning_rate': [0.001, 0.01, 0.1],
+            #     'input_scaler': [fwd_hyperparameters['output_scaler']],
+            #     'output_scaler': [fwd_hyperparameters['input_scaler']],
+            #     'output_activation': [None]
+            # }
+            
+                      
             param_dist = {
                 'model_type': ['mlp'],
                 # 'hidden_layers': [[64], [128], [256], [128, 128],
                 #                   [256, 256], [512, 512], [64, 128, 64],
-                #                   [128, 256, 128], [256, 512, 256], [64, 128, 256, 128, 64]],
-                'hidden_layers': [[64, 128, 64],
-                                  [128, 256, 128], [256, 512, 256],
-                                  [64, 128, 256, 128, 64]],
+                #                   [128, 256, 128], [256, 512, 256],
+                #                   [64, 128, 256, 128, 64]],
+                'hidden_layers': [[64, 128, 256, 128, 64]],
+                
                # 'dropout': [0.0, 0.2],
                # 'batch_norm': [False, True],
                'dropout': [0.0],
                'batch_norm': [False],
-                'activation': ['relu', 'leaky_relu'],
-                'epochs': [100, 200, 300, 1000],
-                'batch_size': [32, 64],
-                'learning_rate': [0.001, 0.01, 0.1],
+                'activation': ['relu'],
+                'epochs': [1000],
+                'batch_size': [32],
+                'learning_rate': [0.001],
                 'input_scaler': [fwd_hyperparameters['output_scaler']],
                 'output_scaler': [fwd_hyperparameters['input_scaler']],
                 'output_activation': [None]
             }
+            
             
         else:
             
