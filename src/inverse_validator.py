@@ -82,11 +82,11 @@ class inverse_model_analysis:
         mape = mean_absolute_percentage_error(self.test_output, prediction_output)
         nmax_ae = np.mean(np.max(np.abs(self.test_output - prediction_output), axis=0)/np.max(np.abs(self.test_output - np.mean(self.test_output, axis=0))))
         
-        for i in range(5):
-            plt.figure()
-            plt.plot(np.arange(0, len(self.test_output[i]), 1), self.test_output[i], 'r-')
-            plt.plot(np.arange(0, len(prediction_output[i]), 1), prediction_output[i], 'g-')
-            plt.ylim(0, 1)
+        # for i in range(5):
+        #     plt.figure()
+        #     plt.plot(np.arange(0, len(self.test_output[i]), 1), self.test_output[i], 'r-')
+        #     plt.plot(np.arange(0, len(prediction_output[i]), 1), prediction_output[i], 'g-')
+            # plt.ylim(0, 1)
         
         return r2, rmse, mape, nmax_ae
 
