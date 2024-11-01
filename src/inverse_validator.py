@@ -51,6 +51,27 @@ class inverse_model_analysis:
         
         return inverse_dnn
     
+
+    def load_forward_dnn(self):
+        
+        hyperparameters = np.load(f'model_config.npy', allow_pickle=True).item()
+        print (hyperparameters)       
+        
+        forward_dnn = ModelFactory().create_model(model_type=hyperparameters['model_type'], 
+                                                  input_size=np.shape(self.test_input)[1], 
+                                                  output_size=np.shape(self.test_output)[1],
+                                                  hidden_layers=hyperparameters['hidden_layers'],
+                                                  dropout=hyperparameters['dropout'],
+                                                  output_activation=hyperparameters['output_activation'],
+                                                  batch_norm=hyperparameters['batch_norm'],
+                                                  activation=hyperparameters['activation'])
+        
+        forward_dnn.load_state_dict(torch.load(f'forwardDNN.pth'))
+        forward_dnn.eval()
+        
+        return forward_dnn
+    
+    
     def load_scalers(self):
 
         input_scaler = joblib.load(f'{self.scalers_path}/input_scaler_inverse.pkl')
@@ -72,10 +93,40 @@ class inverse_model_analysis:
         prediction_output = self.evaluate(inverse_predictions_scaled)
     
         return prediction_output
+    
+    def get_predictions_forward(self):
+        
+        forwardDNN = self.load_forward_dnn()
+        output_scaler, input_scaler = self.load_scalers()
+        
+        test_input_scaled = input_scaler.transform(self.test_input)
+        test_input_torch = torch.tensor(test_input_scaled, dtype=torch.float32).to(device)
+        
+        forward_predictions = forwardDNN(test_input_torch)
+        prediction_output = output_scaler.inverse_transform(forward_predictions.detach().cpu().numpy())
+           
+        return prediction_output
         
     def error_metrics(self):
         
         prediction_output = self.get_predictions()
+        
+        r2 = r2_score(self.test_output, prediction_output)
+        rmse = np.sqrt(mean_squared_error(self.test_output, prediction_output))
+        mape = mean_absolute_percentage_error(self.test_output, prediction_output)
+        nmax_ae = np.mean(np.max(np.abs(self.test_output - prediction_output), axis=0)/np.max(np.abs(self.test_output - np.mean(self.test_output, axis=0))))
+        
+        # for i in range(5):
+        #     plt.figure()
+        #     plt.plot(np.arange(0, len(self.test_output[i]), 1), self.test_output[i], 'r-')
+        #     plt.plot(np.arange(0, len(prediction_output[i]), 1), prediction_output[i], 'g-')
+            # plt.ylim(0, 1)
+        
+        return r2, rmse, mape, nmax_ae
+    
+    def error_metrics_forward(self):
+        
+        prediction_output = self.get_predictions_forward()
         
         r2 = r2_score(self.test_output, prediction_output)
         rmse = np.sqrt(mean_squared_error(self.test_output, prediction_output))

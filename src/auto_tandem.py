@@ -153,6 +153,8 @@ class AutoTNN:
             print ('Optimizing and training forward DNN')
             
         fwd_hyperparameters = self.get_forward_DNN(X_hf, y_hf)
+        np.save('model_config.npy', fwd_hyperparameters)
+
         
         if self.verbose == True:
             

@@ -48,11 +48,11 @@ model = load_model(name).load()
 f = benchmark_functions(name, model)
 algorithm = ('rf', RandomForestRegressor())
 
-# ensemble = []
-# for i in range(20):
-#     ensemble.append(make_pipeline(StandardScaler(), MLPRegressor(hidden_layer_sizes=(100, 200, 100), 
-#                                                                   random_state=i)))
-# algorithm = ('mlp_ensemble', EnsembleRegressor(ensemble)) 
+ensemble = []
+for i in range(20):
+    ensemble.append(make_pipeline(StandardScaler(), MLPRegressor(hidden_layer_sizes=(100, 200, 100), 
+                                                                  random_state=i)))
+algorithm = ('mlp_ensemble', EnsembleRegressor(ensemble)) 
 
 # algorithm = ('rf', RandomForestRegressor())
 
@@ -71,16 +71,16 @@ test_data = (test_input, test_output)
 
 init_size=20
 batch_size=10
-max_samples=200
+max_samples=100
 
-# sampler='model_uncertainty'
-sampler='model_quantile'
+sampler='model_uncertainty'
+# sampler='model_quantile'
 
 r2_ = []
 rmse_ = []
 mape_ = []
 nmax_ae_ = []
-runs = 10
+runs = 30
 n = 20
 
 for i in range(runs):
@@ -89,7 +89,8 @@ for i in range(runs):
     run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, 
                   sampler=sampler, combinations=n)
     run.get_inverse_DNN()
-    r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics()
+    r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics_forward()
+    # r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics()
     
     print ('R2:', r2)
     print ('RMSE:', rmse)
@@ -142,26 +143,34 @@ for i in range(runs):
     
     run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, 
                   sampler=sampler, combinations=n, x_init=x_sampled_rand, y_init=y_sampled_rand)
-    run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, 
-                  sampler=sampler, combinations=n)
+    
+    # run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, 
+    #               sampler=sampler, combinations=n)
     run.get_inverse_DNN()
-    r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics()
-        
+    print ('fwd error')
+    r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics_forward()
+    # r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics()
+    
     print ('R2:', r2)
     print ('RMSE:', rmse)
     print ('MAPE:', mape)
     print ('NMAX_AE:', nmax_ae)
+        
+    # print ('R2:', r2)
+    # print ('RMSE:', rmse)
+    # print ('MAPE:', mape)
+    # print ('NMAX_AE:', nmax_ae)
 
     r2_.append(r2)
     rmse_.append(rmse)
     mape_.append(mape)
     nmax_ae_.append(nmax_ae)
 
-print (sampler)
-print ('R2:', np.mean(r2_), np.std(r2_))
-print ('RMSE:', np.mean(rmse_), np.std(rmse_))
-print ('MAPE:', np.mean(mape_), np.std(mape_))
-print ('NMAX_AE:', np.mean(nmax_ae_), np.std(nmax_ae_))
+# print (sampler)
+# print ('R2:', np.mean(r2_), np.std(r2_))
+# print ('RMSE:', np.mean(rmse_), np.std(rmse_))
+# print ('MAPE:', np.mean(mape_), np.std(mape_))
+# print ('NMAX_AE:', np.mean(nmax_ae_), np.std(nmax_ae_))
 
 
 """
