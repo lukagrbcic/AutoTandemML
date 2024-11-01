@@ -17,8 +17,11 @@ from model_factory import ModelFactory
 from get_forward import forwardDNN
 from get_inverse import inverseDNN
 import torch
+import random
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+np.random.seed(random.randint(1,100000))
 
 class AutoTNN:
     
@@ -62,7 +65,7 @@ class AutoTNN:
                                 self.init_size, self.batch_size,
                                 self.max_samples, self.sampler,
                                 self.algorithm, self.test_data,
-                                verbose=self.verbose, return_model=True, return_hf_samples=True)
+                                verbose=0, return_model=True, return_hf_samples=True)
         
         _, model, X_hf, y_hf = run.run()
 
@@ -120,8 +123,12 @@ class AutoTNN:
         if self.lf_samples > 0:
             
             X_lf, y_lf = self.get_lf_samples(self.forward_model)
-            X_hf = np.vstack((X_lf, X_hf))
-            y_hf = np.vstack((y_lf, y_hf))
+            X_hf_init = np.vstack((X_hf, X_lf))
+            y_hf_init = np.vstack((y_hf, y_lf))
+            
+            indices = np.random.permutation(X_hf_init.shape[0])
+            X_hf = X_hf_init[indices]
+            y_hf = y_hf_init[indices]
         
         if self.verbose == True:
             
@@ -157,7 +164,7 @@ class AutoTNN:
         
         
         self.inverse_hyperparameters = get_hyperparameters(y_hf, X_hf, 
-                                        param_dist, n_iter=self.combinations, 
+                                        param_dist, seed=np.random.randint(1,10000), n_iter=self.combinations, 
                                         forward_model_hyperparameters=fwd_hyperparameters).run()
         
         np.save('inverseDNN/model_config.npy', self.inverse_hyperparameters)
