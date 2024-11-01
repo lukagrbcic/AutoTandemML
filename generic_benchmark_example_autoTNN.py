@@ -30,22 +30,24 @@ model = load_model(name).load()
 f = benchmark_functions(name, model)
 # ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in [[0.1, 10], [0.5,50], [0.8, 75], [1,100], [10, 125]]]   
 
-ensemble_size = 10
-n_est = np.arange(10, 210, ensemble_size)
-reg_lambda = np.linspace(0.1, 10, ensemble_size)
-list_ = [[reg_lambda[i], n_est[i]] for i in range(ensemble_size)]
+# ensemble_size = 10
+# n_est = np.arange(10, 210, ensemble_size)
+# reg_lambda = np.linspace(0.1, 10, ensemble_size)
+# list_ = [[reg_lambda[i], n_est[i]] for i in range(ensemble_size)]
 
-ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in list_]             
+# ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in list_]             
           
-algorithm = ('xgb_ensemble', EnsembleRegressor(ensemble))
+# algorithm = ('xgb_ensemble', EnsembleRegressor(ensemble))
 
 # algorithm = ('rf', RandomForestRegressor())
 
 
-# bench = 'friedman' #(deep ensembles)
-# name = 'friedman_multioutput_benchmark'
-# model = load_model(name).load()
-# f = benchmark_functions(name, model)
+bench = 'friedman' #(deep ensembles)
+name = 'friedman_multioutput_benchmark'
+model = load_model(name).load()
+f = benchmark_functions(name, model)
+algorithm = ('rf', RandomForestRegressor())
+
 # ensemble = []
 # for i in range(20):
 #     ensemble.append(make_pipeline(StandardScaler(), MLPRegressor(hidden_layer_sizes=(100, 200, 100), 
@@ -69,9 +71,10 @@ test_data = (test_input, test_output)
 
 init_size=20
 batch_size=10
-max_samples=100
+max_samples=200
 
-sampler='model_uncertainty'
+# sampler='model_uncertainty'
+sampler='model_quantile'
 
 r2_ = []
 rmse_ = []
@@ -93,7 +96,6 @@ for i in range(runs):
     print ('MAPE:', mape)
     print ('NMAX_AE:', nmax_ae)
 
-    
     r2_.append(r2)
     rmse_.append(rmse)
     mape_.append(mape)
