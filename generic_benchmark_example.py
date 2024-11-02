@@ -34,27 +34,35 @@ f = benchmark_functions(name, model)
 # model = load_model(name).load()
 # f = benchmark_functions(name, model)
 
+
+
+bench = 'scalar_diffusion' #(deep ensembles)
+name = 'scalar_diffusion_benchmark'
+model = load_model(name).load()
+f = benchmark_functions(name, model)
+algorithm = ('rf', RandomForestRegressor())
+
 lb, ub = f.get_bounds()
 test_input = np.load(f'../InverseBench/test_data/{bench}_data/input_test_data.npy')
 test_output = np.load(f'../InverseBench/test_data/{bench}_data/output_test_data.npy')
 test_data = (test_input, test_output)
 
 init_size=20
-batch_size=10
-max_samples=300
+batch_size=20
+max_samples=200
 n_repeats=1
 sampler='model_uncertainty'
 # np.random.seed(43)
 
-algorithm = ('rf', RandomForestRegressor())
+# algorithm = ('rf', RandomForestRegressor())
 
-ensemble_size = 5
-n_est = np.arange(10, 210, ensemble_size)
-reg_lambda = np.linspace(0.1, 10, ensemble_size)
-list_ = [[reg_lambda[i], n_est[i]] for i in range(ensemble_size)]
-ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in list_]             
+# ensemble_size = 5
+# n_est = np.arange(10, 210, ensemble_size)
+# reg_lambda = np.linspace(0.1, 10, ensemble_size)
+# list_ = [[reg_lambda[i], n_est[i]] for i in range(ensemble_size)]
+# ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in list_]             
           
-algorithm = ('xgb_ensemble', EnsembleRegressor(ensemble))
+# algorithm = ('xgb_ensemble', EnsembleRegressor(ensemble))
       
 
 from sklearn.neural_network import MLPRegressor
@@ -62,11 +70,11 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 ensemble = []
-for i in range(20):
-    ensemble.append(make_pipeline(StandardScaler(), MLPRegressor(hidden_layer_sizes=(100, 200, 100), 
-                                                                  random_state=random.randint(10, 250))))
-    # ensemble.append(make_pipeline(MinMaxScaler(), MLPRegressor(hidden_layer_sizes=(100, 200, 100), 
+for i in range(50):
+    # ensemble.append(make_pipeline(StandardScaler(), MLPRegressor(hidden_layer_sizes=(100, 200, 100), 
     #                                                               random_state=random.randint(10, 250))))
+    ensemble.append(make_pipeline(MinMaxScaler(), MLPRegressor(hidden_layer_sizes=(100, 200, 100), 
+                                                                  random_state=random.randint(10, 250))))
 algorithm = ('mlp_ensemble', EnsembleRegressor(ensemble))           
 
 results = []
