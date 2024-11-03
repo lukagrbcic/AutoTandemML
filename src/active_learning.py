@@ -71,8 +71,8 @@ class activeLearner:
         X, y = self.initialize()
         
         if self.initial_hyperparameter_search == True:
-            if self.verbose > 0:
-                print ('Initial hyperparameter search!')
+            #if self.verbose > 0:
+            print ('Initial hyperparameter search!')
             self.model_optimization(X, y)
         else:
             self.model = self.algorithm[1]
