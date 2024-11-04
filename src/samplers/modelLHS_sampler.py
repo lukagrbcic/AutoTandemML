@@ -11,7 +11,7 @@ from goal_functions import goal_function
 
 class modelLHSSampler:
     def __init__(self, model, sample_size, lb, ub, algorithm, 
-                 function='uncertainty', x_sampled=[], clustering=True):
+                 function='uncertainty', x_sampled=[], clustering=False):
 
         
         self.model = model
@@ -27,7 +27,7 @@ class modelLHSSampler:
 
         X = []
         f = []
-        samples = qmc.scale(qmc.LatinHypercube(d=len(self.lb)).random(n=3*self.sample_size), self.lb, self.ub)
+        samples = qmc.scale(qmc.LatinHypercube(d=len(self.lb)).random(n=self.sample_size), self.lb, self.ub)
         for s in samples:
             def get_values(x):
                 
