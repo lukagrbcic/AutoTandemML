@@ -462,6 +462,8 @@ for i in range(runs):
     rmse_.append(rmse)
     mape_.append(mape)
     nmax_ae_.append(nmax_ae)
+    print ('mean R2:', np.mean(r2_), np.std(r2_))
+
 
 print (sampler)
 print ('R2:', np.mean(r2_), np.std(r2_))
@@ -504,6 +506,8 @@ for i in range(runs):
     rmse_.append(rmse)
     mape_.append(mape)
     nmax_ae_.append(nmax_ae)
+    print ('mean R2:', np.mean(r2_), np.std(r2_))
+
 
 print (sampler)
 print ('R2:', np.mean(r2_), np.std(r2_))
