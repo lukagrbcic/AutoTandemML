@@ -69,7 +69,7 @@ class modelSampler:
             optimizer.evaluation_function = get_values 
             optimizer.lb = self.lb
             optimizer.ub = self.ub
-            optimizer.max_evaluations = 30
+            optimizer.max_evaluations = 100
             result = optimizer.optimize()
             min_x = result.X 
             min_f = result.f
