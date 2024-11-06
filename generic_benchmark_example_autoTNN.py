@@ -411,7 +411,11 @@ reg_lambda = np.linspace(0.1, 10, ensemble_size)
 list_ = [[reg_lambda[i], n_est[i]] for i in range(ensemble_size)]
 ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in list_]             
           
-algorithm = ('xgb_ensemble', EnsembleRegressor(ensemble))
+          
+          
+algorithm = ('xgb', EnsembleRegressor(ensemble))
+
+# algorithm = ('xgb_ensemble', EnsembleRegressor(ensemble))
 # algorithm = ('rf', RandomForestRegressor())
 
 lb, ub = f.get_bounds()

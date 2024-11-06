@@ -26,7 +26,7 @@ class activeLearner:
                        verbose=1,
                        return_model=False, 
                        return_hf_samples=False,
-                       partition=False):
+                       ):
         
         self.function = function
         self.lb = lb
@@ -43,7 +43,7 @@ class activeLearner:
         self.verbose = verbose
         self.return_model = return_model
         self.return_hf_samples = return_hf_samples
-        self.partition = partition
+        # self.partition = partition
         
     def model_update(self, X, y):
                 
@@ -67,49 +67,8 @@ class activeLearner:
     def get_samples(self, sampled_points=[]):
                
         
-        # if self.partition is not False:
-            
-        #     X = []
-            
-        #     # sampler = qmc.LatinHypercube(d=len(self.lb))
-        #     # sample_points = qmc.scale(sampler.random(self.batch_size), self.lb, self.ub)
-            
-        #     partition_boundaries = []
-        #     for i in range(self.batch_size):
-        #         lb = np.random.uniform(self.lb, self.ub)
-        #         ub = lb + np.random.uniform(np.zeros(len(self.lb)), self.ub - lb)
-        #         partition_boundaries.append((lb, ub))
-                
-                
-        #     # partition_boundaries = [(self.lb, self.ub)]
-        #     # partition_boundaries = []
-
-            
-        #     # for point in sample_points:
-               
-        #     #     half_width = (self.ub - self.lb) / (2 * self.batch_size ** (1 / len(self.lb)))
-                
-        #     #     lb = np.maximum(point - half_width, self.lb)
-        #     #     ub = np.minimum(point + half_width, self.ub)
-                
-        #     #     partition_boundaries.append((lb, ub))    
-            
-        #     for subspace in partition_boundaries:
-                
-        #         X_subspace = samplers(self.sampler, 1, 
-        #                      subspace[0], subspace[1], self.algorithm, sampled_points, self.model).generate_samples()
-                
-        #         X.append(X_subspace)
-                
-        #     X = np.concatenate(X)
-        
-            
-        # else:
-                
         X = samplers(self.sampler, self.batch_size, 
                      self.lb, self.ub, self.algorithm, sampled_points, self.model).generate_samples()
-    
-        
         
         return X
         
@@ -121,6 +80,7 @@ class activeLearner:
             #if self.verbose > 0:
             print ('Initial hyperparameter search!')
             self.model_optimization(X, y)
+            print ('Found ensemble!')
         else:
             self.model = self.algorithm[1]
             

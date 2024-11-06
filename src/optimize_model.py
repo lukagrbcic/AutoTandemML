@@ -17,7 +17,7 @@ warnings.filterwarnings("ignore")
 
 class optimize:
     
-    def __init__(self, algorithm, X, y, n_iter=100, cv=3, ensemble_size=50):
+    def __init__(self, algorithm, X, y, n_iter=100, cv=3, ensemble_size=10):
         
         self.algorithm = algorithm
         self.X = X
@@ -44,9 +44,9 @@ class optimize:
         if 'xgb' in self.algorithm[0]:
             
             param_dist = {
-                'n_estimators': randint(50, 300),           
+                'n_estimators': randint(50, 250),           
                 'max_depth': randint(1, 15),                
-                # 'learning_rate': uniform(0.01, 0.3),        
+                'learning_rate': uniform(0.01, 0.3),        
                 # 'subsample': uniform(0.5, 0.5),              
                 # 'colsample_bytree': uniform(0.5, 0.5),       
                 # 'colsample_bylevel': uniform(0.5, 0.5),      

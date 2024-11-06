@@ -70,7 +70,7 @@ class AutoTNN:
                                 self.init_size, self.batch_size,
                                 self.max_samples, self.sampler,
                                 self.algorithm, self.test_data,
-                                verbose=0, return_model=True, return_hf_samples=True, partition=self.partition)
+                                verbose=0, return_model=True, return_hf_samples=True)
         
         _, model, X_hf, y_hf = run.run()
 
@@ -133,7 +133,7 @@ class AutoTNN:
                'dropout': [0.0],
                'batch_norm': [False],
                 'activation': ['relu'],
-                'epochs': [1000],
+                'epochs': [2000],
                 'batch_size': [32],
                 'learning_rate': [0.001],
                 'input_scaler': ['MinMax'],
@@ -224,7 +224,7 @@ class AutoTNN:
                'dropout': [0.0],
                'batch_norm': [False],
                 'activation': ['relu'],
-                'epochs': [1000],
+                'epochs': [2000],
                 'batch_size': [32],
                 'learning_rate': [0.001],
                 'input_scaler': [fwd_hyperparameters['output_scaler']],
