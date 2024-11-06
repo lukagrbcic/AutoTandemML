@@ -65,13 +65,9 @@ class activeLearner:
     
     
     def get_samples(self, sampled_points=[]):
-        
-        print (self.partition)
-        
+               
         
         if self.partition is not False:
-            
-            print (self.partition)
             
             X = []
             
