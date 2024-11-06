@@ -1,6 +1,7 @@
 import numpy as np
 import sys
 import joblib
+from scipy.stats import qmc
 
 from ensemble_regressor import EnsembleRegressor
 import active_learning as al
@@ -37,6 +38,7 @@ class AutoTNN:
                  forward_param_dist=None, 
                  inverse_param_dist=None,
                  forward_model=None,
+                 partition=False,
                  x_init=[],
                  y_init=[]):
         
@@ -55,17 +57,20 @@ class AutoTNN:
         self.forward_param_dist = forward_param_dist
         self.inverse_param_dist = inverse_param_dist
         self.forward_model = forward_model
+        self.partition = partition
         self.x_init = x_init
         self.y_init = y_init
     
+
     
     def get_foward_model(self):
+                    
         
         run = al.activeLearner(self.f, self.lb, self.ub,
                                 self.init_size, self.batch_size,
                                 self.max_samples, self.sampler,
                                 self.algorithm, self.test_data,
-                                verbose=0, return_model=True, return_hf_samples=True)
+                                verbose=0, return_model=True, return_hf_samples=True, partition=self.partition)
         
         _, model, X_hf, y_hf = run.run()
 

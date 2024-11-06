@@ -67,46 +67,48 @@ class activeLearner:
     def get_samples(self, sampled_points=[]):
                
         
-        if self.partition is not False:
+        # if self.partition is not False:
             
-            X = []
+        #     X = []
             
-            sampler = qmc.LatinHypercube(d=len(self.lb))
-            sample_points = qmc.scale(sampler.random(self.batch_size-1), self.lb, self.ub)
+        #     # sampler = qmc.LatinHypercube(d=len(self.lb))
+        #     # sample_points = qmc.scale(sampler.random(self.batch_size), self.lb, self.ub)
             
-            # partition_boundaries = [(self.lb, self.ub)]
-            # for i in range(self.batch_size-1):
-            #     lb = np.random.uniform(self.lb, self.ub)
-            #     ub = lb + np.random.uniform(np.zeros(len(self.lb)), self.ub - lb)
-            #     partition_boundaries.append((lb, ub))
+        #     partition_boundaries = []
+        #     for i in range(self.batch_size):
+        #         lb = np.random.uniform(self.lb, self.ub)
+        #         ub = lb + np.random.uniform(np.zeros(len(self.lb)), self.ub - lb)
+        #         partition_boundaries.append((lb, ub))
                 
                 
-            partition_boundaries = [(self.lb, self.ub)]
+        #     # partition_boundaries = [(self.lb, self.ub)]
+        #     # partition_boundaries = []
+
             
-            for point in sample_points:
+        #     # for point in sample_points:
                
-                half_width = (self.ub - self.lb) / (2 * self.batch_size ** (1 / len(self.lb)))
+        #     #     half_width = (self.ub - self.lb) / (2 * self.batch_size ** (1 / len(self.lb)))
                 
-                lb = np.maximum(point - half_width, self.lb)
-                ub = np.minimum(point + half_width, self.ub)
+        #     #     lb = np.maximum(point - half_width, self.lb)
+        #     #     ub = np.minimum(point + half_width, self.ub)
                 
-                partition_boundaries.append((lb, ub))    
+        #     #     partition_boundaries.append((lb, ub))    
             
-            for subspace in partition_boundaries:
+        #     for subspace in partition_boundaries:
                 
-                X_subspace = samplers(self.sampler, 1, 
-                             subspace[0], subspace[1], self.algorithm, sampled_points, self.model).generate_samples()
+        #         X_subspace = samplers(self.sampler, 1, 
+        #                      subspace[0], subspace[1], self.algorithm, sampled_points, self.model).generate_samples()
                 
-                X.append(X_subspace)
+        #         X.append(X_subspace)
                 
-            X = np.concatenate(X)
+        #     X = np.concatenate(X)
         
             
-        else:
+        # else:
                 
-            X = samplers(self.sampler, self.batch_size, 
-                         self.lb, self.ub, self.algorithm, sampled_points, self.model).generate_samples()
-        
+        X = samplers(self.sampler, self.batch_size, 
+                     self.lb, self.ub, self.algorithm, sampled_points, self.model).generate_samples()
+    
         
         
         return X
