@@ -70,6 +70,7 @@ class experiment_setup:
             if i%self.verbose == 0:
                 
                 print ('Run', i+1)
+                print (self.sampler)
                 
             if self.sampler != 'model_uncertainty':
                 
@@ -120,6 +121,7 @@ class experiment_setup:
             print ('mean RMSE:', np.mean(self.rmse), np.std(self.rmse))
             print ('mean MAPE:', np.mean(self.mape), np.std(self.mape))
             print ('mean NMAX_AE:', np.mean(self.nmax_ae), np.std(self.nmax_ae))
+            print ('====================================================')
         
         if self.save_data == True:
             
