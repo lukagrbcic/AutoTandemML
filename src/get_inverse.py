@@ -6,15 +6,25 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import joblib
+import random
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+seed = 42 
+random.seed(seed)
+np.random.seed(seed)
+torch.manual_seed(seed)
+torch.cuda.manual_seed(seed)
+torch.cuda.manual_seed_all(seed)  
+
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
 
 
 class inverseDNN:
     
     def __init__(self, X, y, hyperparameters, validation_split=0.1,
                  criterion='rmse', optimizer='adam', verbose=False, 
-                 early_stopping_patience=10, forward_model_hyperparameters=None):
+                 early_stopping_patience=5, forward_model_hyperparameters=None):
         
         self.X = X
         self.y = y
@@ -93,7 +103,7 @@ class inverseDNN:
         y_val_tensor = torch.tensor(y_val, dtype=torch.float32).to(device)
         
         train_dataset = torch.utils.data.TensorDataset(X_train_tensor, y_train_tensor)
-        train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=self.hyperparameters['batch_size'], shuffle=True)
+        train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=self.hyperparameters['batch_size'], shuffle=False)
         
 
         if self.criterion == 'mse':
@@ -138,7 +148,7 @@ class inverseDNN:
                 
             if self.verbose == True:
                 print(f"Epoch {epoch+1}/{epochs}, Training Loss: {loss.item()}, Validation Loss: {val_loss}")
-            
+                
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
                 patience = 0
