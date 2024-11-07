@@ -15,7 +15,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class inverse_model_analysis:
     
-    def __init__(self, test_input, test_output, benchmark, sampler,
+    def __init__(self, test_input, test_output, benchmark,
                        model_config_path='inverseDNN', 
                        inverse_model_path='inverseDNN', 
                        scalers_path='inverseDNN'):
@@ -23,7 +23,6 @@ class inverse_model_analysis:
         self.test_input = test_input
         self.test_output = test_output
         self.benchmark = benchmark
-        self.sampler = sampler
         self.model_config_path = model_config_path
         self.inverse_model_path = inverse_model_path
         self.scalers_path = scalers_path
@@ -115,12 +114,6 @@ class inverse_model_analysis:
         mape = mean_absolute_percentage_error(self.test_output, prediction_output)
         nmax_ae = np.mean(np.max(np.abs(self.test_output - prediction_output), axis=0)/np.max(np.abs(self.test_output - np.mean(self.test_output, axis=0))))
         
-        # for i in range(5):
-        #     plt.figure()
-        #     plt.plot(np.arange(0, len(self.test_output[i]), 1), self.test_output[i], 'r-')
-        #     plt.plot(np.arange(0, len(prediction_output[i]), 1), prediction_output[i], 'g-')
-            # plt.ylim(0, 1)
-        
         return r2, rmse, mape, nmax_ae
     
     def error_metrics_forward(self):
@@ -131,12 +124,7 @@ class inverse_model_analysis:
         rmse = np.sqrt(mean_squared_error(self.test_output, prediction_output))
         mape = mean_absolute_percentage_error(self.test_output, prediction_output)
         nmax_ae = np.mean(np.max(np.abs(self.test_output - prediction_output), axis=0)/np.max(np.abs(self.test_output - np.mean(self.test_output, axis=0))))
-        
-        # for i in range(5):
-        #     plt.figure()
-        #     plt.plot(np.arange(0, len(self.test_output[i]), 1), self.test_output[i], 'r-')
-        #     plt.plot(np.arange(0, len(prediction_output[i]), 1), prediction_output[i], 'g-')
-            # plt.ylim(0, 1)
+
         
         return r2, rmse, mape, nmax_ae
 
