@@ -1,4 +1,5 @@
 import lhs_sampler as lhs
+import poisson_sampler as poisson
 import random_sampler as rnd
 import model_sampler as ms
 import modelHC_sampler as mhcs
@@ -27,11 +28,16 @@ class samplers:
         
         if self.sampler == 'lhs':
             
-            X = lhs.lhsSampler(self.batch_size, self.lb, self.ub).gen_LHS_samples(seed)
+            X = lhs.lhsSampler(self.batch_size, self.lb, self.ub).gen_LHS_samples()
             
         elif self.sampler == 'random':
             
             X = rnd.randomSampler(self.batch_size, self.lb, self.ub).gen_random_samples()
+        
+        elif self.sampler == 'possion':
+            
+            X = poisson.poissonSampler(self.batch_size, self.lb, self.ub).gen_poisson_samples()
+        
         
         elif self.sampler.split('_')[0] == 'model':
             

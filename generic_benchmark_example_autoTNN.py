@@ -64,7 +64,7 @@ max_samples=400 #400 for scalar, 200 for inconel, 200 or 100 for airfoils
 runs = 30
 n = 10
 
-sampler='random'
+sampler='lhs'
 
 r2_ = []
 rmse_ = []
