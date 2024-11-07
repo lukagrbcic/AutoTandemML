@@ -34,7 +34,7 @@ class samplers:
             
             X = rnd.randomSampler(self.batch_size, self.lb, self.ub).gen_random_samples()
         
-        elif self.sampler == 'possion':
+        elif self.sampler == 'poisson':
             
             X = poisson.poissonSampler(self.batch_size, self.lb, self.ub).gen_poisson_samples()
         
