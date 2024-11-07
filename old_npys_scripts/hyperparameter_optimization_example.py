@@ -26,7 +26,7 @@ nmax_ae_unc = []
 mape_unc = []
 r2_unc = []
 
-combinations=100
+combinations=30
 
     
 name = 'airfoil_benchmark'
@@ -259,6 +259,7 @@ for i in range(15):
         
         return np.mean(nmaxae)      
     
+
     rmse_unc.append(np.sqrt(mean_squared_error(test_output, predictions)))      
     nmax_ae_unc.append(nmax_ae(test_output, predictions))  
     mape_unc.append(mean_absolute_percentage_error(test_output, predictions))        

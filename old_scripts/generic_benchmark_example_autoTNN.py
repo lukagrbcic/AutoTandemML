@@ -17,9 +17,9 @@ from ensemble_regressor import EnsembleRegressor
 from inverse_validator import inverse_model_analysis
 
 
+import shutil
 import warnings
 warnings.filterwarnings("ignore")
-
 
 
 
@@ -64,50 +64,65 @@ max_samples=400 #400 for scalar, 200 for inconel, 200 or 100 for airfoils
 runs = 30
 n = 10
 
-sampler='lhs'
+# sampler='lhs'
 
-r2_ = []
-rmse_ = []
-mape_ = []
-nmax_ae_ = []
+# r2_ = []
+# rmse_ = []
+# mape_ = []
+# nmax_ae_ = []
 
-for i in range(runs):
-    print ('Run', i+1)
-    x_sampled_rand = np.random.uniform(lb, ub, size=(max_samples, len(lb)))
-    y_sampled_rand = f.evaluate(x_sampled_rand)
+# for i in range(runs):
+#     print ('Run', i+1)
     
-    run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, 
-                  sampler=sampler, combinations=n, x_init=x_sampled_rand, y_init=y_sampled_rand)
+#     shutil.rmtree('inverseDNN')
+
     
-    # run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, 
-    #               sampler=sampler, combinations=n)
-    run.get_inverse_DNN()
-    # print ('FORWARD ERROR:')
+#     if os.path.exists('inverseDNN'):
+#         continue
+#     else:
+#         os.mkdir('inverseDNN')
 
-    # r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics_forward()
-    # print ('R2:', r2)
-    # print ('RMSE:', rmse)
-    # print ('MAPE:', mape)
-    # print ('NMAX_AE:', nmax_ae)
+#     if os.path.exists('forwardDNN'):
+#         os.remove('forwardDNN')
+#     if os.path.exists('model_config.npy'):
+#         os.remove('model_config.npy')
 
-    r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics()
-    # print ('INVERSE ERROR:')
-    # print ('R2:', r2)
-    # print ('RMSE:', rmse)
-    # print ('MAPE:', mape)
-    # print ('NMAX_AE:', nmax_ae)
-    r2_.append(r2)
-    rmse_.append(rmse)
-    mape_.append(mape)
-    nmax_ae_.append(nmax_ae)
-    print ('mean R2:', np.mean(r2_), np.std(r2_))
+    
+#     x_sampled_rand = np.random.uniform(lb, ub, size=(max_samples, len(lb)))
+#     y_sampled_rand = f.evaluate(x_sampled_rand)
+    
+#     run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, 
+#                   sampler=sampler, combinations=n, x_init=x_sampled_rand, y_init=y_sampled_rand)
+    
+#     # run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data, 
+#     #               sampler=sampler, combinations=n)
+#     run.get_inverse_DNN()
+#     # print ('FORWARD ERROR:')
+
+#     # r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics_forward()
+#     # print ('R2:', r2)
+#     # print ('RMSE:', rmse)
+#     # print ('MAPE:', mape)
+#     # print ('NMAX_AE:', nmax_ae)
+
+#     r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, name, sampler).error_metrics()
+#     # print ('INVERSE ERROR:')
+#     # print ('R2:', r2)
+#     # print ('RMSE:', rmse)
+#     # print ('MAPE:', mape)
+#     # print ('NMAX_AE:', nmax_ae)
+#     r2_.append(r2)
+#     rmse_.append(rmse)
+#     mape_.append(mape)
+#     nmax_ae_.append(nmax_ae)
+#     print ('mean R2:', np.mean(r2_), np.std(r2_))
 
 
-print (sampler)
-print ('R2:', np.mean(r2_), np.std(r2_))
-print ('RMSE:', np.mean(rmse_), np.std(rmse_))
-print ('MAPE:', np.mean(mape_), np.std(mape_))
-print ('NMAX_AE:', np.mean(nmax_ae_), np.std(nmax_ae_))
+# print (sampler)
+# print ('R2:', np.mean(r2_), np.std(r2_))
+# print ('RMSE:', np.mean(rmse_), np.std(rmse_))
+# print ('MAPE:', np.mean(mape_), np.std(mape_))
+# print ('NMAX_AE:', np.mean(nmax_ae_), np.std(nmax_ae_))
 
 # sampler='ensemble'
 sampler='model_uncertainty'
@@ -120,6 +135,19 @@ print ('no_lf')
 
 for i in range(runs):
     print ('Run', i+1)
+    
+    shutil.rmtree('inverseDNN')
+
+    
+    if os.path.exists('inverseDNN'):
+        continue
+    else:
+        os.mkdir('inverseDNN')
+
+    if os.path.exists('forwardDNN'):
+        os.remove('forwardDNN')
+    if os.path.exists('model_config.npy'):
+        os.remove('model_config.npy')
 
     run = AutoTNN(f, lb, ub, init_size, batch_size, max_samples, algorithm, test_data,
                   sampler=sampler, combinations=n)
@@ -428,7 +456,7 @@ print ('MAPE:', np.mean(mape_), np.std(mape_))
 # runs = 30
 # n = 10
 
-# sampler='random'
+# sampler='lhs'
 
 # r2_ = []
 # rmse_ = []
