@@ -42,30 +42,41 @@ init_size=20
 batch_size=5
 max_samples=400
 n_runs = 3
-sampler = 'random'
+# sampler = 'random'
 
-scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
-                                test_data, algorithm, f, lb, ub, function_name=name)
+# scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
+#                                 test_data, algorithm, f, lb, ub, function_name=name)
 
-results = scalar_setup.run()
+# results = scalar_setup.run()
 
-all_results.append(results)
+# all_results.append(results)
 
 
-sampler = 'lhs'
+# sampler = 'lhs'
 
-scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
-                                test_data, algorithm, f, lb, ub, function_name=name)
+# scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
+#                                 test_data, algorithm, f, lb, ub, function_name=name)
 
-results = scalar_setup.run()
+# results = scalar_setup.run()
 
-all_results.append(results)
+# all_results.append(results)
 
 
 sampler = 'model_uncertainty'
 
 scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
                                 test_data, algorithm, f, lb, ub, function_name=name)
+
+results = scalar_setup.run()
+
+all_results.append(results)
+
+plot_results(all_results).compare_metrics()
+
+sampler = 'model_uncertainty'
+
+scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
+                                test_data, algorithm, f, lb, ub, function_name=name, multifidelity=max_samples)
 
 results = scalar_setup.run()
 
