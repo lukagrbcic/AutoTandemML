@@ -40,47 +40,51 @@ all_results = []
 
 init_size=20
 batch_size=5
-max_samples=400
-n_runs = 3
+max_samples=500
+n_runs = 30
 # sampler = 'random'
 
 # scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
 #                                 test_data, algorithm, f, lb, ub, function_name=name)
 
-# results = scalar_setup.run()
+# file_path = f'./{name}_results/inverseDNN_{sampler}_{n_runs}.npy'
+
+# if os.path.exists(file_path):
+#     with open(file_path, 'r') as file:
+#         results = np.load(file_path, allow_pickle=True).item()
+# else:
+#     results = scalar_setup.run()
 
 # all_results.append(results)
-
 
 # sampler = 'lhs'
 
 # scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
 #                                 test_data, algorithm, f, lb, ub, function_name=name)
 
-# results = scalar_setup.run()
+# file_path = f'./{name}_results/inverseDNN_{sampler}_{n_runs}.npy'
 
+# if os.path.exists(file_path):
+#     with open(file_path, 'r') as file:
+#         results = np.load(file_path, allow_pickle=True).item()
+# else:
+#     results = scalar_setup.run()
 # all_results.append(results)
-
 
 sampler = 'model_uncertainty'
 
 scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
                                 test_data, algorithm, f, lb, ub, function_name=name)
 
-results = scalar_setup.run()
+file_path = f'./{name}_results/inverseDNN_{sampler}_{n_runs}.npy'
 
+if os.path.exists(file_path):
+    with open(file_path, 'r') as file:
+        results = np.load(file_path, allow_pickle=True).item()
+else:
+    results = scalar_setup.run()
 all_results.append(results)
 
-plot_results(all_results).compare_metrics()
-
-sampler = 'model_uncertainty'
-
-scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
-                                test_data, algorithm, f, lb, ub, function_name=name, multifidelity=max_samples)
-
-results = scalar_setup.run()
-
-all_results.append(results)
 
 plot_results(all_results).compare_metrics()
 
