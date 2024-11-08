@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.metrics import mean_absolute_percentage_error, mean_squared_error, r2_score
-
+import os
 """
 https://www.cirm-math.fr/ProgWeebly/Renc1762/Welch.pdf
 
@@ -107,5 +107,18 @@ class error:
         paper_rmse_max = np.max([np.sqrt(mean_squared_error(test_outputs[i], test_predictions[i])) for i in range(len(test_predictions))])
 
         
-        return rmse_, range_nrmse_*100, std_nrmse_, max_rmse_, max_range_nrmse_*100, r2_, nmax_ae_, mape_, paper_rmse, paper_rmse_max
+        return rmse_, range_nrmse_, std_nrmse_, max_rmse_, max_range_nrmse_, r2_, nmax_ae_, mape_, paper_rmse, paper_rmse_max
+    
+    def forward_model_get_results(self, function_name, sampler):
         
+        test_inputs, test_outputs = self.test_data        
+
+        prediction_output = self.model.predict(test_inputs)
+        
+        r2 = r2_score(test_outputs, prediction_output)
+        rmse = np.sqrt(mean_squared_error(test_outputs, prediction_output))
+        mape = mean_absolute_percentage_error(test_outputs, prediction_output)
+        nmax_ae = np.mean(np.max(np.abs(test_outputs- prediction_output), axis=0)/np.max(np.abs(test_outputs - np.mean(test_outputs, axis=0))))
+        
+        
+        return r2, rmse, mape, nmax_ae

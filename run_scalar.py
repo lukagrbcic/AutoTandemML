@@ -50,36 +50,36 @@ all_results = []
 
 init_size=20
 batch_size=5
-max_samples=200
+max_samples=400
 n_runs = 10
-# sampler = 'random'
+sampler = 'random'
 
-# scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
-#                                 test_data, algorithm, f, lb, ub, function_name=name)
+scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
+                                test_data, algorithm, f, lb, ub, function_name=name)
 
-# file_path = f'./{name}_results/inverseDNN_{sampler}_{n_runs}.npy'
+file_path = f'./{name}_results/inverseDNN_{sampler}_{n_runs}.npy'
 
-# if os.path.exists(file_path):
-#     with open(file_path, 'r') as file:
-#         results = np.load(file_path, allow_pickle=True).item()
-# else:
-#     results = scalar_setup.run()
+if os.path.exists(file_path):
+    with open(file_path, 'r') as file:
+        results = np.load(file_path, allow_pickle=True).item()
+else:
+    results = scalar_setup.run()
 
-# all_results.append(results)
+all_results.append(results)
 
-# sampler = 'lhs'
+sampler = 'lhs'
 
-# scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
-#                                 test_data, algorithm, f, lb, ub, function_name=name)
+scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
+                                test_data, algorithm, f, lb, ub, function_name=name)
 
-# file_path = f'./{name}_results/inverseDNN_{sampler}_{n_runs}.npy'
+file_path = f'./{name}_results/inverseDNN_{sampler}_{n_runs}.npy'
 
-# if os.path.exists(file_path):
-#     with open(file_path, 'r') as file:
-#         results = np.load(file_path, allow_pickle=True).item()
-# else:
-#     results = scalar_setup.run()
-# all_results.append(results)
+if os.path.exists(file_path):
+    with open(file_path, 'r') as file:
+        results = np.load(file_path, allow_pickle=True).item()
+else:
+    results = scalar_setup.run()
+all_results.append(results)
 
 sampler = 'model_uncertainty'
 

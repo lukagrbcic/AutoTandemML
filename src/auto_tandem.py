@@ -11,6 +11,7 @@ sys.path.insert(0, 'samplers')
 sys.path.insert(1, 'models')
 
 from generate_samples import samplers
+from check_accuracy import error
 from sklearn.metrics import *
 from optimize_inverse import get_hyperparameters
 from DNNRegressor import TorchDNNRegressor
@@ -39,6 +40,8 @@ class AutoTNN:
                  inverse_param_dist=None,
                  forward_model=None,
                  partition=False,
+                 function_name=None,
+                 return_forward_data=False,
                  x_init=[],
                  y_init=[]):
         
@@ -58,6 +61,7 @@ class AutoTNN:
         self.inverse_param_dist = inverse_param_dist
         self.forward_model = forward_model
         self.partition = partition
+        self.return_forward_data = return_forward_data
         self.x_init = x_init
         self.y_init = y_init
     
@@ -73,7 +77,7 @@ class AutoTNN:
                                 verbose=0, return_model=True, return_hf_samples=True)
         
         _, model, X_hf, y_hf = run.run()
-
+        
         return model, X_hf, y_hf
     
     def get_lf_samples(self, model):
@@ -82,6 +86,7 @@ class AutoTNN:
         y = model.predict(X)
         
         return X, y
+    
     
     # def generate_hidden_layer_sizes(self, min_layers=1, max_layers=5, min_units=16, max_units=256, size=100):
     #     hidden_layer_sizes = []
@@ -161,9 +166,12 @@ class AutoTNN:
         
         if len(self.x_init) == 0:    
             self.forward_model, X_hf, y_hf = self.get_foward_model()
+            model = self.forward_model
+                        
         else: 
             X_hf = self.x_init
             y_hf = self.y_init
+            model = None
         
         if self.lf_samples > 0:
             
@@ -252,6 +260,9 @@ class AutoTNN:
             
         inverseDNN(y_hf, X_hf, self.inverse_hyperparameters, 
                    forward_model_hyperparameters=fwd_hyperparameters, verbose=False).train_save()
+        
+        if self.return_forward_data is not False:
+            return model, X_hf, y_hf
             
         
         

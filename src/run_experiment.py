@@ -4,6 +4,7 @@ sys.path.insert(0, '../../InverseBench/src/')
 sys.path.insert(1, 'samplers')
 
 from benchmarks import *
+from check_accuracy import error
 from auto_tandem import AutoTNN
 from ensemble_regressor import EnsembleRegressor
 from inverse_validator import inverse_model_analysis
@@ -18,7 +19,7 @@ class experiment_setup:
     
     def __init__(self, sampler, n_runs, init_size, batch_size, 
                  max_samples, test_data, algorithm, evaluator, lb, ub, function_name='',
-                 multifidelity=0, verbose=1, forward_metrics=False, save_data=True):
+                 multifidelity=0, verbose=1, forward_metrics=True, forward_metrics_dnn=False, save_data=True):
         
         self.sampler = sampler
         self.n_runs = n_runs
@@ -34,6 +35,7 @@ class experiment_setup:
         self.multifidelity = multifidelity
         self.verbose = verbose
         self.forward_metrics = forward_metrics
+        self.forward_metrics_dnn = forward_metrics_dnn
         self.save_data = save_data
 
         self.r2 = []
@@ -41,7 +43,12 @@ class experiment_setup:
         self.mape = []
         self.nmax_ae = []
       
-        self.r2_foward = []
+        self.r2_forward_dnn = []
+        self.rmse_forward_dnn = []
+        self.mape_forward_dnn = []
+        self.nmax_ae_forward_dnn = []
+        
+        self.r2_forward = []
         self.rmse_forward = []
         self.mape_forward = []
         self.nmax_ae_forward = []
@@ -81,25 +88,49 @@ class experiment_setup:
             
                 run = AutoTNN(self.evaluator, self.lb, self.ub, self.init_size, 
                               self.batch_size, self.max_samples, self.algorithm, 
-                              self.test_data, lf_samples=self.multifidelity, sampler=self.sampler,
+                              self.test_data, lf_samples=self.multifidelity, sampler=self.sampler, return_forward_data=True,
                               x_init=X_sampled, y_init=y_sampled)
+                
+                
+                model, X_hf, y_hf = run.get_inverse_DNN()
+                
+                
+                if self.forward_metrics is not False:
+                    
+                    model = self.algorithm[1].fit(X_hf, y_hf)
+                    
+                    r2_fwd, rmse_fwd, mape_fwd, nmax_ae_fwd = error(model, self.test_data).forward_model_get_results(self.function_name, self.sampler)
+                    self.r2_forward.append(r2_fwd)
+                    self.rmse_forward.append(rmse_fwd)
+                    self.mape_forward.append(mape_fwd)
+                    self.nmax_ae_forward.append(nmax_ae_fwd)
+                
             else:
                 
                 run = AutoTNN(self.evaluator, self.lb, self.ub, self.init_size, 
                               self.batch_size, self.max_samples, self.algorithm, 
-                              self.test_data, lf_samples=self.multifidelity, sampler=self.sampler)
+                              self.test_data, lf_samples=self.multifidelity, sampler=self.sampler, return_forward_data=True)
                 
-            
-            run.get_inverse_DNN()
+                model, X_hf, y_hf = run.get_inverse_DNN()
+                
+                
+                if self.forward_metrics is not False:
                     
-            if self.forward_metrics is not False:
-            
-                r2_fwd, rmse_fwd, mape_fwd, nmax_ae_fwd = inverse_model_analysis(test_input, test_output, self.function_name).error_metrics_forward()
+                    r2_fwd, rmse_fwd, mape_fwd, nmax_ae_fwd = error(model, self.test_data).forward_model_get_results(self.function_name, self.sampler)
+                    self.r2_forward.append(r2_fwd)
+                    self.rmse_forward.append(rmse_fwd)
+                    self.mape_forward.append(mape_fwd)
+                    self.nmax_ae_forward.append(nmax_ae_fwd)
                 
-                self.r2_foward.append(r2_fwd)
-                self.rmse_forward.append(rmse_fwd)
-                self.mape_forward.append(mape_fwd)
-                self.nmax_ae_forward.append(nmax_ae_fwd)
+                    
+            if self.forward_metrics_dnn is not False:
+            
+                r2_fwd_dnn, rmse_fwd_dnn, mape_fwd_dnn, nmax_ae_fwd_dnn = inverse_model_analysis(test_input, test_output, self.function_name).error_metrics_forward()
+                
+                self.r2_forward_dnn.append(r2_fwd_dnn)
+                self.rmse_forward_dnn.append(rmse_fwd_dnn)
+                self.mape_forward_dnn.append(mape_fwd_dnn)
+                self.nmax_ae_forward_dnn.append(nmax_ae_fwd_dnn)
 
            
             r2, rmse, mape, nmax_ae = inverse_model_analysis(test_input, test_output, self.function_name).error_metrics()
@@ -144,14 +175,25 @@ class experiment_setup:
             
             np.save(dir_+f'/inverseDNN_{self.sampler}_{self.n_runs}.npy', results_)
             
-            # np.save(dir_+f'/inverseDNN_{self.sampler}_{self.max_samples}_{self.init_size}_{self.batch_size}_{self.n_runs}_r2.npy', self.r2)
-            # np.save(dir_+f'/inverseDNN_{self.sampler}_{self.max_samples}_{self.init_size}_{self.batch_size}_{self.n_runs}_rmse.npy', self.rmse)
-            # np.save(dir_+f'/inverseDNN_{self.sampler}_{self.max_samples}_{self.init_size}_{self.batch_size}_{self.n_runs}_mape.npy', self.mape)
-            # np.save(dir_+f'/inverseDNN_{self.sampler}_{self.max_samples}_{self.init_size}_{self.batch_size}_{self.n_runs}_nmax_ae.npy', self.nmax_ae)
             
+            if self.forward_metrics_dnn is not False:
+                
+                results_forward_dnn = {'r2': self.r2_forward_dnn,
+                            'rmse': self.rmse_forward_dnn,
+                            'mape': self.mape_forward_dnn,
+                            'nmax_ae': self.nmax_ae_forward_dnn,
+                            'sampler': self.sampler,
+                            'max_samples': self.max_samples,
+                            'init_size': self.init_size,
+                            'batch_size':self.batch_size,
+                            'n_runs': self.n_runs}
+                
+                np.save(dir_+f'/forwardDNN_{self.sampler}_{self.n_runs}.npy', results_forward_dnn)
+            
+                        
             if self.forward_metrics is not False:
                 
-                results_forward = {'r2': self.r2_forward,
+                results_forward= {'r2': self.r2_forward,
                             'rmse': self.rmse_forward,
                             'mape': self.mape_forward,
                             'nmax_ae': self.nmax_ae_forward,
@@ -161,17 +203,16 @@ class experiment_setup:
                             'batch_size':self.batch_size,
                             'n_runs': self.n_runs}
                 
-                np.save(dir_+f'/forwardDNN_{self.sampler}_{self.n_runs}.npy', results_forward)
+                np.save(dir_+f'/forward_model_{self.sampler}_{self.n_runs}.npy', results_forward)
                 
                             
-            #     np.save(dir_+f'/forwardDNN_{self.sampler}_{self.max_samples}_{self.init_size}_{self.batch_size}_{self.n_runs}_r2.npy', self.r2_forward)
-            #     np.save(dir_+f'/forwardDNN_{self.sampler}_{self.max_samples}_{self.init_size}_{self.batch_size}_{self.n_runs}_rmse.npy', self.rmse_forward)
-            #     np.save(dir_+f'/forwardDNN_{self.sampler}_{self.max_samples}_{self.init_size}_{self.batch_size}_{self.n_runs}_mape.npy', self.mape_forward)
-            #     np.save(dir_+f'/forwardDNN_{self.sampler}_{self.max_samples}_{self.init_size}_{self.batch_size}_{self.n_runs}_nmax_aer2.npy', self.nmax_ae_forward)
 
-        if self.forward_metrics is not False:
+        if self.forward_metrics_dnn is not False:
+            return results_, results_forward_dnn
+        
+        elif self.forward_metrics is not False:
             return results_, results_forward
-       
+        
         else:    
             return results_
         

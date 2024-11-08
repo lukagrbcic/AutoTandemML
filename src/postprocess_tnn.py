@@ -16,87 +16,12 @@ plt.rcParams.update({
 })
 
 
-                    
-# class plot_results:
-    
-#     def __init__(self, results):
-        
-#         self.results = results
-        
-#     def compare_metrics(self, std_show=True, fname=None):
-            
-#         colors = ['red', 'blue', 'orange', 'green']
-
-        
-#         n_runs = self.results[0]['n_runs']
-#         batch_size = self.results[0]['batch_size']
-        
-#         metrics = ['r2', 'rmse', 'mape', 'nmax_ae']
-        
-        
-#         methods = []
-#         for i in range(len(self.results)):
-            
-#             if self.results[i]['sampler'] == 'random':
-#                 methods.append('TNN$_R$')
-                
-#             if self.results[i]['sampler'] == 'lhs':
-#                 methods.append('TNN$_{LHS}$')
-                
-#             if self.results[i]['sampler'] == 'model_uncertainty':
-#                 methods.append('TNN$_{AL}$')
-
-                    
-#         #methods = ['R-TNN', 'LHS-TNN', 'AL-TNN']
-                    
-#         for m in metrics:
-#             plt.figure(figsize=(6,5))
-#             c = 0
-            
-#             positions = []
-#             labels = []
-            
-#             for dict_ in self.results:
-                
-                
-#                     array_ = dict_[f'{m}']
-
-#                     mean_array = np.mean(array_)
-                    
-#                     plt.plot(c, mean_array, color=colors[c], marker='x')
-                    
-     
-#                     plt.xticks([c], [methods[c]])
-                    
-#                     positions.append(c)
-#                     labels.append(methods[c])
-          
-#                     if m == 'r2': 
-#                         metric = 'R$^2$' 
-#                         plt.ylim(0, 1)
-                        
-#                     elif m == 'nmax_ae': metric = 'NMAE'
-                    
-#                     else: metric = m.upper()
-                    
-#                     plt.ylabel(f'{metric}')
-#                     # plt.legend(fontsize=12)
-#                     c+=1
-                    
-#                     ax = plt.gca()
-    
-#                     for axis in ['top', 'bottom', 'left', 'right']:
-#                       ax.spines[axis].set_linewidth(2)
-                    
-#                     plt.tight_layout()  
-#             plt.xticks(positions, labels)
-
 class plot_results:
 
     def __init__(self, results):
         self.results = results
 
-    def compare_metrics(self, std_show=True, fname=None):
+    def compare_metrics(self, path, modelname):
         import matplotlib.pyplot as plt
         import numpy as np
         from collections import defaultdict
@@ -168,11 +93,21 @@ class plot_results:
             # Set metric-specific labels and limits
             if m == 'r2':
                 metric_label = 'R$^2$'
-                plt.ylim(0.2, 1)
+                plt.ylim(0.8, 1)
+                plt.yticks(np.arange(0.8, 1+0.04, 0.04))
             elif m == 'nmax_ae':
                 metric_label = 'NMAE'
+            # elif m == 'nmax_ae':
+
             else:
                 metric_label = m.upper()
+                
+            if m == 'mape':
+                plt.ylim(0, 1.2)
+            
+            if m == 'rmse':
+                plt.ylim(0, 0.2)
+
 
             plt.ylabel(f'{metric_label}')
             # plt.xlabel('Methods')
@@ -184,10 +119,9 @@ class plot_results:
                 ax.spines[axis].set_linewidth(2)
 
             plt.tight_layout()
-            # Optionally save the plot
-            if fname:
-                plt.savefig(f'{fname}_{m}_boxplot.png', dpi=300)
-            plt.show()
+
+
+            plt.savefig(f'{path}_results/{modelname}_{m}_boxplot.pdf', dpi=300)
         
 
             
