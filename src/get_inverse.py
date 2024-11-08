@@ -24,7 +24,7 @@ class inverseDNN:
     
     def __init__(self, X, y, hyperparameters, validation_split=0.1,
                  criterion='rmse', optimizer='adam', verbose=False, 
-                 early_stopping_patience=5, forward_model_hyperparameters=None):
+                 early_stopping_patience=10, forward_model_hyperparameters=None):
         
         self.X = X
         self.y = y
