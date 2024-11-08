@@ -160,11 +160,15 @@ class plot_results:
             # Customize box plot appearance
             for patch, color in zip(bp['boxes'], box_colors):
                 patch.set_facecolor(color)
+                
+            for median in bp['medians']:
+                median.set_color('black')
+                median.set_linewidth(2)
 
             # Set metric-specific labels and limits
             if m == 'r2':
                 metric_label = 'R$^2$'
-                plt.ylim(0, 1)
+                plt.ylim(0.2, 1)
             elif m == 'nmax_ae':
                 metric_label = 'NMAE'
             else:

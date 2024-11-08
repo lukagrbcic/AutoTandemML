@@ -2,6 +2,10 @@ import sys
 
 from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.neural_network import MLPRegressor
+from sklearn.pipeline import make_pipeline
+import random
 
 sys.path.insert(0, '../InverseBench/src/')
 sys.path.insert(1, 'src')
@@ -22,12 +26,18 @@ name = 'scalar_diffusion_benchmark'
 model = load_model(name).load()
 f = benchmark_functions(name, model)
 
-ensemble_size = 5
-n_est = np.arange(10, 210, ensemble_size)
-reg_lambda = np.linspace(0.1, 10, ensemble_size)
-list_ = [[reg_lambda[i], n_est[i]] for i in range(ensemble_size)]
-ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in list_]             
-algorithm = ('xgb', EnsembleRegressor(ensemble))
+# ensemble_size = 5
+# n_est = np.arange(10, 210, ensemble_size)
+# reg_lambda = np.linspace(0.1, 10, ensemble_size)
+# list_ = [[reg_lambda[i], n_est[i]] for i in range(ensemble_size)]
+# ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in list_]             
+# algorithm = ('xgb', EnsembleRegressor(ensemble))
+
+ensemble = []
+for i in range(10):
+    ensemble.append(make_pipeline(MinMaxScaler(), MLPRegressor(hidden_layer_sizes=(100, 200, 100), 
+                                                                  random_state=random.randint(10, 250))))
+algorithm = ('mlp_ensemble', EnsembleRegressor(ensemble))      
 
 
 lb, ub = f.get_bounds()
@@ -40,8 +50,8 @@ all_results = []
 
 init_size=20
 batch_size=5
-max_samples=500
-n_runs = 30
+max_samples=200
+n_runs = 10
 # sampler = 'random'
 
 # scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
