@@ -57,7 +57,9 @@ class activeLearner:
 
     def initialize(self):
 
-        X = samplers('lhs', self.init_size, self.lb, self.ub, self.algorithm).generate_samples(11)
+        # X = samplers('lhs', self.init_size, self.lb, self.ub, self.algorithm).generate_samples(11)
+        X = samplers('lhs', self.init_size, self.lb, self.ub, self.algorithm).generate_samples()
+
         y = self.function.evaluate(X)
         
         return X, y
