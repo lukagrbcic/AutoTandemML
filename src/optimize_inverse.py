@@ -9,7 +9,7 @@ from DNNRegressor import TorchDNNRegressor
 
 
 class get_hyperparameters:
-    def __init__(self, X, y, param_dist, n_iter=100, cv=3, 
+    def __init__(self, X, y, param_dist, n_iter=10, cv=3, 
                  scoring='neg_root_mean_squared_error', n_jobs=4,
                  verbose=0, criterion='rmse', seed=11, forward_model_hyperparameters=None):
         
