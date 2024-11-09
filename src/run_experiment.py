@@ -79,13 +79,12 @@ class experiment_setup:
                 print ('Run', i+1)
                 print (self.sampler)
                 
-            if self.sampler != 'model_uncertainty':
+            if self.sampler not in ['model_uncertainty', 'ensemble', 'modelHC_uncertainty', 'model_quantile', 'modelLHS_quantile']:
                 
                 X_sampled = samplers(self.sampler, self.max_samples, self.lb, self.ub, self.algorithm).generate_samples()
 
                 y_sampled = self.evaluator.evaluate(X_sampled)
-                
-            
+
                 run = AutoTNN(self.evaluator, self.lb, self.ub, self.init_size, 
                               self.batch_size, self.max_samples, self.algorithm, 
                               self.test_data, lf_samples=self.multifidelity, sampler=self.sampler, return_forward_data=True,
