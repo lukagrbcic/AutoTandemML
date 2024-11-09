@@ -39,8 +39,8 @@ class modelHCSampler:
         data = np.vstack((data_ones, data_zeros))
         
         
-        # classifier = RandomForestClassifier().fit(data[:, :-1], data[:,-1])
-        classifier = xgb.XGBClassifier().fit(data[:, :-1], data[:,-1])
+        classifier = RandomForestClassifier().fit(data[:, :-1], data[:,-1])
+        # classifier = xgb.XGBClassifier().fit(data[:, :-1], data[:,-1])
         
         return classifier
 
