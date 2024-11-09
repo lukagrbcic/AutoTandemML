@@ -93,8 +93,8 @@ class plot_results:
             # Set metric-specific labels and limits
             if m == 'r2':
                 metric_label = 'R$^2$'
-                plt.ylim(0.8, 1)
-                plt.yticks(np.arange(0.8, 1+0.04, 0.04))
+                # plt.ylim(0.8, 1)
+                # plt.yticks(np.arange(0.8, 1+0.04, 0.04))
             elif m == 'nmax_ae':
                 metric_label = 'NMAE'
             # elif m == 'nmax_ae':
@@ -103,7 +103,7 @@ class plot_results:
                 metric_label = m.upper()
                 
             if m == 'mape':
-                plt.ylim(0, 1.2)
+                plt.ylim(0, 0.4)
             
             if m == 'rmse':
                 plt.ylim(0, 0.2)
