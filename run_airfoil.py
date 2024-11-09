@@ -3,6 +3,7 @@ import sys
 from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
 
+
 sys.path.insert(0, '../InverseBench/src/')
 sys.path.insert(1, 'src')
 sys.path.insert(2, 'src/samplers')
@@ -21,14 +22,7 @@ name = 'airfoil_benchmark'
 model = load_model(name).load()
 f = benchmark_functions(name, model)
 
-ensemble_size = 5
-n_est = np.arange(10, 210, ensemble_size)
-reg_lambda = np.linspace(0.1, 10, ensemble_size)
-list_ = [[reg_lambda[i], n_est[i]] for i in range(ensemble_size)]
-ensemble = [XGBRegressor(n_estimators=i[1], reg_lambda=i[0]) for i in list_]             
-algorithm = ('xgb', EnsembleRegressor(ensemble))
-
-# algorithm = ('rf', RandomForestRegressor())
+algorithm = ('rf', RandomForestRegressor())
 
 lb, ub = f.get_bounds()
 
@@ -42,7 +36,7 @@ all_results_forward = []
 
 init_size=20
 batch_size=5
-max_samples=200
+max_samples=150
 n_runs = 30
 sampler = 'random'
 

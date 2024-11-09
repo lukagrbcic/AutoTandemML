@@ -51,7 +51,7 @@ all_results = []
 init_size=20
 batch_size=5
 max_samples=400
-n_runs = 10
+n_runs = 30
 sampler = 'random'
 
 scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
@@ -96,6 +96,7 @@ else:
 all_results.append(results)
 
 
-plot_results(all_results).compare_metrics()
 
+all_results_inverse.append(results_inverse)
+all_results_forward.append(results_forward)
 
