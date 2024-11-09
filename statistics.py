@@ -4,7 +4,7 @@ import numpy as np
 
 
 
-name = 'airfoil_benchmark'
+name = 'inconel_benchmark'
 all_results_inverse = []
 
 n_runs = 30
@@ -34,7 +34,7 @@ methods = ['TNN$_R$', 'TNN$_{LHS}$', 'TNN$_{AL}$']
 # Map metric keys to display names
 metric_display_names = {
     'rmse': 'RMSE',
-    'r2': 'R2',
+    'r2': 'R$^2$',
     'mape': 'MAPE',
     'nmax_ae': 'NMAE'
 }
