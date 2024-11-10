@@ -102,11 +102,11 @@ class plot_results:
             else:
                 metric_label = m.upper()
                 
-            if m == 'mape':
-                plt.ylim(0, 0.4)
+            # if m == 'mape':
+            #     # plt.ylim(0, 0.4)
             
-            if m == 'rmse':
-                plt.ylim(0, 0.2)
+            # if m == 'rmse':
+            #     # plt.ylim(0, 0.2)
 
 
             plt.ylabel(f'{metric_label}')
