@@ -1,6 +1,9 @@
 import lhs_sampler as lhs
 import poisson_sampler as poisson
 import random_sampler as rnd
+import greedyfp_sampler as gfp
+import bc_sampler as bc
+
 import model_sampler as ms
 import modelHC_sampler as mhcs
 import modelLHS_sampler as mlhs
@@ -33,6 +36,14 @@ class samplers:
         elif self.sampler == 'random':
             
             X = rnd.randomSampler(self.batch_size, self.lb, self.ub).gen_random_samples()
+
+        elif self.sampler == 'greedyfp':
+            
+            X = gfp.greedyFPSampler(self.batch_size, self.lb, self.ub).gen_GFP_samples()
+
+        elif self.sampler == 'bc':
+            
+            X = bc.bcSampler(self.batch_size, self.lb, self.ub).gen_BC_samples()
         
         elif self.sampler == 'poisson':
             
