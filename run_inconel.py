@@ -83,6 +83,27 @@ else:
 all_results_inverse.append(results_inverse)
 all_results_forward.append(results_forward)
 
+
+sampler = 'greedyfp'
+
+scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
+                                test_data, algorithm, f, lb, ub, function_name=name)
+    
+file_path_inverse = f'./{name}_results/inverseDNN_{sampler}_{n_runs}.npy'
+file_path_forward = f'./{name}_results/forward_model_{sampler}_{n_runs}.npy'
+
+if os.path.exists(file_path_inverse):
+    with open(file_path_inverse, 'r') as file:
+        results_inverse = np.load(file_path_inverse, allow_pickle=True).item()
+    with open(file_path_forward, 'r') as file:
+        results_forward = np.load(file_path_forward, allow_pickle=True).item()
+
+else:
+    results_inverse, results_forward = scalar_setup.run()
+
+all_results_inverse.append(results_inverse)
+all_results_forward.append(results_forward)
+
 sampler = 'model_uncertainty'
 
 scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
