@@ -28,13 +28,15 @@ class plot_results:
 
         colors = ['red', 'blue', 'orange', 'green']
 
-        metrics = ['r2', 'rmse', 'mape', 'nmax_ae']
+        metrics = ['r2', 'rmse', 'nmax_ae']
 
         # Mapping from sampler to method names
         sampler_to_method = {
             'random': 'TNN$_R$',
             'lhs': 'TNN$_{LHS}$',
-            'model_uncertainty': 'TNN$_{AL}$'
+            'model_uncertainty': 'TNN$_{AL}$',
+            'bc': 'TNN$_{BC}$',
+            'greedyfp': 'TNN$_{GFP}$'
         }
 
         # Initialize a nested dictionary to collect data per method and metric
@@ -54,11 +56,14 @@ class plot_results:
                     method_data[method_name][m].extend(array_)
 
         # Define the list of methods and corresponding colors
-        methods = ['TNN$_R$', 'TNN$_{LHS}$', 'TNN$_{AL}$']
+        methods = ['TNN$_R$', 'TNN$_{LHS}$', 'TNN$_{AL}$', 'TNN$_{BC}$', 'TNN$_{GFP}$']
         method_colors = {
             'TNN$_R$': 'red',
             'TNN$_{LHS}$': 'blue',
-            'TNN$_{AL}$': 'orange'
+            'TNN$_{AL}$': 'orange',
+            'TNN$_{BC}$': 'green',
+            'TNN$_{GFP}$': 'purple'
+            
         }
 
         # For each metric, create the box plot
@@ -93,7 +98,7 @@ class plot_results:
             # Set metric-specific labels and limits
             if m == 'r2':
                 metric_label = 'R$^2$'
-                # plt.ylim(0.8, 1)
+                plt.ylim(0.8, 1)
                 # plt.yticks(np.arange(0.8, 1+0.04, 0.04))
             elif m == 'nmax_ae':
                 metric_label = 'NMAE'

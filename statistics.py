@@ -4,7 +4,7 @@ import numpy as np
 
 
 
-name = 'inconel_benchmark'
+name = 'scalar_diffusion_benchmark'
 all_results_inverse = []
 
 n_runs = 30
@@ -27,15 +27,31 @@ results_inverse = np.load(file_path_inverse, allow_pickle=True).item()
 
 all_results_inverse.append(results_inverse)
 
-metric_keys = ['rmse', 'r2', 'mape', 'nmax_ae']
+sampler = 'bc'
+
+file_path_inverse = f'./{name}_results/inverseDNN_{sampler}_{n_runs}.npy'
+results_inverse = np.load(file_path_inverse, allow_pickle=True).item()
+
+
+all_results_inverse.append(results_inverse)
+
+sampler = 'greedyfp'
+
+file_path_inverse = f'./{name}_results/inverseDNN_{sampler}_{n_runs}.npy'
+results_inverse = np.load(file_path_inverse, allow_pickle=True).item()
+
+
+all_results_inverse.append(results_inverse)
+
+metric_keys = ['rmse', 'r2', 'nmax_ae']
 # Method names
-methods = ['TNN$_R$', 'TNN$_{LHS}$', 'TNN$_{AL}$']
+methods = ['TNN$_R$', 'TNN$_{LHS}$', 'TNN$_{AL}$', 'TNN$_{BC}$', 'TNN$_{GFP}$']
 
 # Map metric keys to display names
 metric_display_names = {
     'rmse': 'RMSE',
     'r2': 'R$^2$',
-    'mape': 'MAPE',
+    # 'mape': 'MAPE',
     'nmax_ae': 'NMAE'
 }
 
