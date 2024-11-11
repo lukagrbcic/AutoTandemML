@@ -10,7 +10,7 @@ class greedyFPSampler:
         self.lb = lb
         self.ub = ub
             
-    def gen_GFP_samples(self, scale=2):
+    def gen_GFP_samples(self, scale=10):
 
         M = self.sample_size * scale  
         

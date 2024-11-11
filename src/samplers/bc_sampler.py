@@ -10,7 +10,7 @@ class bcSampler:
         self.lb = lb
         self.ub = ub
         
-    def gen_BC_samples(self, scale=2, maxCand=100):
+    def gen_BC_samples(self, scale=10, maxCand=250):
 
         
         first_sample = np.random.uniform(self.lb, self.ub, size=(1, len(self.lb)))
