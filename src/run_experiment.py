@@ -79,7 +79,7 @@ class experiment_setup:
                 print ('Run', i+1)
                 print (self.sampler)
                 
-            if self.sampler not in ['model_uncertainty', 'ensemble', 'modelHC_uncertainty', 'model_quantile', 'modelLHS_quantile']:
+            if self.sampler not in ['model_uncertainty', 'ensemble', 'modelHC_uncertainty', 'model_quantile', 'modelLHS_quantile', 'modelgreedy_uncertainty']:
                 
                 X_sampled = samplers(self.sampler, self.max_samples, self.lb, self.ub, self.algorithm).generate_samples()
 
