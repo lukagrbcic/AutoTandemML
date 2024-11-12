@@ -5,6 +5,7 @@ import greedyfp_sampler as gfp
 import bc_sampler as bc
 
 import model_sampler as ms
+import model_greedy_sampler as mgs
 import modelHC_sampler as mhcs
 import modelLHS_sampler as mlhs
 
@@ -55,6 +56,13 @@ class samplers:
             X = ms.modelSampler(self.model, self.batch_size, 
                                 self.lb, self.ub, self.algorithm[0],
                                 self.sampler.split('_')[-1], self.sampled_points).get_samples()
+        
+        elif self.sampler.split('_')[0] == 'modelgreedy':
+            
+            X = mgs.modelGFPSampler(self.model, self.batch_size, 
+                                self.lb, self.ub, self.algorithm[0],
+                                self.sampler.split('_')[-1], self.sampled_points).get_samples()
+        
         
         elif self.sampler.split('_')[0] == 'modelHC':
             
