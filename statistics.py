@@ -4,7 +4,7 @@ import numpy as np
 
 
 
-name = 'scalar_diffusion_benchmark'
+name = 'inconel_benchmark'
 all_results_inverse = []
 
 n_runs = 30
