@@ -40,7 +40,7 @@ all_results_inverse = []
 all_results_forward = []
 
 init_size=20
-batch_size=20
+batch_size=5
 max_samples=300
 n_runs = 30
 
