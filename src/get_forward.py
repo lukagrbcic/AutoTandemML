@@ -99,32 +99,35 @@ class forwardDNN:
         
         epochs = self.hyperparameters['epochs']
         
+
         for epoch in range(epochs):
             self.model.train()
+            epoch_training_loss = 0.0  # Initialize training loss for the epoch
             for batch_X, batch_y in train_dataloader:
                 self.optimizer.zero_grad()
                 outputs = self.model(batch_X)
-                loss = self.criterion(batch_y, outputs)
+                loss = self.criterion(outputs, batch_y)  # Correct argument order
                 loss.backward()
                 self.optimizer.step()
+                epoch_training_loss += loss.item()
+            
+            average_training_loss = epoch_training_loss / len(train_dataloader)
             
             self.model.eval()
-            
             with torch.no_grad():
                 val_outputs = self.model(X_val_tensor)
-       
                 val_loss = self.criterion(val_outputs, y_val_tensor)
-                
-            if self.verbose == True:
-                print(f"Epoch {epoch+1}/{epochs}, Training Loss: {loss.item()}, Validation Loss: {val_loss}")
             
-            if val_loss < best_val_loss:
-                best_val_loss = val_loss
+            if self.verbose:
+                print(f"Epoch {epoch+1}/{epochs}, Training Loss: {average_training_loss}, Validation Loss: {val_loss.item()}")
+            
+            if val_loss.item() < best_val_loss:
+                best_val_loss = val_loss.item()
                 patience = 0
             else:
                 patience += 1
                 if patience >= self.early_stopping_patience:
-                    if self.verbose == True:
+                    if self.verbose:
                         print("Early stopping triggered")
                     break
 
