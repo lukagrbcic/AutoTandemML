@@ -47,7 +47,15 @@ results_inverse = np.load(file_path_inverse, allow_pickle=True).item()
 all_results_inverse.append(results_inverse)
 metric_keys = ['rmse', 'r2', 'nmax_ae']
 # Method names
-methods = ['TNN$_R$', 'TNN$_{LHS}$', 'TNN$_{AL}$', 'TNN$_{BC}$', 'TNN$_{GFP}$']
+# methods = ['TNN$_R$', 'TNN$_{LHS}$', 'TNN$_{AL}$', 'TNN$_{BC}$', 'TNN$_{GFP}$']
+
+
+if model_type == 'inverseDNN':
+    methods = ['$\mathbf{I_{DNN_R}}$', '$\mathbf{I_{DNN_{LHS}}}$', '$\mathbf{I_{DNN_{AL}}}$','$\mathbf{I_{DNN_{BC}}}$',
+                '$\mathbf{I_{DNN_{GFP}}}$']
+else:
+    methods = ['$\mathbf{M_{R}}$', '$\mathbf{M_{LHS}}$', '$\mathbf{M_{AL}}$', '$\mathbf{M_{BC}}$',
+                '$\mathbf{M_{GFP}}$']
 
 # Map metric keys to display names
 metric_display_names = {

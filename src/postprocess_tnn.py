@@ -31,13 +31,30 @@ class plot_results:
         metrics = ['r2', 'rmse', 'nmax_ae']
 
         # Mapping from sampler to method names
-        sampler_to_method = {
-            'random': 'TNN$_R$',
-            'lhs': 'TNN$_{LHS}$',
-            'model_uncertainty': 'TNN$_{AL}$',
-            'bc': 'TNN$_{BC}$',
-            'greedyfp': 'TNN$_{GFP}$'
-        }
+        # sampler_to_method = {
+        #     'random': 'TNN$_R$',
+        #     'lhs': 'TNN$_{LHS}$',
+        #     'model_uncertainty': 'TNN$_{AL}$',
+        #     'bc': 'TNN$_{BC}$',
+        #     'greedyfp': 'TNN$_{GFP}$'
+        # }
+        
+        if modelname == 'inverse':
+            sampler_to_method = {
+                'random': '$\mathbf{I_{DNN_R}}$',
+                'lhs': '$\mathbf{I_{DNN_{LHS}}}$',
+                'model_uncertainty': '$\mathbf{I_{DNN_{AL}}}$',
+                'bc': '$\mathbf{I_{DNN_{BC}}}$',
+                'greedyfp': '$\mathbf{I_{DNN_{GFP}}}$'
+            }
+        elif modelname == 'forward':
+            sampler_to_method = {
+                'random': '$\mathbf{M_{R}}$',
+                'lhs': '$\mathbf{M_{LHS}}$',
+                'model_uncertainty': '$\mathbf{M_{AL}}$',
+                'bc': '$\mathbf{M_{BC}}$',
+                'greedyfp': '$\mathbf{M_{GFP}}$'
+            }
 
         # Initialize a nested dictionary to collect data per method and metric
         # method_data[method][metric] = list of data points
@@ -56,13 +73,28 @@ class plot_results:
                     method_data[method_name][m].extend(array_)
 
         # Define the list of methods and corresponding colors
-        methods = ['TNN$_R$', 'TNN$_{LHS}$', 'TNN$_{AL}$', 'TNN$_{BC}$', 'TNN$_{GFP}$']
+        # methods = ['TNN$_R$', 'TNN$_{LHS}$', 'TNN$_{AL}$', 'TNN$_{BC}$', 'TNN$_{GFP}$']
+        
+        
+        # method_colors = {
+        #     'TNN$_R$': 'red',
+        #     'TNN$_{LHS}$': 'blue',
+        #     'TNN$_{AL}$': 'orange',
+        #     'TNN$_{BC}$': 'green',
+        #     'TNN$_{GFP}$': 'purple'
+            
+        # }
+        
+        methods = [sampler_to_method['random'], sampler_to_method['lhs'],
+                   sampler_to_method['model_uncertainty'], sampler_to_method['bc'], sampler_to_method['greedyfp']]
+        
+        
         method_colors = {
-            'TNN$_R$': 'red',
-            'TNN$_{LHS}$': 'blue',
-            'TNN$_{AL}$': 'orange',
-            'TNN$_{BC}$': 'green',
-            'TNN$_{GFP}$': 'purple'
+            sampler_to_method['random']: 'red',
+            sampler_to_method['lhs']: 'blue',
+            sampler_to_method['model_uncertainty']: 'orange',
+            sampler_to_method['bc']: 'green',
+            sampler_to_method['greedyfp']: 'purple'
             
         }
 
