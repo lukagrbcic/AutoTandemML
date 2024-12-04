@@ -131,6 +131,6 @@ class forwardDNN:
                         print("Early stopping triggered")
                     break
 
-        torch.save(self.model.state_dict(), 'forwardDNN.pth')
+        torch.save(self.model.state_dict(), 'forwardDNN/forwardDNN.pth')
         
         

@@ -6,9 +6,8 @@ import joblib
 import torch
 
 sys.path.insert(0, 'src')
-sys.path.insert(1, '../InverseBench/src/')
 
-from benchmarks import *
+from InverseBench.benchmarks import *
 from model_factory import ModelFactory
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -53,7 +52,7 @@ class inverse_model_analysis:
 
     def load_forward_dnn(self):
         
-        hyperparameters = np.load(f'model_config.npy', allow_pickle=True).item()
+        hyperparameters = np.load(f'forward_DNN/model_config.npy', allow_pickle=True).item()
         
         forward_dnn = ModelFactory().create_model(model_type=hyperparameters['model_type'], 
                                                   input_size=np.shape(self.test_input)[1], 
@@ -64,7 +63,7 @@ class inverse_model_analysis:
                                                   batch_norm=hyperparameters['batch_norm'],
                                                   activation=hyperparameters['activation'])
         
-        forward_dnn.load_state_dict(torch.load(f'forwardDNN.pth'))
+        forward_dnn.load_state_dict(torch.load(f'forward_DNN/forwardDNN.pth'))
         forward_dnn.eval()
         
         return forward_dnn

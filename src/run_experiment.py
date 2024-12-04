@@ -1,6 +1,5 @@
 import numpy as np
 import sys
-sys.path.insert(0, '../../InverseBench/src/')
 sys.path.insert(1, 'samplers')
 
 from benchmarks import *
@@ -10,6 +9,7 @@ from ensemble_regressor import EnsembleRegressor
 from inverse_validator import inverse_model_analysis
 from generate_samples import samplers
 
+import os
 import shutil
 import warnings
 warnings.filterwarnings("ignore")
@@ -55,16 +55,20 @@ class experiment_setup:
         
     def clear_files(self):
         
-        shutil.rmtree('inverseDNN')
+        #shutil.rmtree('inverseDNN')
         if os.path.exists('inverseDNN'):
             None
         else:
             os.mkdir('inverseDNN')
 
         if os.path.exists('forwardDNN'):
-            os.remove('forwardDNN')
-        if os.path.exists('model_config.npy'):
-            os.remove('model_config.npy')
+            None
+        else:
+            os.mkdir('forwardDNN')
+
+        # if os.path.exists('model_config.npy'):
+        #     os.remove('model_config.npy')
+            
 
     def run(self):
         
@@ -83,7 +87,7 @@ class experiment_setup:
                 
                 X_sampled = samplers(self.sampler, self.max_samples, self.lb, self.ub, self.algorithm).generate_samples()
 
-                y_sampled = self.evaluator.evaluate(X_sampled)
+                y_sampled = self.evaluator(X_sampled)
 
                 run = AutoTNN(self.evaluator, self.lb, self.ub, self.init_size, 
                               self.batch_size, self.max_samples, self.algorithm, 

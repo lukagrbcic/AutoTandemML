@@ -35,11 +35,10 @@ class AutoTNN:
                  test_data,
                  lf_samples=0,
                  sampler='model_uncertainty',
-                 verbose=0, combinations=100, 
+                 verbose=False, al_verbose=0, combinations=10, 
                  forward_param_dist=None, 
                  inverse_param_dist=None,
                  forward_model=None,
-                 partition=False,
                  function_name=None,
                  return_forward_data=False,
                  x_init=[],
@@ -56,25 +55,22 @@ class AutoTNN:
         self.lf_samples = lf_samples
         self.sampler = sampler
         self.verbose = verbose
+        self.al_verbose = al_verbose
         self.combinations = combinations
         self.forward_param_dist = forward_param_dist
         self.inverse_param_dist = inverse_param_dist
         self.forward_model = forward_model
-        self.partition = partition
         self.return_forward_data = return_forward_data
         self.x_init = x_init
         self.y_init = y_init
-    
-
-    
+        
     def get_foward_model(self):
                     
-        
         run = al.activeLearner(self.f, self.lb, self.ub,
                                 self.init_size, self.batch_size,
                                 self.max_samples, self.sampler,
                                 self.algorithm, self.test_data,
-                                verbose=0, return_model=True, return_hf_samples=True)
+                                verbose=self.al_verbose, return_model=True, return_hf_samples=True)
         
         _, model, X_hf, y_hf = run.run()
         
@@ -86,7 +82,6 @@ class AutoTNN:
         y = model.predict(X)
         
         return X, y
-    
     
     # def generate_hidden_layer_sizes(self, min_layers=1, max_layers=5, min_units=16, max_units=256, size=100):
     #     hidden_layer_sizes = []
@@ -102,59 +97,30 @@ class AutoTNN:
         
         if self.forward_param_dist is None:
         
-            # forward_param_dist = {
-            #     'model_type': ['mlp'],
-            #     # 'hidden_layers': [[64], [128], [256], [128, 128],
-            #     #                   [256, 256], [512, 512], [64, 128, 64],
-            #     #                   [128, 256, 128], [256, 512, 256],
-            #     #                   [64, 128, 256, 128, 64]],
-            #     'hidden_layers': [[64, 128, 64],
-            #                       [128, 256, 128], [256, 512, 256],
-            #                       [64, 128, 256, 128, 64]],
-                
-            #    # 'dropout': [0.0, 0.2],
-            #    # 'batch_norm': [False, True],
-            #    'dropout': [0.0],
-            #    'batch_norm': [False],
-            #     'activation': ['relu', 'leaky_relu'],
-            #     'epochs': [100, 200, 300, 1000],
-            #     'batch_size': [32, 64],
-            #     'learning_rate': [0.001, 0.01, 0.1],
-            #     'input_scaler': ['MinMax', 'Standard'],
-            #     'output_scaler': ['MinMax', 'Standard'],
-            #     'output_activation': [None]
-            # }
-            
             forward_param_dist = {
                 'model_type': ['mlp'],
-                # 'hidden_layers': [[64], [128], [256], [128, 128],
-                #                   [256, 256], [512, 512], [64, 128, 64],
-                #                   [128, 256, 128], [256, 512, 256],
-                #                   [64, 128, 256, 128, 64]],
-                'hidden_layers': [[64, 128, 256, 128, 64]],
-                
-               # 'dropout': [0.0, 0.2],
-               # 'batch_norm': [False, True],
-               'dropout': [0.0],
-               'batch_norm': [False],
-                'activation': ['relu'],
+                'hidden_layers': [[64], [128], [256], [128, 128],
+                                  [256, 256], [512, 512], [64, 128, 64],
+                                  [128, 256, 128], [256, 512, 256],
+                                  [64, 128, 256, 128, 64]],
+                'dropout': [0.0, 0.2],
+                'batch_norm': [False, True],
+                'dropout': [0.0],
+                'batch_norm': [False],
+                'activation': ['relu', 'leaky_relu'],
                 'epochs': [2000],
-                'batch_size': [32],
-                'learning_rate': [0.001],
-                'input_scaler': ['MinMax'],
-                'output_scaler': ['MinMax'],
+                'batch_size': [32, 64],
+                'learning_rate': [0.001, 0.01, 0.1],
+                'input_scaler': ['MinMax', 'Standard'],
+                'output_scaler': ['MinMax', 'Standard'],
                 'output_activation': [None]
             }
-            
-        
+                    
         else: forward_param_dist = self.forward_param_dist
     
         fwd_hyperparameters = get_hyperparameters(X, y, forward_param_dist, n_iter=self.combinations).run()
         forwardDNN(X, y, fwd_hyperparameters).train_save()
-        
-        # print ('Forward hyperparameters:', fwd_hyperparameters)
-
-        
+                
         return fwd_hyperparameters
         
     
@@ -188,7 +154,7 @@ class AutoTNN:
             print ('Optimizing and training forward DNN')
             
         fwd_hyperparameters = self.get_forward_DNN(X_hf, y_hf)
-        np.save('model_config.npy', fwd_hyperparameters)
+        np.save('forwardDNN/model_config.npy', fwd_hyperparameters)
 
         
         if self.verbose == True:
@@ -197,49 +163,23 @@ class AutoTNN:
             
         if self.inverse_param_dist is None:
             
-            # param_dist = {
-            #     'model_type': ['mlp'],
-            #     # 'hidden_layers': [[64], [128], [256], [128, 128],
-            #     #                   [256, 256], [512, 512], [64, 128, 64],
-            #     #                   [128, 256, 128], [256, 512, 256], [64, 128, 256, 128, 64]],
-            #     'hidden_layers': [[64, 128, 64],
-            #                       [128, 256, 128], [256, 512, 256],
-            #                       [64, 128, 256, 128, 64]],
-            #    # 'dropout': [0.0, 0.2],
-            #    # 'batch_norm': [False, True],
-            #    'dropout': [0.0],
-            #    'batch_norm': [False],
-            #     'activation': ['relu', 'leaky_relu'],
-            #     'epochs': [100, 200, 300, 1000],
-            #     'batch_size': [32, 64],
-            #     'learning_rate': [0.001, 0.01, 0.1],
-            #     'input_scaler': [fwd_hyperparameters['output_scaler']],
-            #     'output_scaler': [fwd_hyperparameters['input_scaler']],
-            #     'output_activation': [None]
-            # }
-            
-                      
             param_dist = {
                 'model_type': ['mlp'],
-                # 'hidden_layers': [[64], [128], [256], [128, 128],
-                #                   [256, 256], [512, 512], [64, 128, 64],
-                #                   [128, 256, 128], [256, 512, 256],
-                #                   [64, 128, 256, 128, 64]],
-                'hidden_layers': [[64, 128, 256, 128, 64]],
-                
-               # 'dropout': [0.0, 0.2],
-               # 'batch_norm': [False, True],
-               'dropout': [0.0],
-               'batch_norm': [False],
-                'activation': ['relu'],
+                'hidden_layers': [[64], [128], [256], [128, 128],
+                                  [256, 256], [512, 512], [64, 128, 64],
+                                  [128, 256, 128], [256, 512, 256], [64, 128, 256, 128, 64]],
+                'dropout': [0.0, 0.2],
+                'batch_norm': [False, True],
+                'dropout': [0.0],
+                'batch_norm': [False],
+                'activation': ['relu', 'leaky_relu'],
                 'epochs': [2000],
-                'batch_size': [32],
-                'learning_rate': [0.001],
+                'batch_size': [32, 64],
+                'learning_rate': [0.001, 0.01, 0.1],
                 'input_scaler': [fwd_hyperparameters['output_scaler']],
                 'output_scaler': [fwd_hyperparameters['input_scaler']],
                 'output_activation': [None]
             }
-            
             
         else:
             
@@ -249,9 +189,7 @@ class AutoTNN:
         self.inverse_hyperparameters = get_hyperparameters(y_hf, X_hf, 
                                         param_dist, seed=np.random.randint(1,10000), n_iter=self.combinations, 
                                         forward_model_hyperparameters=fwd_hyperparameters).run()
-        
-        # print ('Inverse hyperparameters:', self.inverse_hyperparameters)
-        
+                
         np.save('inverseDNN/model_config.npy', self.inverse_hyperparameters)
         
         if self.verbose == True:

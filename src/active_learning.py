@@ -60,7 +60,7 @@ class activeLearner:
         # X = samplers('lhs', self.init_size, self.lb, self.ub, self.algorithm).generate_samples(11)
         X = samplers('lhs', self.init_size, self.lb, self.ub, self.algorithm).generate_samples()
 
-        y = self.function.evaluate(X)
+        y = self.function(X)
         
         return X, y
     
@@ -119,7 +119,7 @@ class activeLearner:
         while len(X) <= self.max_samples - self.batch_size:
             
             X_new = self.get_samples(sampled_points=X)
-            y_new = self.function.evaluate(X_new)
+            y_new = self.function(X_new)
             
             X = np.vstack((X, X_new))
             y = np.vstack((y, y_new))
