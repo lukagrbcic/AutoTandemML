@@ -102,11 +102,11 @@ class forwardDNN:
 
         for epoch in range(epochs):
             self.model.train()
-            epoch_training_loss = 0.0  # Initialize training loss for the epoch
+            epoch_training_loss = 0.0 
             for batch_X, batch_y in train_dataloader:
                 self.optimizer.zero_grad()
                 outputs = self.model(batch_X)
-                loss = self.criterion(outputs, batch_y)  # Correct argument order
+                loss = self.criterion(outputs, batch_y)  
                 loss.backward()
                 self.optimizer.step()
                 epoch_training_loss += loss.item()

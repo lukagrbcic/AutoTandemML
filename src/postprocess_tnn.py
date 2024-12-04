@@ -56,34 +56,19 @@ class plot_results:
                 'greedyfp': '$\mathbf{M_{GFP}}$'
             }
 
-        # Initialize a nested dictionary to collect data per method and metric
-        # method_data[method][metric] = list of data points
+
         method_data = defaultdict(lambda: defaultdict(list))
 
         # Collect data
         for dict_ in self.results:
             sampler = dict_.get('sampler')
-            method_name = sampler_to_method.get(sampler, sampler)  # Default to sampler name if not in mapping
+            method_name = sampler_to_method.get(sampler, sampler)
 
-            # For each metric, append the data to method's data
             for m in metrics:
                 array_ = dict_.get(m)
                 if array_ is not None:
-                    array_ = np.asarray(array_).ravel()  # Ensure it's a 1D array
+                    array_ = np.asarray(array_).ravel() 
                     method_data[method_name][m].extend(array_)
-
-        # Define the list of methods and corresponding colors
-        # methods = ['TNN$_R$', 'TNN$_{LHS}$', 'TNN$_{AL}$', 'TNN$_{BC}$', 'TNN$_{GFP}$']
-        
-        
-        # method_colors = {
-        #     'TNN$_R$': 'red',
-        #     'TNN$_{LHS}$': 'blue',
-        #     'TNN$_{AL}$': 'orange',
-        #     'TNN$_{BC}$': 'green',
-        #     'TNN$_{GFP}$': 'purple'
-            
-        # }
         
         methods = [sampler_to_method['random'], sampler_to_method['lhs'],
                    sampler_to_method['model_uncertainty'], sampler_to_method['bc'], sampler_to_method['greedyfp']]
@@ -98,9 +83,7 @@ class plot_results:
             
         }
 
-        # For each metric, create the box plot
         for m in metrics:
-            # Prepare data to plot: a list of data arrays for each method
             data_to_plot = []
             labels = []
             box_colors = []
@@ -112,14 +95,12 @@ class plot_results:
                     box_colors.append(method_colors[method])
 
             if not data_to_plot:
-                continue  # Skip if no data for this metric
+                continue 
 
-            # Create the box plot
             plt.figure(figsize=(6, 5))
 
             bp = plt.boxplot(data_to_plot, patch_artist=True, labels=labels)
 
-            # Customize box plot appearance
             for patch, color in zip(bp['boxes'], box_colors):
                 patch.set_facecolor(color)
                 
@@ -127,7 +108,6 @@ class plot_results:
                 median.set_color('black')
                 median.set_linewidth(2)
 
-            # Set metric-specific labels and limits
             if m == 'r2':
                 metric_label = 'R$^2$'
                 plt.ylim(0.9, 1)
@@ -150,7 +130,7 @@ class plot_results:
             # plt.xlabel('Methods')
             # plt.title(f'Comparison of {metric_label} Across Methods')
 
-            # Customize plot aesthetics
+
             ax = plt.gca()
             for axis in ['top', 'bottom', 'left', 'right']:
                 ax.spines[axis].set_linewidth(2)
