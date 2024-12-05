@@ -1,14 +1,16 @@
 import numpy as np
-from model_factory import ModelFactory
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.model_selection import train_test_split
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import joblib
 import random
 
+from .model_factory import ModelFactory
+
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 seed = 42 
 random.seed(seed)
 np.random.seed(seed)
@@ -20,11 +22,10 @@ torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 
 
-class inverseDNN:
+class forwardDNN:
     
     def __init__(self, X, y, hyperparameters, validation_split=0.1,
-                 criterion='rmse', optimizer='adam', verbose=False, 
-                 early_stopping_patience=10, forward_model_hyperparameters=None):
+                 criterion='rmse', optimizer='adam', verbose=False, early_stopping_patience=10):
         
         self.X = X
         self.y = y
@@ -34,26 +35,7 @@ class inverseDNN:
         self.optimizer = optimizer
         self.verbose = verbose
         self.early_stopping_patience = early_stopping_patience
-        self.forward_model_hyperparameters = forward_model_hyperparameters
-
-    def get_forward_model(self):
-        
-        hyperparameters = self.forward_model_hyperparameters
-        
-        forward_dnn = ModelFactory().create_model(model_type=hyperparameters['model_type'], 
-                                                  input_size=np.shape(self.y)[1], 
-                                                  output_size=np.shape(self.X)[1],
-                                                  hidden_layers=hyperparameters['hidden_layers'],
-                                                  dropout=hyperparameters['dropout'],
-                                                  output_activation=hyperparameters['output_activation'],
-                                                  batch_norm=hyperparameters['batch_norm'],
-                                                  activation=hyperparameters['activation'])
-
-        forward_dnn.load_state_dict(torch.load('forwardDNN/forwardDNN.pth'))
-        forward_dnn.eval()
-        
-        return forward_dnn
-
+    
     def train_save(self):
         
         self.model = ModelFactory().create_model(model_type=self.hyperparameters['model_type'], 
@@ -118,22 +100,15 @@ class inverseDNN:
         patience = 0
         
         epochs = self.hyperparameters['epochs']
-                
-        if self.forward_model_hyperparameters is not None:
-            forward_dnn = self.get_forward_model()
-            
         
+
         for epoch in range(epochs):
             self.model.train()
-            epoch_training_loss = 0.0
+            epoch_training_loss = 0.0 
             for batch_X, batch_y in train_dataloader:
                 self.optimizer.zero_grad()
                 outputs = self.model(batch_X)
-                if self.forward_model_hyperparameters is not None:
-                    forward_outputs = forward_dnn(outputs)
-                    loss = self.criterion(forward_outputs, batch_X)
-                else:
-                    loss = self.criterion(outputs, batch_y)
+                loss = self.criterion(outputs, batch_y)  
                 loss.backward()
                 self.optimizer.step()
                 epoch_training_loss += loss.item()
@@ -143,17 +118,13 @@ class inverseDNN:
             self.model.eval()
             with torch.no_grad():
                 val_outputs = self.model(X_val_tensor)
-                if self.forward_model_hyperparameters is not None:
-                    forward_val_outputs = forward_dnn(val_outputs)
-                    val_loss = self.criterion(forward_val_outputs, X_val_tensor)
-                else:
-                    val_loss = self.criterion(val_outputs, y_val_tensor)
+                val_loss = self.criterion(val_outputs, y_val_tensor)
             
             if self.verbose:
-                print(f"Epoch {epoch+1}/{epochs}, Training Loss: {average_training_loss}, Validation Loss: {val_loss}")
+                print(f"Epoch {epoch+1}/{epochs}, Training Loss: {average_training_loss}, Validation Loss: {val_loss.item()}")
             
-            if val_loss < best_val_loss:
-                best_val_loss = val_loss
+            if val_loss.item() < best_val_loss:
+                best_val_loss = val_loss.item()
                 patience = 0
             else:
                 patience += 1
@@ -162,12 +133,6 @@ class inverseDNN:
                         print("Early stopping triggered")
                     break
 
-        torch.save(self.model.state_dict(), 'inverseDNN/inverseDNN.pth')
-        if self.sc_output is not None:
-            joblib.dump(self.sc_output, 'inverseDNN/output_scaler_inverse.pkl')
-        if self.sc_input is not None:
-            joblib.dump(self.sc_input, 'inverseDNN/input_scaler_inverse.pkl')
-            
-        
+        torch.save(self.model.state_dict(), 'forwardDNN/forwardDNN.pth')
         
         

@@ -1,19 +1,14 @@
 import numpy as np
-import sys
-sys.path.insert(1, 'samplers')
 
-from benchmarks import *
-from check_accuracy import error
-from auto_tandem import AutoTNN
-from ensemble_regressor import EnsembleRegressor
-from inverse_validator import inverse_model_analysis
-from generate_samples import samplers
+
+from .check_accuracy import error
+from .auto_tandem import AutoTNN
+from .ensemble_regressor import EnsembleRegressor
+from .inverse_validator import inverse_model_analysis
+from .samplers.generate_samples import samplers
 
 import os
 import shutil
-import warnings
-warnings.filterwarnings("ignore")
-
 
 class experiment_setup:
     

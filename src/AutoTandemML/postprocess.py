@@ -14,27 +14,6 @@ plt.rcParams.update({
     "font.size": 18,
 })
 
-# class postprocess_dict:
-    
-#     def __init__(self, results_):
-        
-#         self.results_ = results_
-    
-#     def get_dict(self):
-        
-#         full_res_dict = {'evals': None, 'fitness': [] , 'n_runs': None,
-#                          'optimizer': None, 'solutions': [] }
-
-#         full_res_dict['evals'] = self.results_[0]['evals']
-#         full_res_dict['n_runs'] = np.sum([res['n_runs'] for res in self.results_])
-#         full_res_dict['optimizer'] = self.results_[0]['optimizer']
-#         full_res_dict['fitness'] = np.concatenate([res['fitness'] for res in self.results_])
-#         full_res_dict['solutions'] = np.concatenate([res['solutions'] for res in self.results_])
-
-#         return full_res_dict
-    
-
-
                     
 class plot_results:
     

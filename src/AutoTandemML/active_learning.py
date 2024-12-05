@@ -1,17 +1,10 @@
 import numpy as np
-import sys
 from scipy.stats import qmc
 
-
-sys.path.insert(0, 'samplers')
-sys.path.insert(1, 'models')
-
-import check_accuracy as ca
-from generate_samples import samplers
-import optimize_model as opt
-from ensemble_regressor import EnsembleRegressor
-import warnings
-warnings.filterwarnings("ignore")
+from .check_accuracy import error
+from .optimize_model import optimize
+from .samplers.generate_samples import samplers
+from .ensemble_regressor import EnsembleRegressor
 
 
 class activeLearner:
@@ -53,7 +46,7 @@ class activeLearner:
     
     def model_optimization(self, X, y):
         
-        self.model = opt.optimize(self.algorithm, X, y).get_hyperparameters()
+        self.model = optimize(self.algorithm, X, y).get_hyperparameters()
 
     def initialize(self):
 
@@ -89,8 +82,8 @@ class activeLearner:
             
         self.model = self.model_update(X, y)
         
-        rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape, paper_rmse, paper_rmse_max = ca.error(self.model, self.test_data).test_set()
-        # rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape = ca.error(self.model, self.test_data).test_set()
+        rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape, paper_rmse, paper_rmse_max = error(self.model, self.test_data).test_set()
+        # rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape = error(self.model, self.test_data).test_set()
 
     
         size = [len(X)]
@@ -131,8 +124,8 @@ class activeLearner:
             self.model = self.model_update(X, y)
 
             
-            rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape, paper_rmse, paper_rmse_max = ca.error(self.model, self.test_data).test_set()
-            # rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape = ca.error(self.model, self.test_data).test_set()
+            rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape, paper_rmse, paper_rmse_max = error(self.model, self.test_data).test_set()
+            # rmse, range_nrmse, std_nrmse, max_rmse, max_range_nrmse, r2, nmax_ae, mape = error(self.model, self.test_data).test_set()
 
             if self.verbose > 0 and len(X)%self.verbose == 0:
                 print ('-----------------------------------')

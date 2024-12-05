@@ -1,25 +1,22 @@
 import numpy as np
 import sys
 import joblib
-from scipy.stats import qmc
-
-from ensemble_regressor import EnsembleRegressor
-import active_learning as al
-
-
-sys.path.insert(0, 'samplers')
-sys.path.insert(1, 'models')
-
-from generate_samples import samplers
-from check_accuracy import error
-from sklearn.metrics import *
-from optimize_inverse import get_hyperparameters
-from DNNRegressor import TorchDNNRegressor
-from model_factory import ModelFactory
-from get_forward import forwardDNN
-from get_inverse import inverseDNN
 import torch
 import random
+from scipy.stats import qmc
+from sklearn.metrics import *
+
+"""autotandemml files"""
+from .ensemble_regressor import EnsembleRegressor
+from .active_learning import activeLearner
+from .samplers.generate_samples import samplers
+from .check_accuracy import error
+from .optimize_inverse import get_hyperparameters
+from .DNNRegressor import TorchDNNRegressor
+from .model_factory import ModelFactory
+from .get_forward import forwardDNN
+from .get_inverse import inverseDNN
+
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -66,7 +63,7 @@ class AutoTNN:
         
     def get_foward_model(self):
                     
-        run = al.activeLearner(self.f, self.lb, self.ub,
+        run = activeLearner(self.f, self.lb, self.ub,
                                 self.init_size, self.batch_size,
                                 self.max_samples, self.sampler,
                                 self.algorithm, self.test_data,

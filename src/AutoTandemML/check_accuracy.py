@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.metrics import mean_absolute_percentage_error, mean_squared_error, r2_score
-import os
+
 """
 https://www.cirm-math.fr/ProgWeebly/Renc1762/Welch.pdf
 
@@ -48,16 +48,7 @@ class error:
         normalized_rmse = np.max(rmse/range_)
         
         return normalized_rmse
-    
-    # @staticmethod
-    # def std_nrmse(y_true, y_pred):
         
-    #     rmse = np.sqrt(np.mean((y_true - y_pred) ** 2, axis=0))
-    #     std = np.std(y_true, axis=0)
-    #     normalized_rmse = np.mean(rmse/std)
-        
-    #     return normalized_rmse
-    
     @staticmethod
     def std_nrmse(y_true, y_pred):
         

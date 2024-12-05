@@ -9,7 +9,7 @@ from sklearn_extra.cluster import KMedoids
 import xgboost as xgb
 from sklearn.ensemble import RandomForestClassifier
 
-from goal_functions import goal_function
+from .goal_functions import goal_function
 
 class modelHCSampler:
     

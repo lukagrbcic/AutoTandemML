@@ -1,7 +1,10 @@
 import numpy as np
 from scipy.optimize import minimize
 from indago import PSO
-from goal_functions import goal_function
+
+
+
+from .goal_functions import goal_function
 import random
 
 np.random.seed(random.randint(0, 10223))

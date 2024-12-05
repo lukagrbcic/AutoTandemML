@@ -4,8 +4,9 @@ import torch.optim as optim
 from sklearn.model_selection import RandomizedSearchCV
 import sklearn.metrics
 import numpy as np
-from DNNRegressor import TorchDNNRegressor
-# from ensemble_regressor import EnsembleRegressor
+
+
+from .DNNRegressor import TorchDNNRegressor
 
 
 class get_hyperparameters:

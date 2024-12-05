@@ -7,7 +7,7 @@ from xgboost import XGBRegressor
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.neural_network import MLPRegressor
-from ensemble_regressor import EnsembleRegressor
+from .ensemble_regressor import EnsembleRegressor
 
 
 import pandas as pd

@@ -1,14 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import *
-import sys
 import joblib
 import torch
 
-sys.path.insert(0, 'src')
-
 from InverseBench.benchmarks import *
-from model_factory import ModelFactory
+from .model_factory import ModelFactory
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

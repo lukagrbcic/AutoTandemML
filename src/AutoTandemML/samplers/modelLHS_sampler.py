@@ -6,7 +6,7 @@ import random
 from sklearn.cluster import KMeans
 from sklearn_extra.cluster import KMedoids
 
-from goal_functions import goal_function
+from .goal_functions import goal_function
 
 
 class modelLHSSampler:

@@ -5,7 +5,6 @@ from matplotlib.markers import MarkerStyle
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.patches as mpatches
 import os
-import sys
 from collections import defaultdict
 
 plt.rcParams.update({
