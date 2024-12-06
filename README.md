@@ -1,3 +1,4 @@
+![Logo](https://github.com/lukagrbcic/AutoTandemML/blob/main/autotandemml.png?raw=true)
 # AutoTandemML
 Automated Tandem Neural Networks (TNN) for inverse design problems in science and engineering.
 
