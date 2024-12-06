@@ -1,27 +1,26 @@
-import sys
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import make_pipeline
 import random
+import os
+import numpy as np
 
-sys.path.insert(0, '../InverseBench/src/')
-sys.path.insert(1, 'src')
-sys.path.insert(2, 'src/samplers')
 
-from benchmarks import *
-from ensemble_regressor import EnsembleRegressor
-from run_experiment import experiment_setup
-from postprocess_tnn import plot_results
+from AutoTandemML.ensemble_regressor import EnsembleRegressor
+from AutoTandemML.run_experiment import experiment_setup
+from AutoTandemML.postprocess_tnn import plot_results
 
-import warnings
-warnings.filterwarnings("ignore")
 
+from InverseBench.benchmarks import load_model, load_test_data, benchmark_functions
 
 
 bench = 'scalar_diffusion' 
 name = 'scalar_diffusion_benchmark'
 model = load_model(name).load()
 f = benchmark_functions(name, model)
+
+def function_evaulator(x):
+    return f.evaluate(x)
 
 
 ensemble = []
@@ -34,12 +33,10 @@ algorithm = ('mlp_ensemble', EnsembleRegressor(ensemble))
 all_results_inverse = []
 all_results_forward = []
 
-
 lb, ub = f.get_bounds()
 
-test_input = np.load(f'../InverseBench/test_data/{bench}_data/input_test_data.npy')[:1000]
-test_output = np.load(f'../InverseBench/test_data/{bench}_data/output_test_data.npy')[:1000]
-test_data = (test_input, test_output)
+test_input, test_output = load_test_data(name).load()
+test_data = (test_input[:1000], test_output[:1000])
 
 all_results = []
 
@@ -52,7 +49,7 @@ n_runs = 30
 sampler = 'random'
 
 scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
-                                test_data, algorithm, f, lb, ub, function_name=name)
+                                test_data, algorithm, function_evaulator, lb, ub, function_name=name)
     
 
 file_path_inverse = f'./{name}_results/inverseDNN_{sampler}_{n_runs}.npy'
@@ -73,7 +70,7 @@ all_results_forward.append(results_forward)
 sampler = 'lhs'
 
 scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
-                                test_data, algorithm, f, lb, ub, function_name=name)
+                                test_data, algorithm, function_evaulator, lb, ub, function_name=name)
     
 file_path_inverse = f'./{name}_results/inverseDNN_{sampler}_{n_runs}.npy'
 file_path_forward = f'./{name}_results/forward_model_{sampler}_{n_runs}.npy'
@@ -93,7 +90,7 @@ all_results_forward.append(results_forward)
 sampler = 'bc'
 
 scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
-                                test_data, algorithm, f, lb, ub, function_name=name)
+                                test_data, algorithm, function_evaulator, lb, ub, function_name=name)
     
 file_path_inverse = f'./{name}_results/inverseDNN_{sampler}_{n_runs}.npy'
 file_path_forward = f'./{name}_results/forward_model_{sampler}_{n_runs}.npy'
@@ -113,7 +110,7 @@ all_results_forward.append(results_forward)
 sampler = 'greedyfp'
 
 scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
-                                test_data, algorithm, f, lb, ub, function_name=name)
+                                test_data, algorithm, function_evaulator, lb, ub, function_name=name)
     
 file_path_inverse = f'./{name}_results/inverseDNN_{sampler}_{n_runs}.npy'
 file_path_forward = f'./{name}_results/forward_model_{sampler}_{n_runs}.npy'
@@ -133,7 +130,7 @@ all_results_forward.append(results_forward)
 sampler = 'model_uncertainty'
 
 scalar_setup = experiment_setup(sampler, n_runs, init_size, batch_size, max_samples, 
-                                test_data, algorithm, f, lb, ub, function_name=name)
+                                test_data, algorithm, function_evaulator, lb, ub, function_name=name)
 
 file_path_inverse = f'./{name}_results/inverseDNN_{sampler}_{n_runs}.npy'
 file_path_forward = f'./{name}_results/forward_model_{sampler}_{n_runs}.npy'

@@ -7,8 +7,8 @@ from sklearn.ensemble import RandomForestRegressor
 sys.path.insert(1, 'src')
 sys.path.insert(2, 'src/samplers')
 
-from run_experiment import experiment_setup
-from postprocess_tnn import plot_results
+from AutoTandemML.run_experiment import experiment_setup
+from AutoTandemML.postprocess_tnn import plot_results
 from InverseBench.benchmarks import load_model, load_test_data, benchmark_functions
 
 import warnings
