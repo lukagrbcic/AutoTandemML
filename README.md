@@ -23,20 +23,43 @@ best candidate sampling.
 
 -----------------
 
-To run the code in order to obtain the PyTorch deep neural network files that contain the weights and architecture:
+To run the code in order to obtain the PyTorch Deep Neural Network files that contain the weights and architecture:
 
 ```python
-from .auto_tandem import AutoTNN
-
 import numpy as np
-import os
 
 from sklearn.ensemble import RandomForestRegressor
 
-from AutoTandemML.run_experiment import experiment_setup
-from AutoTandemML.postprocess_tnn import plot_results
+from AutoTandemML.run_experiment import experiment_setup #we import the main run wrapper
+
+
+def function_evaulator(x): #this is the evaluator function used for active learning
+    """
+    Code that generates a response based on a design vector x
+    """
+    return response
+
+#we must define the lower and upper boundary of our design space vector x
+lower_boundary = ...
+upper_boundary = ...
+
+algorithm = ('rf', RandomForestRegressor()) #we define the Random Forest algorithm as a tuple, the first value should be 'rf' if we want hyperparameter optimization
+
+init_size=20 #the initial sample size we generate with latin hypercube sampling 
+batch_size=5 #the batch size for active learning (i.e. how many new samples we generate per each iteration)
+max_samples=150 #the maximum number of samples we want to generate for the TNN training
+
+
+sampler = 'model_uncertainty' #this is the basic active learning approach where we use the uncertainty to find new points
+
+
+# this is the object we define 
+run_exp = experiment_setup(sampler, init_size, batch_size, max_samples, 
+                                algorithm, function_evaulator, lower_boundary, upper_boundary)
+
+run_exp.run()
 
 
 
 ```
-
+After completion, the inverse Deep Neural Network files (.pth and model_config.npy) are saved in the inverseDNN folder.
