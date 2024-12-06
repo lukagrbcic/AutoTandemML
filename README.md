@@ -3,6 +3,16 @@ Automated Tandem Neural Networks (TNN) for inverse design problems in science an
 
 AutoTandemML utilizes active learning methods to efficiently generate a dataset to train a Tandem Neural Network for inverse design challenges. 
 
+## Table of Contents
+- [AutoTandemML](#autotandemml)
+- [Overview](#overview)
+- [Process](#process)
+- [Active Learning Algorithms](#active-learning-algorithms)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Results](#results)
+- [License](#license)
+
 -----------------
 
 The process consists of three main segments:
