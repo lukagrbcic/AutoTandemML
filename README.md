@@ -6,14 +6,12 @@ AutoTandemML utilizes active learning methods to efficiently generate a dataset 
 ## Table of Contents
 - [AutoTandemML](#autotandemml)
 - [Overview](#overview)
-- [Process](#process)
-- [Active Learning Algorithms](#active-learning-algorithms)
-- [Installation](#installation)
 - [Usage](#usage)
 - [Results](#results)
 - [License](#license)
 
 -----------------
+## Overview
 
 The process consists of three main segments:
 
