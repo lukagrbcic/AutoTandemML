@@ -1,6 +1,6 @@
 <div align="center">
 
-![Logo](https://github.com/username/repo-name/blob/main/logo.png?raw=true)
+![Logo](https://github.com/lukagrbcic/AutoTandemML/blob/main/autotandemml.png?raw=true)
 
 </div>
 # AutoTandemML
