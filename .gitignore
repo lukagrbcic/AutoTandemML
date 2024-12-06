@@ -937,3 +937,9 @@ _results
 /src/AutoTandemML.egg-info/dependency_links.txt
 /src/AutoTandemML.egg-info/requires.txt
 /src/AutoTandemML.egg-info/top_level.txt
+/scalar_diffusion_benchmark/forwardDNN/forwardDNN.pth
+/scalar_diffusion_benchmark/forwardDNN/model_config.npy
+/scalar_diffusion_benchmark/inverseDNN/input_scaler_inverse.pkl
+/scalar_diffusion_benchmark/inverseDNN/inverseDNN.pth
+/scalar_diffusion_benchmark/inverseDNN/model_config.npy
+/scalar_diffusion_benchmark/inverseDNN/output_scaler_inverse.pkl
