@@ -15,6 +15,7 @@ AutoTandemML utilizes active learning methods to efficiently generate a dataset 
 - [Usage](#usage)
 - [Samplers](#samplers)
 - [Results](#results)
+- [References](#references)
 - [License](#license)
 
 -----------------
@@ -156,6 +157,10 @@ After running the experiments, the trained inverse Deep Neural Network files are
 The sampled dataset used for training the inverese Deep Neural Network is also saved:
 - `X_hf.npy`: x (inverse DNN outputs)
 - `y_hf.npy`: f(x) (inverse DNN inputs)
+
+## References
+- `[1]`: Kamath, C. (2022). Intelligent sampling for surrogate modeling, hyperparameter optimization, and data analysis. 
+         Machine Learning with Applications, 9, 100373.
 
 
 ## License
