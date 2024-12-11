@@ -13,6 +13,7 @@ AutoTandemML utilizes active learning methods to efficiently generate a dataset 
 - [AutoTandemML](#autotandemml)
 - [Overview](#overview)
 - [Usage](#usage)
+- [Samplers] (#samplers)
 - [Results](#results)
 - [License](#license)
 
@@ -131,6 +132,21 @@ scalar_setup = experiment_setup(sampler, init_size, batch_size, max_samples,
 
 
 ```
+## Samplers
+Samplers that can be used to generate the dataset for TNN training are:
+- `random`: Random sampling
+- `lhs`: Latin Hypercube sampling
+- `greedyFP`: greedyFP sampling [1]
+- `bc`: best candidate sampling [1]
+- `model_uncertainty`: active learning sampling (based on prediction uncertainty)
+- `model_entropy`: active learning sampling (based on prediction entropy)
+- `model_quantile`: active learning sampling (based on quantile uncertainty)
+- `ensemble`: active learning sampling that combines a batch of the uncertainty, entropy and quantile samplers
+
+
+Some experimental samplers 
+
+
 
 ## Results
 After running the experiments, the trained inverse Deep Neural Network files are saved in the `inverseDNN` folder. Here’s a brief overview of the expected files:
