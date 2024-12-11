@@ -29,8 +29,8 @@ class AutoTNN:
                  batch_size,
                  max_samples, 
                  algorithm,
-                 test_data,
                  lf_samples=0,
+                 test_data=None,
                  sampler='model_uncertainty',
                  verbose=False, al_verbose=0, combinations=10, 
                  forward_param_dist=None, 
@@ -48,8 +48,8 @@ class AutoTNN:
         self.batch_size = batch_size
         self.max_samples = max_samples
         self.algorithm = algorithm
-        self.test_data = test_data
         self.lf_samples = lf_samples
+        self.test_data = test_data
         self.sampler = sampler
         self.verbose = verbose
         self.al_verbose = al_verbose
@@ -66,7 +66,7 @@ class AutoTNN:
         run = activeLearner(self.f, self.lb, self.ub,
                                 self.init_size, self.batch_size,
                                 self.max_samples, self.sampler,
-                                self.algorithm, self.test_data,
+                                self.algorithm, test_data=self.test_data,
                                 verbose=self.al_verbose, return_model=True, return_hf_samples=True)
         
         _, model, X_hf, y_hf = run.run()
