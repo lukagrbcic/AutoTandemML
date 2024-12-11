@@ -24,10 +24,6 @@ algorithm = ('rf', RandomForestRegressor())
 
 lb, ub = f.get_bounds()
 
-# test_input, test_output = load_test_data(name).load()
-# test_data = (test_input[:1000], test_output[:1000])
-
-
 all_results_inverse = []
 all_results_forward = []
 
@@ -36,9 +32,9 @@ batch_size=5
 max_samples=150
 n_runs = 1
 
-sampler = 'random'
+sampler = 'model_uncertainty'
 
 experiment_setup(sampler, init_size, batch_size, max_samples, 
-                                algorithm, function_evaulator, lb, ub, function_name=name).run()
+                 algorithm, function_evaulator, lb, ub, function_name=name).run()
 
 
