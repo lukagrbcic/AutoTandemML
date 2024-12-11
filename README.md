@@ -159,8 +159,8 @@ The sampled dataset used for training the inverese Deep Neural Network is also s
 - `y_hf.npy`: f(x) (inverse DNN inputs)
 
 ## References
-- `[1]`: Kamath, C. (2022). Intelligent sampling for surrogate modeling, hyperparameter optimization, and data analysis. 
-         Machine Learning with Applications, 9, 100373.
+`[1]  Kamath, C. (2022). Intelligent sampling for surrogate modeling, hyperparameter optimization, and data analysis. 
+         Machine Learning with Applications, 9, 100373.`
 
 
 ## License
