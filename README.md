@@ -29,7 +29,7 @@ The process consists of three main segments:
 
 -----------------
 
-## Usage (examples)
+## Usage
 Here is a basic example of how to use AutoTandemML to train your models:
 
 ```python
