@@ -78,6 +78,7 @@ If we want to set the number of random search evaluations, we define the combina
 
 experiment_setup(sampler, init_size, batch_size, max_samples, 
                  algorithm, function_evaulator, lb, ub, function_name=name, combinations=100).run()
+                 
 ```
 
 Here is an example of how to use AutoTandemML to train your models using the EnsembleRegressor class:
