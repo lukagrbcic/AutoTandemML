@@ -145,10 +145,6 @@ Samplers that can be used to generate the dataset for TNN training are:
 - `ensemble`: active learning sampling that combines a batch of the uncertainty, entropy and quantile samplers
 
 
-Some experimental samplers 
-
-
-
 ## Results
 After running the experiments, the trained inverse Deep Neural Network files are saved in the `inverseDNN` folder. Here’s a brief overview of the expected files:
 - `.pth`: Model weights
