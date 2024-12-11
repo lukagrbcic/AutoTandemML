@@ -37,10 +37,10 @@ import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from AutoTandemML.run_experiment import experiment_setup
 
-# Define your function evaluator (implementation dependent)
+# Define your function evaluator
 def function_evaluator(x):
     """
-    Code that generates a response based on a design vector x
+    Code that generates a response based on a design vector x, i.e. a CFD simulation of a flow around an airfoil (response), based on the geometry of the airfoil (x)
     """
     return response
 
