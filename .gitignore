@@ -943,3 +943,7 @@ _results
 /scalar_diffusion_benchmark/inverseDNN/inverseDNN.pth
 /scalar_diffusion_benchmark/inverseDNN/model_config.npy
 /scalar_diffusion_benchmark/inverseDNN/output_scaler_inverse.pkl
+/airfoil_benchmark/X_hf.npy
+/airfoil_benchmark/y_hf.npy
+/scalar_diffusion_benchmark/X_hf.npy
+/scalar_diffusion_benchmark/y_hf.npy
