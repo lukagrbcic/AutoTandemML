@@ -69,7 +69,7 @@ run_exp.run()
 
 ```
 
-By default, the forward and inverse DNNs are optimized by the random search algorithms (10 iterations).
+By default, the forward and inverse DNNs are optimized with random search (10 iterations).
 If we want to set the number of random search evaluations, we define the combinations parameter:
 
 ```python
