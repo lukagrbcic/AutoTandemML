@@ -135,8 +135,8 @@ scalar_setup = experiment_setup(sampler, init_size, batch_size, max_samples,
 ```
 ## Samplers
 Samplers that can be used to generate the dataset for TNN training are:
-- `random`: Random sampling
-- `lhs`: Latin Hypercube sampling
+- `random`: random sampling
+- `lhs`: latin hypercube sampling
 - `greedyFP`: greedyFP sampling [1]
 - `bc`: best candidate sampling [1]
 - `model_uncertainty`: active learning sampling (based on prediction uncertainty)
