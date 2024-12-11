@@ -57,7 +57,7 @@ batch_size = 5   # Batch size for active learning
 max_samples = 150 # Maximum samples for training
 
 # Define the sampler
-sampler = 'model_uncertainty'
+sampler = 'model_uncertainty' #model_uncertainty is the basic active learning sampler
 
 # Set up and run the experiment
 run_exp = experiment_setup(sampler, init_size, batch_size, max_samples, 
