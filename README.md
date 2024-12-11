@@ -99,9 +99,6 @@ for i in range(10):
 algorithm = ('mlp_ensemble', EnsembleRegressor(ensemble))      
 
 
-all_results_inverse = []
-all_results_forward = []
-
 lb, ub = f.get_bounds()
 
 
@@ -125,6 +122,11 @@ scalar_setup = experiment_setup(sampler, init_size, batch_size, max_samples,
 After running the experiments, the trained inverse Deep Neural Network files are saved in the `inverseDNN` folder. Here’s a brief overview of the expected files:
 - `.pth`: Model weights
 - `model_config.npy`: Model architecture
+
+Moreover, the sampled dataset used for training the inverese Deep Neural Network is also saved:
+- `X_hf.npy`: x (inverse DNN outputs)
+- `y_hf.npy`: f(x) (inverse DNN inputs)
+
 
 ## License
 This project is licensed under the XXX License. See the LICENSE file for details.
