@@ -13,7 +13,7 @@ AutoTandemML utilizes active learning methods to efficiently generate a dataset 
 - [AutoTandemML](#autotandemml)
 - [Overview](#overview)
 - [Usage](#usage)
-- [Samplers] (#samplers)
+- [Samplers](#samplers)
 - [Results](#results)
 - [License](#license)
 
