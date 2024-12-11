@@ -137,7 +137,7 @@ After running the experiments, the trained inverse Deep Neural Network files are
 - `.pth`: Model weights
 - `model_config.npy`: Model architecture
 
-Moreover, the sampled dataset used for training the inverese Deep Neural Network is also saved:
+The sampled dataset used for training the inverese Deep Neural Network is also saved:
 - `X_hf.npy`: x (inverse DNN outputs)
 - `y_hf.npy`: f(x) (inverse DNN inputs)
 
