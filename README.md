@@ -29,7 +29,7 @@ The process consists of three main segments:
 
 -----------------
 
-## Usage
+## Usage (examples)
 Here is a basic example of how to use AutoTandemML to train your models:
 
 ```python
@@ -65,6 +65,17 @@ run_exp.run()
 # After completion, the inverse DNN files are saved in the inverseDNN folder.
 
 
+```
+
+By default, the forward and inverse DNNs are optimized by the random search algorithms (10 iterations).
+If we want to set the number of random search evaluations, we define the combinations parameter:
+
+```python
+
+#combinations=100 means 100 evaluations of MLP hyperparameters
+
+experiment_setup(sampler, init_size, batch_size, max_samples, 
+                 algorithm, function_evaulator, lb, ub, function_name=name, combinations=100).run()
 ```
 
 Here is an example of how to use AutoTandemML to train your models using the EnsembleRegressor class:
