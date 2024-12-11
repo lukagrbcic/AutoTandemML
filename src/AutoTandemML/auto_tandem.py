@@ -69,7 +69,7 @@ class AutoTNN:
                                 self.algorithm, test_data=self.test_data,
                                 verbose=self.al_verbose, return_model=True, return_hf_samples=True)
         
-        _, model, X_hf, y_hf = run.run()
+        model, X_hf, y_hf = run.run()
         
         return model, X_hf, y_hf
     

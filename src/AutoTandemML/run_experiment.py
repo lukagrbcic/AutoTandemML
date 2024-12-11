@@ -13,9 +13,9 @@ import shutil
 class experiment_setup:
     
     def __init__(self, sampler, init_size, batch_size, 
-                 max_samples, algorithm, evaluator, lb, ub,
+                 max_samples, algorithm, evaluator, lb, ub, 
                  save_hf_data=True, n_runs=1, test_data=None, function_name='',
-                 multifidelity=0, verbose=1, forward_metrics=True, 
+                 combinations=10, multifidelity=0, verbose=1, forward_metrics=True, 
                  inverse_metrics_dnn=False, forward_metrics_dnn=False, save_data=False):
         
         self.sampler = sampler
@@ -28,10 +28,12 @@ class experiment_setup:
         self.evaluator = evaluator
         self.lb = lb
         self.ub = ub
+        self.combinations = combinations
         self.save_hf_data = save_hf_data
         self.function_name = function_name
         self.multifidelity = multifidelity
         self.verbose = verbose
+        self.inverse_metrics_dnn = inverse_metrics_dnn
         self.forward_metrics = forward_metrics
         self.forward_metrics_dnn = forward_metrics_dnn
         self.save_data = save_data
@@ -88,7 +90,8 @@ class experiment_setup:
                 print ('Training forward DNN!')
                 run = AutoTNN(self.evaluator, self.lb, self.ub, self.init_size, 
                               self.batch_size, self.max_samples, self.algorithm, 
-                              lf_samples=self.multifidelity, test_data=self.test_data, sampler=self.sampler, return_forward_data=True,
+                              lf_samples=self.multifidelity, test_data=self.test_data, sampler=self.sampler, 
+                              combinations=self.combinations, return_forward_data=True,
                               x_init=X_sampled, y_init=y_sampled)
                 
                 print ('Training inverse DNN!')
@@ -111,11 +114,11 @@ class experiment_setup:
                     self.nmax_ae_forward.append(nmax_ae_fwd)
                 
             else:
-                print ('Training forward DNN!')
-
                 run = AutoTNN(self.evaluator, self.lb, self.ub, self.init_size, 
                               self.batch_size, self.max_samples, self.algorithm, 
-                              self.test_data, lf_samples=self.multifidelity, test_data=self.test_data, sampler=self.sampler, return_forward_data=True)
+                              lf_samples=self.multifidelity, test_data=self.test_data, sampler=self.sampler, 
+                              combinations=self.combinations, return_forward_data=True)
+                
                 print ('Training inverse DNN!')
                 model, X_hf, y_hf = run.get_inverse_DNN()
                 if self.save_hf_data is True:

@@ -35,6 +35,6 @@ n_runs = 1
 sampler = 'model_uncertainty'
 
 experiment_setup(sampler, init_size, batch_size, max_samples, 
-                 algorithm, function_evaulator, lb, ub, function_name=name).run()
+                 algorithm, function_evaulator, lb, ub, function_name=name, combinations=100).run()
 
 
