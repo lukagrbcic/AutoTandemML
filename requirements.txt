@@ -6,5 +6,5 @@ xgboost==2.0.3
 scipy==1.11.4
 torch==2.3.0
 joblib==1.2.0
-InverseBench=0.1.0
+InverseBench==0.1.0
 
