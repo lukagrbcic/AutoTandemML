@@ -149,6 +149,7 @@ Samplers that can be used to generate the dataset for TNN training are:
 After running the experiments, the trained inverse Deep Neural Network files are saved in the `inverseDNN` folder. Here’s a brief overview of the expected files:
 - `.pth`: Model weights
 - `model_config.npy`: Model architecture
+- `.pkl`: Input and output data scalers ('MinMax' or 'StandardScaler'). Use joblib to load the scalers.
 
 
 To read the model_config.npy file just use:
@@ -164,7 +165,6 @@ and the output should be a dictionary that contains the inverse DNN hyperparamet
 ```bash
 {'output_scaler': 'MinMax', 'output_activation': None, 'model_type': 'mlp', 'learning_rate': 0.001, 'input_scaler': 'Standard', 'hidden_layers': [128, 256, 128], 'epochs': 2000, 'dropout': 0.0, 'batch_size': 64, 'batch_norm': False, 'activation': 'relu'}
 ```
-
 
 The sampled dataset used for training the inverese Deep Neural Network is also saved:
 - `X_hf.npy`: x (inverse DNN outputs)
