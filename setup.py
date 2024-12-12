@@ -19,7 +19,8 @@ setup(
         'xgboost==2.0.3',
         'scipy==1.11.4',
         'torch==2.3.0',
-        
+        'joblib=1.2.0'
+        #add inversebench!
     ],
     classifiers=[
         'Programming Language :: Python :: 3',
