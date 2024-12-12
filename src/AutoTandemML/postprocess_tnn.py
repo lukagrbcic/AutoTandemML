@@ -8,9 +8,7 @@ import os
 from collections import defaultdict
 
 plt.rcParams.update({
-    "text.usetex": True,
     'font.family': 'sans-serif',
-    'text.latex.preamble': r'\usepackage{sfmath} \sffamily \usepackage{upgreek}',
     "font.size": 18,
 })
 
@@ -40,19 +38,19 @@ class plot_results:
         
         if modelname == 'inverse':
             sampler_to_method = {
-                'random': '$\mathbf{I_{DNN_R}}$',
-                'lhs': '$\mathbf{I_{DNN_{LHS}}}$',
-                'model_uncertainty': '$\mathbf{I_{DNN_{AL}}}$',
-                'bc': '$\mathbf{I_{DNN_{BC}}}$',
-                'greedyfp': '$\mathbf{I_{DNN_{GFP}}}$'
+                'random': 'I_DNN_R',
+                'lhs': 'I_DNN_LHS',
+                'model_uncertainty': 'I_DNN_AL',
+                'bc': 'I_DNN_BC',
+                'greedyfp': 'I_DNN_GFP'
             }
         elif modelname == 'forward':
             sampler_to_method = {
-                'random': '$\mathbf{M_{R}}$',
-                'lhs': '$\mathbf{M_{LHS}}$',
-                'model_uncertainty': '$\mathbf{M_{AL}}$',
-                'bc': '$\mathbf{M_{BC}}$',
-                'greedyfp': '$\mathbf{M_{GFP}}$'
+                'random': 'M_R',
+                'lhs': 'M_LHS',
+                'model_uncertainty': 'M_AL',
+                'bc': 'M_BC',
+                'greedyfp': 'M_GFP'
             }
 
 
@@ -108,7 +106,7 @@ class plot_results:
                 median.set_linewidth(2)
 
             if m == 'r2':
-                metric_label = 'R$^2$'
+                metric_label = 'R2'
                 plt.ylim(0.9, 1)
                 # plt.yticks(np.arange(0.8, 1+0.04, 0.04))
             elif m == 'nmax_ae':

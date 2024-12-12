@@ -8,9 +8,7 @@ import os
 import sys
 
 plt.rcParams.update({
-    "text.usetex": True,
     'font.family': 'sans-serif',
-    'text.latex.preamble': r'\usepackage{sfmath} \sffamily \usepackage{upgreek}',
     "font.size": 18,
 })
 
@@ -66,7 +64,7 @@ class plot_results:
           
     
                     plt.xlabel('Samples')
-                    if m == 'r2': metric = 'R$^2$' 
+                    if m == 'r2': metric = 'R2' 
                     else: metric = m.upper()
                     plt.ylabel(f'{metric}')
                     plt.legend(fontsize=12)
