@@ -49,8 +49,8 @@ def function_evaluator(x):
     return response
 
 # Set design space boundaries
-lower_boundary = ...
-upper_boundary = ...
+lower_boundary = np.array([])
+upper_boundary = np.array([])
 
 # Initialize the active learning algorithm
 algorithm = ('rf', RandomForestRegressor())
