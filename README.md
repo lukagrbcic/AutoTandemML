@@ -32,7 +32,7 @@ The process consists of three main segments:
 -----------------
 
 ## Usage
-Here is a basic example of how to use AutoTandemML to train your models:
+Here is a basic template of how to use AutoTandemML to train your models:
 
 ```python
 import numpy as np
