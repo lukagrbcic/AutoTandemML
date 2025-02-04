@@ -176,4 +176,4 @@ The sampled dataset used for training the inverese Deep Neural Network is also s
 
 
 ## License
-This project is licensed under the XXX License. See the LICENSE file for details.
+The licensing of this project is in progress by Berkeley Lab.
